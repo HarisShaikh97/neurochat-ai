@@ -1,12 +1,12 @@
 import Layout from "../../components/layout/Layout"
 
-function AskMeAnything() {
+function Falcon() {
 
     return (
         <Layout>
-            AskMeAnything
+            Falcon
         </Layout>
     )
 }
 
-export default AskMeAnything
+export default Falcon

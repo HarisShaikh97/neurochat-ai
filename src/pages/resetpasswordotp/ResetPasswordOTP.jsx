@@ -5,11 +5,11 @@ import OTPInput from "react-otp-input"
 import { MyContext } from "../../context/context"
 import ModeSwitch from "../../components/modeswitch/ModeSwitch"
 
-function VerifyOTP() {
+function ResetPasswordOTP() {
 
     const navigate = useNavigate()
 
-    const { state } = useContext(MyContext)
+    const { state, dispatch } = useContext(MyContext)
 
     const [otp, setOtp] = useState('')
     const initialTimerValue = 59
@@ -38,7 +38,7 @@ function VerifyOTP() {
     const ResendOTP = async (e) => {
         e.preventDefault()
         try {
-            await Auth.resendSignUp(state?.username)
+            await Auth.forgotPassword(state?.username)
             setTimer(initialTimerValue)
             clearInterval(intervalRef.current)
             intervalRef.current = setInterval(() => {
@@ -56,11 +56,14 @@ function VerifyOTP() {
         }
     }
 
-    const handleVerifyOTP = async (e) => {
+    const handleVerifyOTP = (e) => {
         e.preventDefault()
         try {
-            await Auth.confirmSignUp(state?.username, otp)
-            navigate('/login')
+            dispatch({
+                type: "SET_OTP",
+                payload: otp
+            })
+            navigate('/resetpassword')
         } 
         catch (error) {
             console.error('Error verifying OTP:', error)
@@ -86,7 +89,7 @@ function VerifyOTP() {
                 <div className="h-full flex flex-col items-center">
                     <img alt="logo" src="/src/assets/logo/NeuroChat_Logo_Shadow.png" style={{height: '100px', width: '100px'}} />
                     <div className="text-bgblue text-lg font-semibold">NeuroChat.Ai</div>
-                    <div className="text-2xl font-semibold pt-5">OTP Verification</div>
+                    <div className="text-2xl font-semibold pt-5">Reset Password</div>
                     <div className="pt-5 font-light text-gray-500">Enter the OTP sent to -</div>
                     <div className="text-gray-500">{state?.username}</div>
                     <div className="py-10">
@@ -106,4 +109,4 @@ function VerifyOTP() {
     )
 }
 
-export default VerifyOTP
+export default ResetPasswordOTP

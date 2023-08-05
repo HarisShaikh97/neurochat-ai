@@ -1,12 +1,52 @@
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { Auth } from "aws-amplify"
 import { EyeIcon } from "@heroicons/react/24/solid"
 import { EyeSlashIcon } from "@heroicons/react/24/solid"
 import ModeSwitch from "../../components/modeswitch/ModeSwitch"
 
 function Login() {
 
+    const navigate = useNavigate()
+
     const [showPassword, setShowPassword] = useState(false)
+    const [password, setPassword] = useState('')
+    const [email, setEmail] = useState('')
+    const [error, setError] = useState(null)
+    const [showError, setShowError] = useState(false)
+
+    const handleLogin = async (e) => {
+        e.preventDefault()
+        try {
+            await Auth.signIn(email, password)
+            navigate('/')
+        } 
+        catch (error) {
+            setError(error.message)
+            setShowError(true)
+            console.error('Error verifying OTP:', error)
+        }
+    }
+
+    const handleGoogleLogin = async () => {
+        try {
+            await Auth.federatedSignIn({ provider: 'Google' })
+            console.log('Sign in successful!')
+            navigate('/')
+        } catch (error) {
+            console.error('Error signing up with Google:', error)
+        }
+    }
+
+    const handleAppleLogin = async () => {
+        try {
+            await Auth.federatedSignIn({ provider: "SignInWithApple" })
+            console.log('Sign in successful!')
+            navigate('/')
+        } catch (error) {
+            console.error('Error signing up with Apple:', error)
+        }
+    }
 
     return (
         <>
@@ -29,10 +69,10 @@ function Login() {
                     <div className="pt-5 font-light text-gray-500">Please enter your correct details for</div>
                     <div className="font-light text-gray-500">Sign In on {`"`}NeuroChat.Ai{`"`}.</div>
                     <div className="border rounded-full px-5 py-3 mt-10 w-1/3">
-                        <input type="text" placeholder="Email" style={{outline: 'none', width: '100%'}} />
+                        <input type="text" value={email} onChange={(e) => {setEmail(e.target.value)}} placeholder="Email" style={{outline: 'none', width: '100%'}} />
                     </div>
                     <div className="border rounded-full px-5 py-3 mt-5 w-1/3 flex flex-row">
-                        <input type={showPassword ? "text" : "password"} placeholder="Password" style={{outline: 'none', width: '100%'}} />
+                        <input type={showPassword ? "text" : "password"} value={password} onChange={(e) => {setPassword(e.target.value)}} placeholder="Password" style={{outline: 'none', width: '100%'}} />
                         {showPassword ? (
                             <button onClick={() => {setShowPassword(false)}}>
                                 <EyeSlashIcon className="h-6 w-6 text-gray-500" />
@@ -44,20 +84,21 @@ function Login() {
                         )}
                     </div>
                     <Link to="/forgotpassword" className="text-gray-500 text-sm pt-5">Forgot Password?</Link>
-                    <button className="text-white rounded-full bg-bgblue h-12 w-80 mt-10">Sign In</button>
+                    <button onClick={handleLogin} className="text-white rounded-full bg-bgblue h-12 w-80 mt-10">Sign In</button>
+                    {showError && (<div className="text-red-500 pt-5">{error}</div>)}
                     <div className="w-80 flex flex-row gap-3 items-center py-5">
                         <div className="bg-gray-300" style={{height: '1px', width: '100%'}} />
                         <div className="text-gray-500">OR</div>
                         <div className="bg-gray-300" style={{height: '1px', width: '100%'}} />
                     </div>
-                    <div className="h-12 w-80 flex flex-row gap-5 pl-14 items-center border rounded-full">
+                    <button onClick={handleGoogleLogin} className="h-12 w-80 flex flex-row gap-5 pl-14 items-center border rounded-full">
                         <img alt="google" src="/src/assets/icons/google.svg" style={{height: '25px', width: '25px'}} />
                         <p>Continue with Google</p>
-                    </div>
-                    <div className="h-12 w-80 flex flex-row gap-5 pl-14 mt-5 items-center border rounded-full">
+                    </button>
+                    <button onClick={handleAppleLogin} className="h-12 w-80 flex flex-row gap-5 pl-14 mt-5 items-center border rounded-full">
                         <img alt="apple" src="/src/assets/icons/apple.svg" style={{height: '25px', width: '25px'}} />
                         <p>Continue with Apple</p>
-                    </div>
+                    </button>
                     <div className="pt-10 text-sm">Don{"'"}t have an account yet?{" "}<Link to="/signup" className="text-bgblue">Sign Up</Link></div>
                 </div>
             </div>

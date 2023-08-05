@@ -7,8 +7,9 @@ import ForgotPassword from './pages/forgotpassword/ForgotPassword'
 import ResetPassword from './pages/resetpassword/ResetPassword'
 import ResetPasswordSuccessful from './pages/resetpasswordsuccessful/ResetPasswordSuccessful'
 import VerifyOTP from './pages/verifyotp/VerifyOTP'
+import ResetPasswordOTP from './pages/resetpasswordotp/ResetPasswordOTP'
 import Home from './pages/home/Home'
-import AskMeAnything from './pages/askmeanything/AskMeAnything'
+import Falcon from './pages/falcon/Falcon'
 import SynaptiPDF from './pages/synaptipdf/SynaptiPDF'
 import SynaptiQuery from './pages/synaptiquery/SynaptiQuery'
 import Synaptinote from './pages/synaptinote/SynaptiNote'
@@ -56,7 +57,8 @@ function App() {
                     <Route path='/resetpassword' element={<ResetPassword />} />
                     <Route path='/resetpasswordsuccessful' element={<ResetPasswordSuccessful />} />
                     <Route path='/verifyotp' element={<VerifyOTP />} />
-                    <Route path='/askmeanything' element={<AskMeAnything />} />
+                    <Route path='/resetpasswordotp' element={<ResetPasswordOTP />} />
+                    <Route path='/falcon' element={<Falcon />} />
                     <Route path='/synaptipdf' element={<SynaptiPDF />} />
                     <Route path='/synaptiquery' element={<SynaptiQuery />} />
                     <Route path='/synaptinote' element={<Synaptinote />} />

@@ -7,7 +7,9 @@ export function MyContextProvider({ children }) {
     const [state, dispatch] = useReducer(reducer, {
         isLoading: true,
         mode: 'light',
-        username: ''
+        username: '',
+        user_id: '',
+        otp: ''
     })
 
     return (

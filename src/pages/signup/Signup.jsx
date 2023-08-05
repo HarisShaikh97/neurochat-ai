@@ -8,7 +8,7 @@ import ModeSwitch from "../../components/modeswitch/ModeSwitch"
 
 function Signup() {
 
-    const {dispatch} = useContext(MyContext)
+    const { dispatch } = useContext(MyContext)
 
     const navigate = useNavigate()
 
@@ -31,7 +31,7 @@ function Signup() {
                         email,
                     },
                     autoSignIn: {
-                        enabled: true,
+                        enabled: false,
                     }
                 })
                 dispatch({
@@ -51,6 +51,48 @@ function Signup() {
             setShowError(true)
         }
     }
+
+    const handleGoogleLogin = async () => {
+        try {
+            await Auth.federatedSignIn({ provider: 'Google' })
+            console.log('Sign up successful!')
+            navigate('/')
+        } catch (error) {
+            console.error('Error signing up with Google:', error)
+        }
+    }
+
+    const handleAppleLogin = async () => {
+        try {
+            await Auth.federatedSignIn({ provider: "SignInWithApple" })
+            console.log('Sign in successful!')
+            navigate('/')
+        } catch (error) {
+            console.error('Error signing up with Apple:', error)
+        }
+    }
+
+    // const getBrowserName = () => {
+    //     const userAgent = navigator.userAgent
+        
+    //     if (/firefox/i.test(userAgent)) {
+    //         return 'Mozilla Firefox'
+    //     } else if (/chrome/i.test(userAgent)) {
+    //         return 'Google Chrome'
+    //     } else if (/safari/i.test(userAgent)) {
+    //         return 'Apple Safari'
+    //     } else if (/msie|trident/i.test(userAgent)) {
+    //         return 'Internet Explorer'
+    //     } else if (/edge/i.test(userAgent)) {
+    //         return 'Microsoft Edge'
+    //     } else {
+    //         return 'Unknown Browser'
+    //     }
+    // }
+    
+    // const browserName = getBrowserName()
+
+    // console.log(browserName);
 
     return (
         <>
@@ -106,14 +148,14 @@ function Signup() {
                         <div className="text-gray-500">OR</div>
                         <div className="bg-gray-300" style={{height: '1px', width: '100%'}} />
                     </div>
-                    <div className="h-12 w-80 flex flex-row gap-5 pl-14 items-center border rounded-full">
+                    <button onClick={handleGoogleLogin} className="h-12 w-80 flex flex-row gap-5 pl-14 items-center border rounded-full">
                         <img alt="google" src="/src/assets/icons/google.svg" style={{height: '25px', width: '25px'}} />
                         <p>Continue with Google</p>
-                    </div>
-                    <div className="h-12 w-80 flex flex-row gap-5 pl-14 mt-5 items-center border rounded-full">
+                    </button>
+                    <button onClick={handleAppleLogin} className="h-12 w-80 flex flex-row gap-5 pl-14 mt-5 items-center border rounded-full">
                         <img alt="apple" src="/src/assets/icons/apple.svg" style={{height: '25px', width: '25px'}} />
                         <p>Continue with Apple</p>
-                    </div>
+                    </button>
                     <div className="pt-10 text-sm">Already have an account?{" "}<Link to="/login" className="text-bgblue">Sign In</Link></div>
                 </div>
             </div>

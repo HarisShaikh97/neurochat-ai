@@ -1,10 +1,46 @@
+import { useEffect, useState, useContext } from "react"
 import { useNavigate } from "react-router-dom"
+import { Auth } from "aws-amplify"
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
+import { MyContext } from "../../context/context"
 import Layout from "../../components/layout/Layout"
 
 function Home() {
 
+    const { dispatch } = useContext(MyContext)
+
     const navigate = useNavigate()
+
+    const [isAuthenticated, setIsAuthenticated] = useState(true)
+
+    useEffect(() => {
+
+        const checkUserSession = async () => {
+            try {
+                const user = await Auth.currentAuthenticatedUser()
+                setIsAuthenticated(true)
+                // console.log(user.pool.clientId)
+                dispatch({
+                    type: 'SET_USER_ID',
+                    payload: user?.pool?.clientId
+                })
+            } 
+            catch (error) {
+                setIsAuthenticated(false)
+            }
+        }
+
+        checkUserSession()
+
+    }, [dispatch])
+
+    useEffect(() => {
+        if(isAuthenticated === false) {
+            navigate('/login')
+        }
+    }, [isAuthenticated, navigate])
+
+    // console.log(isAuthenticated, state)
 
     return (
         <Layout>

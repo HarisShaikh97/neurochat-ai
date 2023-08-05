@@ -1,15 +1,43 @@
-import { useState } from "react"
+import { useState, useContext } from "react"
 import { useNavigate } from "react-router-dom"
+import { Auth } from "aws-amplify"
 import { EyeIcon } from "@heroicons/react/24/solid"
 import { EyeSlashIcon } from "@heroicons/react/24/solid"
+import { MyContext } from "../../context/context"
 import ModeSwitch from "../../components/modeswitch/ModeSwitch"
 
 function ResetPassword() {
+
+    const { state } = useContext(MyContext)
 
     const navigate = useNavigate()
 
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+    const [password, setPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
+    const [error, setError] = useState(null)
+    const [showError, setShowError] = useState(false)
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        if(password === confirmPassword) {
+            try {
+                await Auth.forgotPasswordSubmit(state?.username, state?.otp, password)
+                console.log('Password reset successful!')
+                navigate('/resetpasswordsuccessful')
+            } 
+            catch (error) {
+                console.error('Error:', error)
+            }
+        }
+        else {
+            setError('Passwords do not match.')
+            setShowError(true)
+        }
+    }
+
+    console.log(state);
 
     return (
         <>
@@ -32,8 +60,8 @@ function ResetPassword() {
                     <div className="pt-5 font-light text-gray-500">Please enter new password and continue login</div>
                     <div className="font-light text-gray-500">to {`"`}NeuroChat.Ai{`"`}.</div>
                     <div className="h-full w-full flex flex-col items-center justify-center">
-                        <div className="border rounded-full px-5 py-3 mt-5 w-1/3 flex flex-row">
-                            <input type={showPassword ? "text" : "password"} placeholder="Password" style={{outline: 'none', width: '100%'}} />
+                        <div className="border rounded-full px-5 py-3 mt-5 w-[500px] flex flex-row">
+                            <input type={showPassword ? "text" : "password"} value={password} onChange={(e) => {setPassword(e.target.value)}} placeholder="Password" style={{outline: 'none', width: '100%'}} />
                             {showPassword ? (
                                 <button onClick={() => {setShowPassword(false)}}>
                                     <EyeSlashIcon className="h-6 w-6 text-gray-500" />
@@ -44,8 +72,8 @@ function ResetPassword() {
                                 </button>
                             )}
                         </div>
-                        <div className="border rounded-full px-5 py-3 mt-5 w-1/3 flex flex-row">
-                            <input type={showConfirmPassword ? "text" : "password"} placeholder="Confirm Password" style={{outline: 'none', width: '100%'}} />
+                        <div className="border rounded-full px-5 py-3 mt-5 w-[500px] flex flex-row">
+                            <input type={showConfirmPassword ? "text" : "password"} value={confirmPassword} onChange={(e) => {setConfirmPassword(e.target.value)}} placeholder="Confirm Password" style={{outline: 'none', width: '100%'}} />
                             {showConfirmPassword ? (
                                 <button onClick={() => {setShowConfirmPassword(false)}}>
                                     <EyeSlashIcon className="h-6 w-6 text-gray-500" />
@@ -56,7 +84,8 @@ function ResetPassword() {
                                 </button>
                             )}
                         </div>
-                        <button onClick={() => {navigate('/resetpasswordsuccessful')}} className="text-white rounded-full bg-bgblue h-12 w-80 mt-10">Continue</button>
+                        <button onClick={handleSubmit} className="text-white rounded-full bg-bgblue h-12 w-80 mt-10">Continue</button>
+                        {showError && (<div className="text-red-500 pt-5">{error}</div>)}
                     </div>
                 </div>
             </div>

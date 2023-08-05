@@ -1,360 +1,173 @@
-import { useState } from "react"
+import { useState, useEffect, useContext } from "react"
+import { useNavigate } from "react-router-dom"
+import axios from "axios"
+import { Auth } from "aws-amplify"
+import { XMarkIcon } from "@heroicons/react/24/solid"
 import { PlusIcon } from "@heroicons/react/24/solid"
 import { ChevronUpIcon } from "@heroicons/react/24/solid"
 import { ChevronDownIcon } from "@heroicons/react/24/solid"
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
+import { MyContext } from "../../context/context"
 import Layout from "../../components/layout/Layout"
+import StarredChatItem from "../../components/starredchatitem/StarredChatItem"
+import UnStarredChatItem from "../../components/unstarredchatitem/UnStarredChatItem"
+import ChatMessage from "../../components/chatmessage/ChatMessage"
 
 function SynaptiQuery() {
+
+    const { state, dispatch } = useContext(MyContext)
+
+    const navigate = useNavigate()
 
     const [agreed, setAgreed] = useState(false)
     const [showStarredChats, setShowStarredChats] = useState(true)
     const [showAllChats, setShowAllChats] = useState(true)
     const [selectedChat, setSelectedChat] = useState(null)
+    const [isAuthenticated, setIsAuthenticated] = useState(true)
+    const [query, setQuery] = useState('')
+    const [chats, setChats] = useState([])
+    const [editSelectedChatTitle, setEditSelectedChatTitle] = useState(false)
+    const [selectedChatUpdatedTitle, setSelectedChatUpdatedTitle] = useState('')
+    
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 
-    let chats = [
-        {
-            id: 1,
-            title: 'Psychopathology, also...',
-            starred: true,
-            messages: [
-                {
-                    msg_id: 1,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
-                },
-                {
-                    msg_id: 2,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: true,
-                    disliked: false
-                },
-                {
-                    msg_id: 3,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
-                },
-                {
-                    msg_id: 4,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: true,
-                    disliked: false
-                },
-                {
-                    msg_id: 5,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
+    useEffect(() => {
+        if(state?.user_id?.length > 0) {
+            axios.get(`${apiBaseUrl}/chat/history/${state?.user_id}?model_type=1`).then((res) => {
+                console.log(res)
+                if(res?.data?.message || res?.data?.status_code === 404) {
+                    console.log(res?.data)
+                    setChats([])
                 }
-            ]
-        },
-        {
-            id: 2,
-            title: 'Maslow hierarchy of...',
-            starred: true,
-            messages: [
-                {
-                    msg_id: 1,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
-                },
-                {
-                    msg_id: 2,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: true,
-                    disliked: false
-                },
-                {
-                    msg_id: 3,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
-                },
-                {
-                    msg_id: 4,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: true,
-                    disliked: false
-                },
-                {
-                    msg_id: 5,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
+                else {
+                    setChats(res?.data)
                 }
-            ]
-        },
-        {
-            id: 3,
-            title: 'Behaviorism...',
-            starred: true,
-            messages: [
-                {
-                    msg_id: 1,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
-                },
-                {
-                    msg_id: 2,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: true,
-                    disliked: false
-                },
-                {
-                    msg_id: 3,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
-                },
-                {
-                    msg_id: 4,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: true,
-                    disliked: false
-                },
-                {
-                    msg_id: 5,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
-                }
-            ]
-        },
-        {
-            id: 4,
-            title: 'Documents, Presentation...',
-            starred: false,
-            messages: [
-                {
-                    msg_id: 1,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
-                },
-                {
-                    msg_id: 2,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: true,
-                    disliked: false
-                },
-                {
-                    msg_id: 3,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
-                },
-                {
-                    msg_id: 4,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: true,
-                    disliked: false
-                },
-                {
-                    msg_id: 5,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
-                }
-            ]
-        },
-        {
-            id: 5,
-            title: 'Classical conditioning and...',
-            starred: false,
-            messages: [
-                {
-                    msg_id: 1,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
-                },
-                {
-                    msg_id: 2,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: true,
-                    disliked: false
-                },
-                {
-                    msg_id: 3,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
-                },
-                {
-                    msg_id: 4,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: true,
-                    disliked: false
-                },
-                {
-                    msg_id: 5,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
-                }
-            ]
-        },
-        {
-            id: 6,
-            title: 'Personality assignment...',
-            starred: false,
-            messages: [
-                {
-                    msg_id: 1,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
-                },
-                {
-                    msg_id: 2,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: true,
-                    disliked: false
-                },
-                {
-                    msg_id: 3,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
-                },
-                {
-                    msg_id: 4,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: true,
-                    disliked: false
-                },
-                {
-                    msg_id: 5,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
-                }
-            ]
-        },
-        {
-            id: 7,
-            title: "Hammad's report of...",
-            starred: false,
-            messages: [
-                {
-                    msg_id: 1,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
-                },
-                {
-                    msg_id: 2,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: true,
-                    disliked: false
-                },
-                {
-                    msg_id: 3,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
-                },
-                {
-                    msg_id: 4,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: true,
-                    disliked: false
-                },
-                {
-                    msg_id: 5,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
-                }
-            ]
-        },
-        {
-            id: 8,
-            title: "Jenny's report of ICH...",
-            starred: false,
-            messages: [
-                {
-                    msg_id: 1,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
-                },
-                {
-                    msg_id: 2,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: true,
-                    disliked: false
-                },
-                {
-                    msg_id: 3,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
-                },
-                {
-                    msg_id: 4,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: true,
-                    disliked: false
-                },
-                {
-                    msg_id: 5,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
-                }
-            ]
-        },
-        {
-            id: 9,
-            title: 'NeroICH.AI Training...',
-            starred: false,
-            messages: [
-                {
-                    msg_id: 1,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
-                },
-                {
-                    msg_id: 2,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: true,
-                    disliked: false
-                },
-                {
-                    msg_id: 3,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
-                },
-                {
-                    msg_id: 4,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: true,
-                    disliked: false
-                },
-                {
-                    msg_id: 5,
-                    message: 'Vaping-induced lung injury is a syndrome of lung disease associated with vaping or e-cigarette products[1]. The mechanisms by which lung injury occurs remain to be fully understood, but it is hypothesized that vaping damages lung defenses, allowing bacterial or viral organisms to infect the lungs and further exacerbate lung function[2]. Furthermore, chemicals found in e-cigarettes alter lung structures, leading to an exaggerated response to an infectious insult[3]. A combination of these two mechanisms may lead to acute respiratory failure. There is also evidence that e-cigarette use alters innate immunity and airway cytokines while increasing the virulence of colonizing bacteria. E-cigarette use has been associated with cough, bronchitis symptoms, and respiratory failure by pneumonitis epidemic that has led several dozen people to death.',
-                    liked: false,
-                    disliked: true
-                }
-            ]
+            }).catch((error) => {
+                console.error('Error:', error)
+            })
         }
-    ]
+    }, [apiBaseUrl, state])
+
+    // console.log(selectedChat, chats, editSelectedChatTitle)
+
+    useEffect(() => {
+
+        const checkUserSession = async () => {
+            try {
+                const user = await Auth.currentAuthenticatedUser()
+                setIsAuthenticated(true)
+                // console.log(user.pool.clientId)
+                dispatch({
+                    type: 'SET_USER_ID',
+                    payload: user?.pool?.clientId
+                })
+            } 
+            catch (error) {
+                setIsAuthenticated(false)
+            }
+        }
+
+        checkUserSession()
+
+    }, [dispatch])
+
+    useEffect(() => {
+        if(isAuthenticated === false) {
+            navigate('/login')
+        }
+    }, [isAuthenticated, navigate])
+
+    const refreshChat = async () => {
+        if(selectedChat){
+            await axios.get(`${apiBaseUrl}/chat/${selectedChat?.chat_id}`).then((res) => {
+                console.log(res)
+                setSelectedChat(res?.data)
+            }).catch((error) => {
+                console.error('Error:', error)
+            })
+        }
+    }
+
+    const refreshAllChats = async () => {
+        if(state?.user_id?.length > 0) {
+            await axios.get(`${apiBaseUrl}/chat/history/${state?.user_id}?model_type=1`).then((res) => {
+                console.log(res)
+                if(res?.data?.message || res?.data?.status_code === 404) {
+                    console.log(res?.data)
+                    setChats([])
+                }
+                else {
+                    setChats(res?.data)
+                }
+            }).catch((error) => {
+                console.error('Error:', error)
+            })
+        }
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+
+        setQuery('')
+
+        const formData = {
+            user_id: state?.user_id,
+            chat_id: selectedChat ? selectedChat?.chat_id : '', 
+            model_type: 1, 
+            user_query: query
+        }
+
+        await axios.post(`${apiBaseUrl}/chat`, formData).then((res) => {
+            console.log(res)
+            if(res?.status === 200){
+                if(selectedChat) {
+                    refreshChat()
+                }
+                else {
+                    axios.get(`${apiBaseUrl}/chat/${res?.data?.chat_id}`).then((response) => {
+                        console.log(response)
+                        setSelectedChat(response?.data)
+                    }).catch((error) => {
+                        console.error('Error:', error)
+                    })
+                }
+                refreshAllChats()
+            }
+        }).catch((error) => {
+            console.error('Error:', error)
+        })
+    }
+
+    const updateSelectedChatTitle = async (e) => {
+        e.preventDefault()
+
+        setEditSelectedChatTitle(false)
+
+        const formData = {
+            title: selectedChatUpdatedTitle
+        }
+
+        await axios.put(`${apiBaseUrl}/chat/title/${selectedChat?.chat_id}`, formData).then((res) => {
+            console.log(res)
+            if(res?.status === 200) {
+                refreshChat()
+                refreshAllChats()
+                setSelectedChatUpdatedTitle('')
+            }
+        }).catch((error) => {
+            console.error('Error:', error)
+        })
+    }
 
     function checkStarred(chat) {
-        return chat?.starred === true
+        return chat?.is_starred === true
     }
 
     function checkUnStarred(chat) {
-        return chat?.starred === false
+        return chat?.is_starred === false
     }
+
+    console.log(chats);
 
     return (
         <Layout>
@@ -362,25 +175,90 @@ function SynaptiQuery() {
                 {agreed ? (
                     <div className="flex flex-row justify-between items-center h-full pl-96 pr-10">
                         {selectedChat ? (
-                            <div className="flex flex-row items-center justify-between w-80">
-                                <div className="flex flex-row items-center gap-5">
-                                    {selectedChat?.starred ? (
-                                        <img alt="starred" src="/src/assets/icons/star-fill.png" style={{height: '20px'}} />
-                                    ) : (
-                                        <img alt="unstarred" src="/src/assets/icons/star.png" style={{height: '20px'}} />
-                                    )}
-                                    <div>{selectedChat?.title}</div>
-                                </div>
-                                <img alt="edit" src="/src/assets/icons/edit-black.png" className="px-3" style={{height: '20px'}} />
-                            </div>
+                            <>
+                                {editSelectedChatTitle ? (
+                                    <div className="flex flex-row items-center justify-between w-80">
+                                        <div className="flex flex-row items-center gap-5">
+                                            {selectedChat?.is_starred ? (
+                                                <button onClick={async () => {
+                                                    await axios.put(`${apiBaseUrl}/chat/starred/${selectedChat?.chat_id}`).then((res) => {
+                                                        console.log(res)
+                                                        if(res?.status === 200) {
+                                                            refreshChat()
+                                                            refreshAllChats()
+                                                        }
+                                                    }).catch((error) => {
+                                                        console.error('Error:', error)
+                                                    })
+                                                }}>
+                                                    <img alt="starred" src="/src/assets/icons/star-fill.png" style={{height: '20px'}} />
+                                                </button>
+                                            ) : (
+                                                <button onClick={async () => {
+                                                    await axios.put(`${apiBaseUrl}/chat/starred/${selectedChat?.chat_id}`).then((res) => {
+                                                        console.log(res)
+                                                        if(res?.status === 200) {
+                                                            refreshChat()
+                                                            refreshAllChats()
+                                                        }
+                                                    }).catch((error) => {
+                                                        console.error('Error:', error)
+                                                    })
+                                                }}>
+                                                    <img alt="unstarred" src="/src/assets/icons/star.png" style={{height: '20px'}} />
+                                                </button>
+                                            )}
+                                            <input type="text" value={selectedChatUpdatedTitle} onChange={(e) => {setSelectedChatUpdatedTitle(e.target.value)}} placeholder="Write Title..." className="w-52" style={{outline: 'none', background: 'transparent'}} />
+                                        </div>
+                                        <button onClick={updateSelectedChatTitle}>
+                                            <img alt="check" src="/src/assets/icons/check.png" className="px-3" style={{height: '20px'}} />
+                                        </button>
+                                        <button onClick={() => {setEditSelectedChatTitle(false)}}>
+                                            <XMarkIcon className="h-5 w-5 text-bgblue" />
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-row items-center justify-between w-80">
+                                        <div className="flex flex-row items-center gap-5">
+                                            {selectedChat?.is_starred ? (
+                                                <button onClick={async () => {
+                                                    await axios.put(`${apiBaseUrl}/chat/starred/${selectedChat?.chat_id}`).then((res) => {
+                                                        console.log(res)
+                                                        if(res?.status === 200) {
+                                                            refreshChat()
+                                                            refreshAllChats()
+                                                        }
+                                                    }).catch((error) => {
+                                                        console.error('Error:', error)
+                                                    })
+                                                }}>
+                                                    <img alt="starred" src="/src/assets/icons/star-fill.png" style={{height: '20px'}} />
+                                                </button>
+                                            ) : (
+                                                <button onClick={async () => {
+                                                    await axios.put(`${apiBaseUrl}/chat/starred/${selectedChat?.chat_id}`).then((res) => {
+                                                        console.log(res)
+                                                        if(res?.status === 200) {
+                                                            refreshChat()
+                                                            refreshAllChats()
+                                                        }
+                                                    }).catch((error) => {
+                                                        console.error('Error:', error)
+                                                    })
+                                                }}>
+                                                    <img alt="unstarred" src="/src/assets/icons/star.png" style={{height: '20px'}} />
+                                                </button>
+                                            )}
+                                            <div className="w-52 truncate">{selectedChat?.chat_title}</div>
+                                        </div>
+                                        <button onClick={() => {setEditSelectedChatTitle(true)}}>
+                                            <img alt="edit" src="/src/assets/icons/edit-black.png" className="px-3" style={{height: '20px'}} />
+                                        </button>
+                                    </div>
+                                )}
+                            </>
                         ) : (
-                            <div className="flex flex-row items-center justify-between w-80">
-                                <div className="flex flex-row items-center gap-5">
-                                    <img alt="unstarred" src="/src/assets/icons/star.png" style={{height: '20px'}} />
-                                    <input type="text" placeholder="Write title..." style={{outline: 'none', width: '150px', background: 'transparent'}} />
-                                </div>
-                                <img alt="edit" src="/src/assets/icons/edit-black.png" className="px-3" style={{height: '20px'}} />
-                            </div>
+                            <div />
                         )}
                         <div className="flex flex-row items-center gap-5 h-full">
                             <div className="rounded-lg bg-bgblue text-white py-1 px-3">EN</div>
@@ -417,19 +295,10 @@ function SynaptiQuery() {
                                     <div className="text-lg font-semibold">Starred Chats</div>
                                 </div>
                                 {showStarredChats && (
-                                    <div className="flex flex-col gap-3 h-24 overflow-y-auto">
-                                        {chats?.filter(checkStarred)?.map((chat, key) => {
+                                    <div className="flex flex-col gap-3 max-h-24 overflow-y-auto">
+                                        {typeof chats === 'object' && chats?.filter(checkStarred)?.map((chat, key) => {
                                             return (
-                                                <div className="flex flex-row items-center justify-between" key={key}>
-                                                    <div className="flex flex-row items-center gap-5">
-                                                        <img alt="starred" src="/src/assets/icons/star-fill.png" style={{height: '20px'}} />
-                                                        <button onClick={() => {setSelectedChat(chat)}}>{chat?.title}</button>
-                                                    </div>
-                                                    <div className="flex flex-row items-center">
-                                                        <img alt="edit" src="/src/assets/icons/edit.png" className="px-3" style={{height: '20px'}} />
-                                                        <img alt="delete" src="/src/assets/icons/delete.png" className="px-3" style={{height: '20px'}} />
-                                                    </div>
-                                                </div>
+                                                <StarredChatItem chat={chat} refreshAllChats={refreshAllChats} refreshChat={refreshChat} setSelectedChat={setSelectedChat} selectedChat={selectedChat} key={key} />
                                             )
                                         })}
                                     </div>
@@ -447,25 +316,16 @@ function SynaptiQuery() {
                                     <div className="text-lg font-semibold">All Chats</div>
                                 </div>
                                 {showAllChats && (
-                                    <div className="flex flex-col gap-3 h-44 overflow-y-auto">
-                                        {chats?.filter(checkUnStarred)?.map((chat, key) => {
+                                    <div className="flex flex-col gap-3 max-h-44 overflow-y-auto">
+                                        {typeof chats === 'object' && chats?.filter(checkUnStarred)?.map((chat, key) => {
                                             return (
-                                                <div className="flex flex-row items-center justify-between" key={key}>
-                                                    <div className="flex flex-row items-center gap-5">
-                                                        <img alt="unstarred" src="/src/assets/icons/star.png" style={{height: '20px'}} />
-                                                        <button onClick={() => {setSelectedChat(chat)}}>{chat?.title}</button>
-                                                    </div>
-                                                    <div className="flex flex-row items-center">
-                                                        <img alt="edit" src="/src/assets/icons/edit.png" className="px-3" style={{height: '20px'}} />
-                                                        <img alt="delete" src="/src/assets/icons/delete.png" className="px-3" style={{height: '20px'}} />
-                                                    </div>
-                                                </div>
+                                                <UnStarredChatItem chat={chat} refreshAllChats={refreshAllChats} refreshChat={refreshChat} setSelectedChat={setSelectedChat} selectedChat={selectedChat} key={key} />
                                             )
                                         })}
                                     </div>
                                 )}
                             </div>
-                            <button className="rounded-full bg-bgblue text-white text-xl font-semibold py-2 w-full flex flex-row gap-3 justify-center items-center">
+                            <button onClick={() => {setSelectedChat(null)}} className="rounded-full bg-bgblue text-white text-xl font-semibold py-2 w-full flex flex-row gap-3 justify-center items-center">
                                 <PlusIcon className="h-8 w-8 text-white" />
                                 <div>New Chat</div>
                             </button>
@@ -501,15 +361,24 @@ function SynaptiQuery() {
                 <div className="h-[80vh] pt-10 px-10 flex-1">
                     {agreed ? (
                         <div className="flex flex-col h-full">
-                            <div className="flex flex-row gap-8 justify-end items-center">
-                                <div className="flex flex-row gap-3 items-center">
-                                    <div className="font-semibold">Haris Shaikh</div>
-                                    <div className="text-xs text-gray-500">3:00PM</div>
-                                </div>
-                                <img alt="profile-picture" src="/src/assets/images/profile_picture.jpg" className="rounded-full" style={{height: '50px', width: '50px'}} />
+                            <div className="flex flex-col gap-10 h-full overflow-y-auto">
+                                {selectedChat?.chat?.map((thread, key) => {
+                                    return (
+                                        <ChatMessage thread={thread} modelType={'synaptiquery'} refreshAllChats={refreshAllChats} refreshChat={refreshChat} selectedChat={selectedChat} setSelectedChat={setSelectedChat} key={key} />
+                                    )
+                                })}
                             </div>
-                            <div className="flex-1"></div>
-                            <div className="rounded-full h-20 border"></div>
+                            <form onSubmit={handleSubmit} className="flex flex-row gap-5 items-end">
+                                <div className="flex-1 rounded-full h-14 bg-gray-100 flex items-center px-5">
+                                    <input type="text" value={query} onChange={(e) => {setQuery(e.target.value)}} placeholder="Send message" style={{outline: 'none', width: '100%', background: 'transparent'}} />
+                                </div>
+                                <div className="flex flex-col items-center gap-2 pb-1">
+                                    <div className="text-bgblue text-xs border border-bgblue rounded-full h-5 w-10 flex items-center justify-center">5/20</div>
+                                    <button type="submit" className="bg-bgblue rounded-full h-12 w-12 flex items-center justify-center pr-1 pt-1">
+                                        <img alt="send" src="/src/assets/icons/send.png" style={{height: '25px'}} />
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     ) : (
                         <div className="h-full flex flex-col justify-between">

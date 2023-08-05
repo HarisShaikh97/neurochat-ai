@@ -1,9 +1,22 @@
-import { NavLink, useLocation } from "react-router-dom"
+import { Auth } from "aws-amplify"
+import { NavLink, useLocation, useNavigate } from "react-router-dom"
 import ModeSwitch from "../../modeswitch/ModeSwitch"
 
 function SideNav() {
 
-    let location = useLocation()
+    const location = useLocation()
+    const navigate = useNavigate()
+
+    const handleSignOut = async (e) => {
+        e.preventDefault()
+        try {
+            await Auth.signOut()
+            navigate('/login')
+        } 
+        catch (error) {
+            console.error('Error:', error)
+        }
+    }
 
     return (
         <aside className="min-h-screen w-36 py-8 flex flex-col items-center shadow-xl">
@@ -68,7 +81,7 @@ function SideNav() {
                     <div className="mt-3 text-sm text-gray-500">PaLM2</div>
                 </NavLink>
             )}
-            {location.pathname.includes('/synaptinote') ? (
+            {/* {location.pathname.includes('/synaptinote') ? (
                 <div className="flex flex-row items-center w-full bg-gray-100">
                     <div className="h-full w-1 rounded-r-full bg-bgblue" />
                     <div className="flex flex-col items-center py-3 w-full">
@@ -81,22 +94,8 @@ function SideNav() {
                     <img alt="synaptinote" src="/src/assets/icons/synaptinote.svg" style={{height: '40px', width: '40px'}} />
                     <div className="mt-3 text-sm text-gray-500">SynaptiNote</div>
                 </NavLink>
-            )}
-            {location.pathname.includes('/askmeanything') ? (
-                <div className="flex flex-row items-center w-full bg-gray-100">
-                    <div className="h-full w-1 rounded-r-full bg-bgblue" />
-                    <div className="flex flex-col items-center py-3 w-full">
-                        <img alt="askmeanything" src="/src/assets/icons/askmeanything.svg" style={{height: '40px', width: '40px'}} />
-                        <div className="mt-3 text-sm text-bgblue">AskMeAnything</div>
-                    </div>
-                </div>
-            ) : (
-                <NavLink to="/askmeanything" className="flex flex-col items-center py-3 w-full">
-                    <img alt="askmeanything" src="/src/assets/icons/askmeanything.svg" style={{height: '40px', width: '40px'}} />
-                    <div className="mt-3 text-sm text-gray-500">AskMeAnything</div>
-                </NavLink>
-            )}
-            {location.pathname.includes('/synaptipdf') ? (
+            )} */}
+            {/* {location.pathname.includes('/synaptipdf') ? (
                 <div className="flex flex-row items-center w-full bg-gray-100">
                     <div className="h-full w-1 rounded-r-full bg-bgblue" />
                     <div className="flex flex-col items-center py-3 w-full">
@@ -108,6 +107,20 @@ function SideNav() {
                 <NavLink to="/synaptipdf" className="flex flex-col items-center py-3 w-full">
                     <img alt="synaptipdf" src="/src/assets/icons/synaptipdf.svg" style={{height: '40px', width: '40px'}} />
                     <div className="mt-3 text-sm text-gray-500">SynaptiPDF</div>
+                </NavLink>
+            )} */}
+            {location.pathname.includes('/falcon') ? (
+                <div className="flex flex-row items-center w-full bg-gray-100">
+                    <div className="h-full w-1 rounded-r-full bg-bgblue" />
+                    <div className="flex flex-col items-center py-3 w-full">
+                        <img alt="falcon" src="/src/assets/icons/falcon.svg" style={{height: '40px', width: '40px'}} />
+                        <div className="mt-3 text-sm text-bgblue">Falcon40B</div>
+                    </div>
+                </div>
+            ) : (
+                <NavLink to="/falcon" className="flex flex-col items-center py-3 w-full">
+                    <img alt="falcon" src="/src/assets/icons/falcon.svg" style={{height: '40px', width: '40px'}} />
+                    <div className="mt-3 text-sm text-gray-500">Falcon40B</div>
                 </NavLink>
             )}
             {location.pathname.includes('/virtualcard') ? (
@@ -148,7 +161,7 @@ function SideNav() {
                     <div className="mt-3 text-sm text-gray-500">Settings</div>
                 </NavLink>
             )}
-            <button className="flex flex-col items-center py-3 w-full">
+            <button onClick={handleSignOut} className="flex flex-col items-center py-3 w-full">
                 <img alt="logout" src="/src/assets/icons/logout.svg" style={{height: '30px', width: '30px'}} />
                 <div className="mt-3 text-sm text-gray-500">Logout</div>
             </button>

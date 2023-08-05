@@ -1,9 +1,32 @@
+import { useState, useContext } from "react"
+import { MyContext } from "../../context/context"
+import { Auth } from "aws-amplify"
 import { useNavigate } from "react-router-dom"
 import ModeSwitch from "../../components/modeswitch/ModeSwitch"
 
 function ForgotPassword() {
 
+    const { dispatch } = useContext(MyContext)
+
     const navigate = useNavigate()
+
+    const [email, setEmail] = useState('')
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        try {
+            await Auth.forgotPassword(email)
+            console.log('OTP sent!')
+            dispatch({
+                type: "SET_USERNAME",
+                payload: email
+            })
+            navigate('/resetpasswordotp')
+        } 
+        catch (error) {
+            console.error('Error:', error)
+        }
+    }
 
     return (
         <>
@@ -26,10 +49,10 @@ function ForgotPassword() {
                     <div className="pt-5 font-light text-gray-500">Don{"'"}t worry! It happens. Please enter your email,</div>
                     <div className="font-light text-gray-500">we will send an OTP to this email.</div>
                     <div className="flex flex-col h-full w-full items-center justify-center">
-                        <div className="border rounded-full px-5 py-3 mt-10 w-1/3">
-                            <input type="text" placeholder="Email" style={{outline: 'none', width: '100%'}} />
+                        <div className="border rounded-full px-5 py-3 mt-10 w-[500px]">
+                            <input type="text" value={email} onChange={(e) => {setEmail(e.target.value)}} placeholder="Email" style={{outline: 'none', width: '100%'}} />
                         </div>
-                        <button onClick={() => {navigate('/verifyotp')}} className="text-white rounded-full bg-bgblue h-12 w-80 mt-10">Continue</button>
+                        <button onClick={handleSubmit} className="text-white rounded-full bg-bgblue h-12 w-80 mt-10">Continue</button>
                     </div>
                 </div>
             </div>
