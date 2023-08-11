@@ -337,16 +337,16 @@ function SideNav() {
                     <div className="mt-3 text-sm text-gray-500">Virtual Card</div>
                 </NavLink>
             )}
-            <div className="flex flex-col items-center py-3 w-full">
+            <a target="_blank" rel="noopener noreferrer" href="https://www.neurochat.ai/" className="flex flex-col items-center py-3 w-full">
                 <img alt="web" src="/src/assets/icons/web.svg" style={{height: '40px', width: '40px'}} />
                 <div className="mt-3 text-xs font-semibold text-gray-500">NeuroChat</div>
                 <div className="text-gray-500 text-xs text-center">Visit NeuroChat to download Mobile App</div>
-            </div>
-            <div className="flex flex-col items-center py-3 w-full">
+            </a>
+            <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/neurocareai" className="flex flex-col items-center py-3 w-full">
                 <img alt="twitter" src="/src/assets/icons/twitter.svg" style={{height: '40px', width: '40px'}} />
                 <div className="mt-3 text-xs text-gray-500">Follow us on Twitter</div>
                 <div className="text-gray-500 text-sm font-semibold">@neurocareai</div>
-            </div>
+            </a>
             {location.pathname.includes('/settings') && location.pathname !== '/settings/virtualcard' ? (
                 <div className="flex flex-row items-center w-full bg-gray-100">
                     <div className="h-full w-1 rounded-r-full bg-bgblue" />

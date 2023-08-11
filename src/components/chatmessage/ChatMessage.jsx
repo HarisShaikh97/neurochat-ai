@@ -1,8 +1,6 @@
-import React, { useState ,useRef, useEffect, useContext } from "react"
-import { API, graphqlOperation } from "aws-amplify"
+import React, { useState ,useRef, useContext } from "react"
 import PropTypes from "prop-types"
 import axios from "axios"
-import { getUserData } from "../../graphql/queries"
 import { MyContext } from "../../context/context"
 
 function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selectedChat, setSelectedChat, setShowTranslationPopup, setTranslatedText }) {
@@ -14,29 +12,9 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
     const { state } = useContext(MyContext)
 
     const [showLanguagePopup, setShowLanguagePopup] = useState(false)
-    const [currentUser, setCurrentUser] = useState(null)
 
     const divRef = useRef(null)
     const buttonRef = useRef()
-
-    useEffect(() => {
-
-        const fetchUserData = async () => {
-            
-            try {
-                const user = await API.graphql(graphqlOperation(getUserData, { id: state?.user_id }))
-                setCurrentUser(user?.data?.getUserData)
-                // console.log(state?.user_id, user)
-            } 
-            catch (error) {
-                console.error('Error fetching user data:', error)
-            }
-        }
-        if(state?.user_id?.length > 0){
-            fetchUserData()
-        }
-
-    }, [state])
 
     const handleCopyClick = async () => {
         try {
@@ -54,14 +32,14 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
             <div className="flex flex-row gap-5 justify-end">
                 <div className="flex flex-col pt-2 gap-3">
                     <div className="flex flex-row gap-3 items-center font-semibold">
-                        <div>{currentUser?.firstName?.length > 0 && currentUser?.lastName?.length > 0 ? `${currentUser?.firstName} ${currentUser?.lastName}` : currentUser?.email}</div>
+                        <div>{state?.user_info?.firstName?.length > 0 && state?.user_info?.lastName?.length > 0 ? `${state?.user_info?.firstName} ${state?.user_info?.lastName}` : state?.user_info?.email}</div>
                         <div className="text-xs text-gray-500">{thread?.date_time?.slice(14, 19)}</div>
                     </div>
                     <div className="text-sm font-light">{thread?.user_query}</div>
                 </div>
                 <div>
-                    {currentUser?.profilePicUrl?.length > 0 ? (
-                        <img alt="profile-picture" src={currentUser?.profilePicUrl} className="rounded-full" style={{height: '40px', width: '40px'}} />
+                    {state?.user_info?.profilePicUrl?.length > 0 ? (
+                        <img alt="profile-picture" src={state?.user_info?.profilePicUrl} className="rounded-full" style={{height: '40px', width: '40px'}} />
                     ) : (
                         <div className="rounded-full bg-gradient-to-br from-[#B4AF9D] to-[#737063]" style={{height: '40px', width: '40px'}} />
                     )}
@@ -83,7 +61,7 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
                     <div ref={divRef} className="text-sm font-light">
                         {thread?.system?.text?.split(pattern)?.map((str, key) => {
                             return (
-                                <React.Fragment key={key}><span className={key % 2 === 1 && 'text-bgblue text-xs align-top'}>{key % 2 === 1 ? str?.substring(1) : str}</span></React.Fragment>
+                                <React.Fragment key={key}><span className={key % 2 === 1 ? 'text-bgblue text-xs align-top' : ''}>{key % 2 === 1 ? str?.substring(1) : str}</span></React.Fragment>
                             )
                         })}
                     </div>
