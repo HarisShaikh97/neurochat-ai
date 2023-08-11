@@ -66,6 +66,9 @@ function VirtualCard() {
             <div className="h-full flex flex-row">
                 <SettingsMenu />
                 <div className="bg-gray-100" style={{height: '100%', width: '1px'}} />
+                <div className="flex-1 flex pt-60 justify-center">
+                    <div className="text-bgblue text-7xl font-semibold">Coming Soon!</div>
+                </div>
                 {/* <div className="my-10 px-10 flex-1 flex flex-row justify-between">
                     <div className="h-[650px] w-72 rounded-lg border border-bgblue flex flex-col relative">
                         <img alt="profile-picture" src="/src/assets/images/profile_picture.jpg" className="rounded-full absolute top-12 left-1/2 transform -translate-x-1/2" style={{height: '150px', width: '150px'}} />

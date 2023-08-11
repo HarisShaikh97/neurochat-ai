@@ -447,6 +447,10 @@ function SynaptiQuery() {
                                     <div className="bg-bgblue h-2 w-2 rounded-full mt-2" />
                                     <div className="flex-1">Ask follow-up questions based on your research</div>
                                 </div>
+                                <div className="flex flex-row gap-3">
+                                    <div className="bg-bgblue h-2 w-2 rounded-full mt-2" />
+                                    <div className="flex-1">Translate research to multiple languages: <span className="font-semibold">Urdu, Spanish, and Arabic</span></div>
+                                </div>
                             </div>
                         </div>
                     )}

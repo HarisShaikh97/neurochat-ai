@@ -13,11 +13,13 @@ import { countries } from "countries-list"
 
 function BasicInformation() {
 
+    const { state, dispatch } = useContext(MyContext)
+
     const [selectOrganizationName, setSelectOrganizationName] = useState(false)
     const [selectProfession, setSelectProfession] = useState(false)
     const [selectEmail, setSelectEmail] = useState(false)
     const [selectPhoneNumber, setSelectPhoneNumber] = useState(false)
-    const [selectedCode, setSelectedCode] = useState('')
+    const [selectedCode, setSelectedCode] = useState(state?.user_info?.phoneNumber?.split('-')[0]?.substring(1))
     const [isAuthenticated, setIsAuthenticated] = useState(true)
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
@@ -26,13 +28,13 @@ function BasicInformation() {
     const [email, setEmail] = useState('')
     const [phoneNumber, setPhoneNumber] = useState('')
     const [showSuccess, setShowSuccess] = useState(false)
+    const [error, setError] = useState(null)
+    const [showError, setShowError] = useState(false)
     const [showUpdateProfilePicture, setShowUpdateProfilePicture] = useState(false)
 
     const handleChange = (event) => {
         setSelectedCode(event.target.value)
     }
-
-    const { state, dispatch } = useContext(MyContext)
 
     const navigate = useNavigate()
 
@@ -86,6 +88,7 @@ function BasicInformation() {
             // console.log(updatedUserData)
             if(updatedUserData?.data?.updateUserData) {
                 setShowSuccess(true)
+                setShowError(false)
                 dispatch({
                     type: 'SET_USER_INFO',
                     payload: updatedUserData?.data?.updateUserData
@@ -95,6 +98,8 @@ function BasicInformation() {
                 },3000)
             }
         } catch (error) {
+            setError('Invalid Email!')
+            setShowError(true)
             console.error("Error:", error)
         }
     }
@@ -189,6 +194,7 @@ function BasicInformation() {
                             </div>
                         </div>
                         <div className="text-gray-500 pt-10 py-3">Use the check box on the information which you wanna share in <span className="font-semibold">Virtual Contact Card!</span></div>
+                        {showError && (<div className="text-red-500 pt-5">{error}</div>)}
                         <div className="flex flex-row justify-between mt-10">
                             <button onClick={() => {navigate('/settings')}} className="rounded-full border border-bgblue text-bgblue h-10 w-48">Cancel</button>
                             <button onClick={handleUpdateAttributes} className="rounded-full bg-bgblue text-white h-10 w-48">Save</button>
