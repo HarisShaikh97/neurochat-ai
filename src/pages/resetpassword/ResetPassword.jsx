@@ -24,7 +24,7 @@ function ResetPassword() {
         if(password === confirmPassword) {
             try {
                 await Auth.forgotPasswordSubmit(state?.username, state?.otp, password)
-                console.log('Password reset successful!')
+                // console.log('Password reset successful!')
                 navigate('/resetpasswordsuccessful')
             } 
             catch (error) {
@@ -39,7 +39,7 @@ function ResetPassword() {
         }
     }
 
-    console.log(state);
+    // console.log(state)
 
     return (
         <>

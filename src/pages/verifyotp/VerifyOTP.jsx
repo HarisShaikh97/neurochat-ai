@@ -29,7 +29,7 @@ function VerifyOTP() {
                 }
                 return prevTimer - 1
             })
-        };
+        }
 
         intervalRef.current = setInterval(decrementTimer, 1000)
 
@@ -72,7 +72,7 @@ function VerifyOTP() {
         }
     }
 
-      //console.log(state?.username);
+      //console.log(state?.username)
 
     return (
         <>

@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useContext } from "react"
 import { Auth, API, graphqlOperation } from "aws-amplify"
 import { NavLink, useLocation, useNavigate } from "react-router-dom"
 import { getUserData, getUserSubscription } from "../../../graphql/queries"
 import { createUserData, createUserSubscription, updateUserSubscription } from "../../../graphql/mutations"
+import { MyContext } from "../../../context/context"
 import ModeSwitch from "../../modeswitch/ModeSwitch"
 
 function SideNav() {
 
-    const [currentUser, setCurrentUser] = useState()
+    const { state, dispatch } = useContext(MyContext)
+
     const [currentSubscription, setCurrentSubscription] = useState()
     const [currentAuthenticatedUser, setCurrentAuthenticatedUser] = useState()
 
@@ -16,7 +18,7 @@ function SideNav() {
     
 
     useEffect(() => {
-        
+
         const addUser = async () => {
 
             // console.log(currentUser, currentAuthenticatedUser)
@@ -36,39 +38,42 @@ function SideNav() {
 
             try {
                 const newUser = await API.graphql(graphqlOperation(createUserData, {input: userData}))
-                console.log(newUser)
-                setCurrentUser(newUser?.data?.createUserData)
+                // console.log(newUser)
+                dispatch({
+                    type: 'SET_USER_INFO',
+                    payload: newUser?.data?.createUserData
+                })
             }
             catch (error) {
                 console.error('Error adding user:', error)
             }
         }
 
-        if(currentAuthenticatedUser && currentUser === null)
-        {
-            addUser()
-        }
-
-    }, [currentUser, currentAuthenticatedUser])
-
-    useEffect(() => {
-
         const fetchUserData = async () => {
             
             try {
                 const user = await API.graphql(graphqlOperation(getUserData, { id: currentAuthenticatedUser?.attributes?.sub }))
-                setCurrentUser(user?.data?.getUserData)
-                console.log(currentAuthenticatedUser?.attributes?.sub, user)
+                
+                // console.log(currentAuthenticatedUser?.attributes?.sub, user)
+                if(user?.data?.getUserData) {
+                    dispatch({
+                        type: 'SET_USER_INFO',
+                        payload: user?.data?.getUserData
+                    })
+                }
+                else {
+                    addUser()
+                }
             } 
             catch (error) {
                 console.error('Error fetching user data:', error)
             }
         }
-        if(currentAuthenticatedUser?.attributes?.sub){
+        if(currentAuthenticatedUser?.attributes?.sub && state?.user_info === null){
             fetchUserData()
         }
 
-    }, [currentAuthenticatedUser])
+    }, [currentAuthenticatedUser, dispatch, state])
 
     useEffect(() => {
 
@@ -77,7 +82,7 @@ function SideNav() {
             try {
                 const subscription = await API.graphql(graphqlOperation(getUserSubscription, { id: currentAuthenticatedUser?.attributes?.sub }))
                 setCurrentSubscription(subscription?.data?.getUserSubscription)
-                console.log(currentAuthenticatedUser?.attributes?.sub, subscription)
+                // console.log(currentAuthenticatedUser?.attributes?.sub, subscription)
             } 
             catch (error) {
                 console.error('Error fetching user data:', error)
@@ -110,7 +115,7 @@ function SideNav() {
     
             try {
                 const updatedUserSubscription = await API.graphql(graphqlOperation(updateUserSubscription, { input: subscriptionData}))
-                console.log('updatedUserSubscription')
+                // console.log('updatedUserSubscription')
                 setCurrentSubscription(updatedUserSubscription?.data?.updateUserSubscription)
             } catch (error) {
                 console.error("Error:", error)
@@ -136,7 +141,7 @@ function SideNav() {
     
             try {
                 const updatedUserSubscription = await API.graphql(graphqlOperation(updateUserSubscription, { input: subscriptionData}))
-                console.log('updatedUserSubscription')
+                // console.log('updatedUserSubscription')
                 setCurrentSubscription(updatedUserSubscription?.data?.updateUserSubscription)
             } catch (error) {
                 console.error("Error:", error)
@@ -148,7 +153,7 @@ function SideNav() {
             const targetDate = new Date(currentSubscription?.lastRenewalDate)
             const timeDifferenceMs = currentDate - targetDate
             const daysDifference = timeDifferenceMs / (1000 * 60 * 60 * 24)
-            console.log('Difference in days:', daysDifference)
+            // console.log('Difference in days:', daysDifference)
             if(currentSubscription?.package === 'BASIC' && daysDifference > 7) {
                 renewBasicSubscription()
             }
@@ -169,7 +174,7 @@ function SideNav() {
 
             // console.log(currentUser, currentAuthenticatedUser)
             const currentDate = new Date()
-            console.log(currentDate)
+            // console.log(currentDate)
 
             const subscriptionData = {
                 id: currentAuthenticatedUser?.attributes?.sub,
@@ -186,7 +191,7 @@ function SideNav() {
 
             try {
                 const newSubscription = await API.graphql(graphqlOperation(createUserSubscription, {input: subscriptionData}))
-                console.log(newSubscription)
+                // console.log(newSubscription)
                 setCurrentSubscription(newSubscription?.data?.createUserSubscription)
             }
             catch (error) {
@@ -209,7 +214,11 @@ function SideNav() {
             try {
                 const user = await Auth.currentAuthenticatedUser()
                 setCurrentAuthenticatedUser(user)
-                console.log(user)
+                // console.log(user)
+                dispatch({
+                    type: 'SET_USER_ID',
+                    payload: user?.attributes?.sub
+                })
             } 
             catch (error) {
                 console.error('Error:', error)
@@ -218,7 +227,7 @@ function SideNav() {
 
         checkUserSession()
 
-    }, [])
+    }, [dispatch])
 
     const handleSignOut = async (e) => {
         e.preventDefault()
@@ -231,18 +240,18 @@ function SideNav() {
         }
     }
 
-    console.log(currentSubscription)
+    // console.log(state?.user_info)
 
     return (
         <aside className="min-h-screen w-36 py-8 flex flex-col items-center shadow-xl">
             <div className="flex flex-col items-center">
-                {currentUser?.profilePicUrl ? (
-                    <img alt="profile-picture" src={currentUser?.profilePicUrl} className="rounded-full" style={{height: '50px', width: '50px'}} />
+                {state?.user_info?.profilePicUrl ? (
+                    <img alt="profile-picture" src={state?.user_info?.profilePicUrl} className="rounded-full" style={{height: '50px', width: '50px'}} />
                 ) : (
                     <div className="rounded-full bg-gradient-to-br from-[#B4AF9D] to-[#737063]" style={{height: '50px', width: '50px'}} />
                 )}
-                <div className="mt-3 text-sm font-semibold">{currentUser?.firstName}</div>
-                <div className="font-semibold text-sm">{currentUser?.lastName}</div>
+                <div className="mt-3 text-sm font-semibold">{state?.user_info?.firstName}</div>
+                <div className="font-semibold text-sm">{state?.user_info?.lastName}</div>
             </div>
             {location.pathname.includes('/synaptiquery') ? (
                 <div className="flex flex-row items-center w-full mt-10 bg-gray-100">

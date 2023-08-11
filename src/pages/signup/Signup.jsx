@@ -24,7 +24,7 @@ function Signup() {
         e.preventDefault()
         if(password === confirmPassword) {
             try {
-                const {user} = await Auth.signUp({
+                await Auth.signUp({
                     username: email,
                     password,
                     attributes: {
@@ -38,7 +38,6 @@ function Signup() {
                     type: "SET_USERNAME",
                     payload: email
                 })
-                console.log(user)
                 navigate('/verifyotp')
             } 
             catch (error) {
@@ -55,7 +54,7 @@ function Signup() {
     const handleGoogleLogin = async () => {
         try {
             await Auth.federatedSignIn({ provider: 'Google' })
-            console.log('Sign up successful!')
+            // console.log('Sign up successful!')
             navigate('/')
         } catch (error) {
             console.error('Error signing up with Google:', error)
@@ -65,34 +64,12 @@ function Signup() {
     const handleAppleLogin = async () => {
         try {
             await Auth.federatedSignIn({ provider: "SignInWithApple" })
-            console.log('Sign in successful!')
+            // console.log('Sign in successful!')
             navigate('/')
         } catch (error) {
             console.error('Error signing up with Apple:', error)
         }
     }
-
-    // const getBrowserName = () => {
-    //     const userAgent = navigator.userAgent
-        
-    //     if (/firefox/i.test(userAgent)) {
-    //         return 'Mozilla Firefox'
-    //     } else if (/chrome/i.test(userAgent)) {
-    //         return 'Google Chrome'
-    //     } else if (/safari/i.test(userAgent)) {
-    //         return 'Apple Safari'
-    //     } else if (/msie|trident/i.test(userAgent)) {
-    //         return 'Internet Explorer'
-    //     } else if (/edge/i.test(userAgent)) {
-    //         return 'Microsoft Edge'
-    //     } else {
-    //         return 'Unknown Browser'
-    //     }
-    // }
-    
-    // const browserName = getBrowserName()
-
-    // console.log(browserName);
 
     return (
         <>

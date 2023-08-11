@@ -23,6 +23,12 @@ export const reducer = (state, action) => {
             }
             return state
         }
+        case 'SET_USER_INFO': {
+            if (action?.payload) {
+                return { ...state, user_info: action?.payload }
+            }
+            return state
+        }
         case 'SET_OTP': {
             if (action?.payload) {
                 return { ...state, otp: action?.payload }
@@ -32,4 +38,4 @@ export const reducer = (state, action) => {
         default:
             return state
     }
-};
+}

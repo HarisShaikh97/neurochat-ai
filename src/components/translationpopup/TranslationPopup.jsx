@@ -9,7 +9,7 @@ function TranslationPopup({setShowTranslationPopup, translatedText, setTranslate
     const handleCopyClick = async () => {
         try {
             await navigator.clipboard.writeText(translatedText)
-            console.log('Text copied to clipboard:', translatedText)
+            // console.log('Text copied to clipboard:', translatedText)
         } catch (error) {
             console.error('Error copying text:', error)
         }

@@ -21,7 +21,7 @@ function UnStarredChatItem({chat, refreshAllChats, refreshChat, setSelectedChat,
         }
 
         await axios.put(`${apiBaseUrl}/chat/title/${chat?.chat_id}`, formData).then((res) => {
-            console.log(res)
+            // console.log(res)
             if(res?.status === 200) {
                 refreshChat()
                 refreshAllChats()
@@ -39,7 +39,7 @@ function UnStarredChatItem({chat, refreshAllChats, refreshChat, setSelectedChat,
         }
 
         await axios.delete(`${apiBaseUrl}/chat/${chat?.chat_id}`).then((res) => {
-            console.log(res)
+            // console.log(res)
             if(res?.status === 200) {
                 refreshAllChats()
             }
@@ -53,7 +53,7 @@ function UnStarredChatItem({chat, refreshAllChats, refreshChat, setSelectedChat,
             <div className="flex flex-row items-center gap-5">
                 <button onClick={async () => {
                     await axios.put(`${apiBaseUrl}/chat/starred/${chat?.chat_id}`).then((res) => {
-                        console.log(res)
+                        // console.log(res)
                         if(res?.status === 200) {
                             refreshChat()
                             refreshAllChats()
@@ -70,13 +70,13 @@ function UnStarredChatItem({chat, refreshAllChats, refreshChat, setSelectedChat,
                     <button 
                         onClick={() => {
                             axios.get(`${apiBaseUrl}/chat/${chat?.chat_id}`).then((res) => {
-                                console.log(res)
+                                // console.log(res)
                                 setSelectedChat(res?.data)
                             }).catch((error) => {
                                 console.error('Error:', error)
                             })
                         }} 
-                        className="w-52 truncate text-left"
+                        className="w-52 truncate text-left h-5"
                     >
                         {chat?.chat_title}
                     </button>

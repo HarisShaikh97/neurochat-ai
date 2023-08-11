@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom"
 import { Auth, API, graphqlOperation } from "aws-amplify"
 import { Checkbox } from "@mui/material"
 import { CameraIcon } from "@heroicons/react/24/solid"
-import { getUserData } from "../../graphql/queries"
 import { updateUserData } from "../../graphql/mutations"
 import { MyContext } from "../../context/context"
 import Layout from "../../components/layout/Layout"
@@ -14,7 +13,6 @@ import { countries } from "countries-list"
 
 function BasicInformation() {
 
-    const [currentUser, setCurrentUser] = useState(null)
     const [selectOrganizationName, setSelectOrganizationName] = useState(false)
     const [selectProfession, setSelectProfession] = useState(false)
     const [selectEmail, setSelectEmail] = useState(false)
@@ -37,26 +35,6 @@ function BasicInformation() {
     const { state, dispatch } = useContext(MyContext)
 
     const navigate = useNavigate()
-
-    useEffect(() => {
-
-        const fetchUserData = async () => {
-            
-            try {
-                const user = await API.graphql(graphqlOperation(getUserData, { id: state?.user_id }))
-                setCurrentUser(user?.data?.getUserData)
-                setSelectedCode(user?.data?.getUserData?.phoneNumber?.split('+')[1]?.split('-')[0])
-                console.log(state?.user_id, user)
-            } 
-            catch (error) {
-                console.error('Error fetching user data:', error)
-            }
-        }
-        if(state?.user_id?.length > 0 && !currentUser) {
-            fetchUserData()
-        }
-
-    }, [state, currentUser])
 
     useEffect(() => {
 
@@ -89,26 +67,29 @@ function BasicInformation() {
         e.preventDefault()
 
         let info = {
-            id: currentUser?.id,
-            firstName: firstName?.length === 0 && currentUser?.firstName ? currentUser?.firstName : firstName,
-            lastName: lastName?.length === 0 && currentUser?.lastName ? currentUser?.lastName : lastName,
-            organization: organizationName?.length === 0 && currentUser?.organization ? currentUser?.organization : organizationName,
-            profession: profession?.length === 0 && currentUser?.profession ? currentUser?.profession : profession,
-            email: currentUser?.email,
-            secondaryEmail: email?.length === 0 ? currentUser?.secondaryEmail : email,
-            profilePicUrl: currentUser?.profilePicUrl,
-            phoneNumber: phoneNumber?.length === 0 ? (currentUser?.phoneNumber ? currentUser?.phoneNumber : '') : (`+${selectedCode}-${phoneNumber}`),
-            userId: currentUser?.userId
+            id: state?.user_info?.id,
+            firstName: firstName?.length === 0 && state?.user_info?.firstName ? state?.user_info?.firstName : firstName,
+            lastName: lastName?.length === 0 && state?.user_info?.lastName ? state?.user_info?.lastName : lastName,
+            organization: organizationName?.length === 0 && state?.user_info?.organization ? state?.user_info?.organization : organizationName,
+            profession: profession?.length === 0 && state?.user_info?.profession ? state?.user_info?.profession : profession,
+            email: state?.user_info?.email,
+            secondaryEmail: email?.length === 0 ? state?.user_info?.secondaryEmail : email,
+            profilePicUrl: state?.user_info?.profilePicUrl,
+            phoneNumber: phoneNumber?.length === 0 ? (state?.user_info?.phoneNumber ? state?.user_info?.phoneNumber : '') : (`+${selectedCode}-${phoneNumber}`),
+            userId: state?.user_info?.userId
         }
     
-        console.log(info)
+        // console.log(info)
 
         try {
             const updatedUserData = await API.graphql(graphqlOperation(updateUserData, { input: info}))
-            console.log(updatedUserData)
+            // console.log(updatedUserData)
             if(updatedUserData?.data?.updateUserData) {
                 setShowSuccess(true)
-                setCurrentUser(updatedUserData?.data?.updateUserData)
+                dispatch({
+                    type: 'SET_USER_INFO',
+                    payload: updatedUserData?.data?.updateUserData
+                })
                 setTimeout(() => {
                     setShowSuccess(false)
                 },3000)
@@ -132,10 +113,10 @@ function BasicInformation() {
                 <div className="bg-gray-100" style={{height: '100%', width: '1px'}} />
                 <div className="py-10 px-10 flex-1 flex flex-col items-center relative">
                     {showSuccess && <UpdateProfileSuccess />}
-                    {showUpdateProfilePicture && <UpdateProfilePicture setShowUpdateProfilePicture={setShowUpdateProfilePicture} currentUser={currentUser} setCurrentUser={setCurrentUser} />}
+                    {showUpdateProfilePicture && <UpdateProfilePicture setShowUpdateProfilePicture={setShowUpdateProfilePicture} />}
                     <div className="relative rounded-full" style={{height: '150px', width: '150px'}}>
-                        {currentUser?.profilePicUrl?.length > 0 ? (
-                            <img alt="profile-picture" src={currentUser?.profilePicUrl} className="rounded-full" style={{height: '150px', width: '150px'}} />
+                        {state?.user_info?.profilePicUrl?.length > 0 ? (
+                            <img alt="profile-picture" src={state?.user_info?.profilePicUrl} className="rounded-full" style={{height: '150px', width: '150px'}} />
                         ) : (
                             <div className="rounded-full bg-gradient-to-br from-[#B4AF9D] to-[#737063]" style={{height: '150px', width: '150px'}} />
                         )}
@@ -148,13 +129,13 @@ function BasicInformation() {
                             <div className="flex flex-col gap-2">
                                 <div className="pl-2">First Name</div>
                                 <div className="rounded-full w-80 py-2 px-5 border border-gray-300 bg-gray-100">
-                                    <input type="text" value={firstName} onChange={(e) => {setFirstName(e.target.value)}} placeholder={currentUser?.firstName} style={{outline: 'none', width: '100%', background: 'transparent'}} />
+                                    <input type="text" value={firstName} onChange={(e) => {setFirstName(e.target.value)}} placeholder={state?.user_info?.firstName} style={{outline: 'none', width: '100%', background: 'transparent'}} />
                                 </div>
                             </div>
                             <div className="flex flex-col gap-2">
                                 <div className="pl-2">Last Name</div>
                                 <div className="rounded-full w-80 py-2 px-5 border border-gray-300 bg-gray-100">
-                                    <input type="text" value={lastName} onChange={(e) => {setLastName(e.target.value)}} placeholder={currentUser?.lastName} style={{outline: 'none', width: '100%', background: 'transparent'}} />
+                                    <input type="text" value={lastName} onChange={(e) => {setLastName(e.target.value)}} placeholder={state?.user_info?.lastName} style={{outline: 'none', width: '100%', background: 'transparent'}} />
                                 </div>
                             </div>
                         </div>
@@ -165,7 +146,7 @@ function BasicInformation() {
                                     <Checkbox checked={selectOrganizationName} onChange={() => {setSelectOrganizationName(!selectOrganizationName)}} />
                                 </div>
                                 <div className="rounded-full w-80 py-2 px-5 border border-gray-300 bg-gray-100">
-                                    <input type="text" value={organizationName} onChange={(e) => {setOrganizationName(e.target.value)}} placeholder={currentUser?.organization} style={{outline: 'none', width: '100%', background: 'transparent'}} />
+                                    <input type="text" value={organizationName} onChange={(e) => {setOrganizationName(e.target.value)}} placeholder={state?.user_info?.organization} style={{outline: 'none', width: '100%', background: 'transparent'}} />
                                 </div>
                             </div>
                             <div className="flex flex-col">
@@ -174,7 +155,7 @@ function BasicInformation() {
                                     <Checkbox checked={selectProfession} onChange={() => {setSelectProfession(!selectProfession)}} />
                                 </div>
                                 <div className="rounded-full w-80 py-2 px-5 border border-gray-300 bg-gray-100">
-                                    <input type="text" value={profession} onChange={(e) => {setProfession(e.target.value)}} placeholder={currentUser?.profession} style={{outline: 'none', width: '100%', background: 'transparent'}} />
+                                    <input type="text" value={profession} onChange={(e) => {setProfession(e.target.value)}} placeholder={state?.user_info?.profession} style={{outline: 'none', width: '100%', background: 'transparent'}} />
                                 </div>
                             </div>
                         </div>
@@ -185,7 +166,7 @@ function BasicInformation() {
                                     <Checkbox checked={selectEmail} onChange={() => {setSelectEmail(!selectEmail)}} />
                                 </div>
                                 <div className="rounded-full w-80 py-2 px-5 border border-gray-300 bg-gray-100">
-                                    <input type="text" value={email} onChange={(e) => {setEmail(e.target.value)}} placeholder={currentUser?.secondaryEmail} style={{outline: 'none', width: '100%', background: 'transparent'}} />
+                                    <input type="text" value={email} onChange={(e) => {setEmail(e.target.value)}} placeholder={state?.user_info?.secondaryEmail} style={{outline: 'none', width: '100%', background: 'transparent'}} />
                                 </div>
                             </div>
                             <div className="flex flex-col">
@@ -203,7 +184,7 @@ function BasicInformation() {
                                             )
                                         })}
                                     </select>
-                                    <input type="text" value={phoneNumber} onChange={(e) => {setPhoneNumber(e.target.value)}} placeholder={currentUser?.phoneNumber?.split('-')[1]} style={{outline: 'none', width: '100%', background: 'transparent'}} />
+                                    <input type="text" value={phoneNumber} onChange={(e) => {setPhoneNumber(e.target.value)}} placeholder={state?.user_info?.phoneNumber?.split('-')[1]} style={{outline: 'none', width: '100%', background: 'transparent'}} />
                                 </div>
                             </div>
                         </div>

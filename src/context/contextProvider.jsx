@@ -9,6 +9,7 @@ export function MyContextProvider({ children }) {
         mode: 'light',
         username: '',
         user_id: '',
+        user_info: null,
         otp: ''
     })
 

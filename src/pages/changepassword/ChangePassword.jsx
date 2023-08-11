@@ -60,7 +60,7 @@ function ChangePassword() {
         if(newPassword === confirmNewPassword){
             try {
                 await Auth.changePassword(currentUser, oldPassword, newPassword)
-                console.log('Password changed successfully.')
+                // console.log('Password changed successfully.')
                 setShowError(false)
                 setShowSuccess(true)
                 setTimeout(() => {
@@ -78,7 +78,7 @@ function ChangePassword() {
         }
     }
 
-    console.log(currentUser)
+    // console.log(currentUser)
 
     return (
         <Layout>

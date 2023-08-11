@@ -17,7 +17,7 @@ function WaitingMessage({ query, modelType }) {
             try {
                 const user = await API.graphql(graphqlOperation(getUserData, { id: state?.user_id }))
                 setCurrentUser(user?.data?.getUserData)
-                console.log(state?.user_id, user)
+                // console.log(state?.user_id, user)
             } 
             catch (error) {
                 console.error('Error fetching user data:', error)

@@ -1,5 +1,8 @@
-import { useState } from "react"
+import { useState, useEffect, useContext } from "react"
+import { API, graphqlOperation } from "aws-amplify"
 import { CheckCircleIcon } from "@heroicons/react/24/solid"
+import { getUserSubscription } from "../../graphql/queries"
+import { MyContext } from "../../context/context"
 import Layout from "../../components/layout/Layout"
 import SettingsMenu from "../../components/settingsmenu/SettingsMenu"
 import SubscribedPopup from "../../components/subscribedpopup/SubscribedPopup"
@@ -7,9 +10,31 @@ import CancelSubscriptionPopup from "../../components/cancelsubscriptionpopup/Ca
 
 function PricingPlan() {
 
+    const { state } = useContext(MyContext)
+
     const [showSubscribed, setShowSubscribed] = useState(false)
     const [showCancel, setShowCancel] = useState(false)
     const [subscribed, setSubscribed] = useState(false)
+    const [currentSubscription, setCurrentSubscription] = useState()
+
+    useEffect(() => {
+
+        const fetchUserSubscription = async () => {
+            
+            try {
+                const subscription = await API.graphql(graphqlOperation(getUserSubscription, { id: state?.user_id }))
+                setCurrentSubscription(subscription?.data?.getUserSubscription)
+                // console.log(state?.user_id, subscription)
+            } 
+            catch (error) {
+                console.error('Error fetching user data:', error)
+            }
+        }
+        if(state?.user_id?.length > 0){
+            fetchUserSubscription()
+        }
+
+    }, [state])
 
     function handleSubscribe() {
         setSubscribed(true)
@@ -28,6 +53,8 @@ function PricingPlan() {
         setSubscribed(false)
         setShowCancel(false)
     }
+
+    // console.log( currentSubscription, state?.user_id)
 
     return (
         <Layout>
@@ -61,7 +88,7 @@ function PricingPlan() {
                                     <div className="flex flex-col gap-2">
                                         <div className="flex flex-row gap-3 items-center">
                                             <CheckCircleIcon className="h-8 w-8 text-bgblue" />
-                                            <div>20 messages per week</div>
+                                            <div>25 messages per week</div>
                                         </div>
                                         <div className="flex flex-row gap-3 items-center">
                                             <CheckCircleIcon className="h-8 w-8 text-bgblue" />
@@ -81,7 +108,7 @@ function PricingPlan() {
                                         </div>
                                     </div>
                                     <div className="text-2xl"><span className="font-semibold">Free</span>/week</div>
-                                    <div className="text-lg font-semibold text-bgblue">Messages left: 4/20 for this week</div>
+                                    <div className="text-lg font-semibold text-bgblue">Messages left: {currentSubscription?.chatGptRemaining + currentSubscription?.claudeRemaining + currentSubscription?.falconRemaining + currentSubscription?.palmRemaining + currentSubscription?.synaptiQueryRemaining}/25 for this week</div>
                                 </div>
                             </div>
                             <div className="mt-56 h-12 w-full rounded-3xl bg-bgblue bg-opacity-50 text-white flex gap-5 items-center justify-center">

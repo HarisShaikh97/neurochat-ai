@@ -79,7 +79,7 @@ function SynaptiQuery() {
 
         try {
             const updatedUserSubscription = await API.graphql(graphqlOperation(updateUserSubscription, { input: subscriptionData}))
-            console.log(updatedUserSubscription)
+            // console.log(updatedUserSubscription)
             setCurrentSubscription(updatedUserSubscription?.data?.updateUserSubscription)
         } catch (error) {
             console.error("Error:", error)
@@ -89,9 +89,9 @@ function SynaptiQuery() {
     useEffect(() => {
         if(state?.user_id?.length > 0) {
             axios.get(`${apiBaseUrl}/chat/history/${state?.user_id}?model_type=1`).then((res) => {
-                console.log(res)
+                // console.log(res)
                 if(res?.data?.message || res?.data?.status_code === 404) {
-                    console.log(res?.data)
+                    // console.log(res?.data)
                     setChats([])
                 }
                 else {
@@ -136,7 +136,7 @@ function SynaptiQuery() {
     const refreshChat = async () => {
         if(selectedChat){
             await axios.get(`${apiBaseUrl}/chat/${selectedChat?.chat_id}`).then((res) => {
-                console.log(res)
+                // console.log(res)
                 setSelectedChat(res?.data)
                 setShowWaitingMessage(false)
             }).catch((error) => {
@@ -148,9 +148,9 @@ function SynaptiQuery() {
     const refreshAllChats = async () => {
         if(state?.user_id?.length > 0) {
             await axios.get(`${apiBaseUrl}/chat/history/${state?.user_id}?model_type=1`).then((res) => {
-                console.log(res)
+                // console.log(res)
                 if(res?.data?.message || res?.data?.status_code === 404) {
-                    console.log(res?.data)
+                    // console.log(res?.data)
                     setChats([])
                 }
                 else {
@@ -178,14 +178,14 @@ function SynaptiQuery() {
         }
 
         await axios.post(`${apiBaseUrl}/chat`, formData).then((res) => {
-            console.log(res)
+            // console.log(res)
             if(res?.status === 200){
                 if(selectedChat) {
                     refreshChat()
                 }
                 else {
                     axios.get(`${apiBaseUrl}/chat/${res?.data?.chat_id}`).then((response) => {
-                        console.log(response)
+                        // console.log(response)
                         setShowWaitingMessage(false)
                         setSelectedChat(response?.data)
                     }).catch((error) => {
@@ -218,14 +218,14 @@ function SynaptiQuery() {
         }
 
         await axios.post(`${apiBaseUrl}/chat`, formData).then((res) => {
-            console.log(res)
+            // console.log(res)
             if(res?.status === 200){
                 if(selectedChat) {
                     refreshChat()
                 }
                 else {
                     axios.get(`${apiBaseUrl}/chat/${res?.data?.chat_id}`).then((response) => {
-                        console.log(response)
+                        // console.log(response)
                         setShowWaitingMessage(false)
                         setSelectedChat(response?.data)
                     }).catch((error) => {
@@ -254,7 +254,7 @@ function SynaptiQuery() {
         }
 
         await axios.put(`${apiBaseUrl}/chat/title/${selectedChat?.chat_id}`, formData).then((res) => {
-            console.log(res)
+            // console.log(res)
             if(res?.status === 200) {
                 refreshChat()
                 refreshAllChats()
@@ -292,7 +292,7 @@ function SynaptiQuery() {
                                             {selectedChat?.is_starred ? (
                                                 <button onClick={async () => {
                                                     await axios.put(`${apiBaseUrl}/chat/starred/${selectedChat?.chat_id}`).then((res) => {
-                                                        console.log(res)
+                                                        // console.log(res)
                                                         if(res?.status === 200) {
                                                             refreshChat()
                                                             refreshAllChats()
@@ -306,7 +306,7 @@ function SynaptiQuery() {
                                             ) : (
                                                 <button onClick={async () => {
                                                     await axios.put(`${apiBaseUrl}/chat/starred/${selectedChat?.chat_id}`).then((res) => {
-                                                        console.log(res)
+                                                        // console.log(res)
                                                         if(res?.status === 200) {
                                                             refreshChat()
                                                             refreshAllChats()
@@ -333,7 +333,7 @@ function SynaptiQuery() {
                                             {selectedChat?.is_starred ? (
                                                 <button onClick={async () => {
                                                     await axios.put(`${apiBaseUrl}/chat/starred/${selectedChat?.chat_id}`).then((res) => {
-                                                        console.log(res)
+                                                        // console.log(res)
                                                         if(res?.status === 200) {
                                                             refreshChat()
                                                             refreshAllChats()
@@ -347,7 +347,7 @@ function SynaptiQuery() {
                                             ) : (
                                                 <button onClick={async () => {
                                                     await axios.put(`${apiBaseUrl}/chat/starred/${selectedChat?.chat_id}`).then((res) => {
-                                                        console.log(res)
+                                                        // console.log(res)
                                                         if(res?.status === 200) {
                                                             refreshChat()
                                                             refreshAllChats()

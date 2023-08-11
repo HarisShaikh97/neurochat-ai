@@ -1,11 +1,14 @@
-import { useState } from "react"
+import { useState, useContext } from "react"
 import PropTypes from "prop-types"
 import { API, graphqlOperation, Storage } from "aws-amplify"
 import { updateUserData } from "../../graphql/mutations"
+import { MyContext } from "../../context/context"
 
-function UpdateProfilePicture({setShowUpdateProfilePicture, currentUser, setCurrentUser}) {
+function UpdateProfilePicture({setShowUpdateProfilePicture}) {
 
     const awsBucket = import.meta.env.VITE_AMAZON_BUCKET_NAME
+
+    const { state, dispatch } = useContext(MyContext)
 
     const [selectedFile, setSelectedFile] = useState(null)
     const [dragOver, setDragOver] = useState(false)
@@ -42,25 +45,28 @@ function UpdateProfilePicture({setShowUpdateProfilePicture, currentUser, setCurr
                 const imgUrl = `https://${awsBucket}.s3.amazonaws.com/public/${response?.key}`
 
                 let info = {
-                    id: currentUser?.id,
-                    firstName: currentUser?.firstName,
-                    lastName: currentUser?.lastName,
-                    organization: currentUser?.organization,
-                    profession: currentUser?.profession,
-                    email: currentUser?.email,
-                    secondaryEmail: currentUser?.secondaryEmail,
+                    id: state?.user_info?.id,
+                    firstName: state?.user_info?.firstName,
+                    lastName: state?.user_info?.lastName,
+                    organization: state?.user_info?.organization,
+                    profession: state?.user_info?.profession,
+                    email: state?.user_info?.email,
+                    secondaryEmail: state?.user_info?.secondaryEmail,
                     profilePicUrl: imgUrl,
-                    phoneNumber: currentUser?.phoneNumber,
-                    userId: currentUser?.userId
+                    phoneNumber: state?.user_info?.phoneNumber,
+                    userId: state?.user_info?.userId
                 }
                 
                 const updatedUserData = await API.graphql(graphqlOperation(updateUserData, { input: info}))
 
                 if(updatedUserData?.data?.updateUserData) {
-                    setCurrentUser(updatedUserData?.data?.updateUserData)
+                    dispatch({
+                        type: 'SET_USER_INFO',
+                        payload: updatedUserData?.data?.updateUserData
+                    })
                 }
                 setShowUpdateProfilePicture(false)
-                console.log(updatedUserData, imgUrl)
+                // console.log(updatedUserData, imgUrl)
             } 
             catch (error) {
                 console.error('Error:', error)
@@ -68,7 +74,7 @@ function UpdateProfilePicture({setShowUpdateProfilePicture, currentUser, setCurr
         }
     }
 
-    console.log(selectedFile, dragOver)
+    console.log(dragOver)
 
     return (
         <div className="absolute top-1/2 left-1/2 h-full w-full transform -translate-x-1/2 -translate-y-1/2 backdrop-brightness-50 backdrop-blur flex justify-center pt-[20vh] z-50">
@@ -97,8 +103,6 @@ function UpdateProfilePicture({setShowUpdateProfilePicture, currentUser, setCurr
 export default UpdateProfilePicture
 
 UpdateProfilePicture.propTypes = {
-    setShowUpdateProfilePicture: PropTypes.func.isRequired,
-    currentUser: PropTypes.object.isRequired,
-    setCurrentUser: PropTypes.func.isRequired
+    setShowUpdateProfilePicture: PropTypes.func.isRequired
 }
 

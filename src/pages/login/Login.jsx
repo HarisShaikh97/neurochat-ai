@@ -31,7 +31,7 @@ function Login() {
     const handleGoogleLogin = async () => {
         try {
             await Auth.federatedSignIn({ provider: 'Google' })
-            console.log('Sign in successful!')
+            // console.log('Sign in successful!')
             navigate('/')
         } catch (error) {
             console.error('Error signing up with Google:', error)
@@ -41,7 +41,7 @@ function Login() {
     const handleAppleLogin = async () => {
         try {
             await Auth.federatedSignIn({ provider: "SignInWithApple" })
-            console.log('Sign in successful!')
+            // console.log('Sign in successful!')
             navigate('/')
         } catch (error) {
             console.error('Error signing up with Apple:', error)

@@ -11,12 +11,6 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
 
     const pattern = /(_\[\d+\])/
 
-    const inputString = "To assist with medical research, I can help with questions related to building and assessing the quality of healthcare-related research questions _[1], the definition and types of research in medicine _[2], and guidelines for formulating research questions in clinical practice _[3]. Specifically, I can provide information on the stages involved in building and assessing research questions, including selecting and exploring a field of science, writing structured research questions, and assessing the quality and feasibility of the research questions against a set of criteria _[1]. Additionally, I can provide information on the importance of formulating precise research questions in patient-oriented research and the components of a research question, including the main occurrence relation, determinant(s), outcome, and domain _[2]. Finally, I can provide guidelines for the proper formulation of clinical practice research questions for healthcare personnel in training, including general practitioners and specialists _[3]."
-
-    const substrings = inputString.split(pattern)
-
-    console.log(substrings);
-
     const { state } = useContext(MyContext)
 
     const [showLanguagePopup, setShowLanguagePopup] = useState(false)
@@ -32,7 +26,7 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
             try {
                 const user = await API.graphql(graphqlOperation(getUserData, { id: state?.user_id }))
                 setCurrentUser(user?.data?.getUserData)
-                console.log(state?.user_id, user)
+                // console.log(state?.user_id, user)
             } 
             catch (error) {
                 console.error('Error fetching user data:', error)
@@ -47,13 +41,13 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
     const handleCopyClick = async () => {
         try {
             await navigator.clipboard.writeText(thread?.system?.text)
-            console.log('Text copied to clipboard:', thread?.system?.text)
+            // console.log('Text copied to clipboard:', thread?.system?.text)
         } catch (error) {
             console.error('Error copying text:', error)
         }
     }
 
-    console.log(currentUser)
+    //console.log(currentUser)
 
     return (
         <div className="flex flex-col gap-10">
@@ -128,7 +122,7 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
                                                 }
                                         
                                                 await axios.post(`${apiBaseUrl}/chat/translate`, formData).then((res) => {
-                                                    console.log(res)
+                                                    // console.log(res)
                                                     if(res?.status === 200){
                                                         setTranslatedText(res?.data?.translated_text)
                                                         setShowTranslationPopup(true)
@@ -152,7 +146,7 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
                                                 }
                                         
                                                 await axios.post(`${apiBaseUrl}/chat/translate`, formData).then((res) => {
-                                                    console.log(res)
+                                                    // console.log(res)
                                                     if(res?.status === 200){
                                                         setTranslatedText(res?.data?.translated_text)
                                                         setShowTranslationPopup(true)
@@ -176,7 +170,7 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
                                                 }
                                         
                                                 await axios.post(`${apiBaseUrl}/chat/translate`, formData).then((res) => {
-                                                    console.log(res)
+                                                    // console.log(res)
                                                     if(res?.status === 200){
                                                         setTranslatedText(res?.data?.translated_text)
                                                         setShowTranslationPopup(true)
@@ -200,7 +194,7 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
                                 className="rounded-full h-7 w-12 flex items-center justify-center bg-bgblue"
                                 onClick={async () => {
                                     await axios.put(`${apiBaseUrl}/message/feedback/${selectedChat?.chat_id}/${thread?.thread_id}?feedback_status=3`).then((res) => {
-                                        console.log(res)
+                                        // console.log(res)
                                         if(res?.status === 200) {
                                             refreshAllChats()
                                             refreshChat()
@@ -217,7 +211,7 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
                                 className="rounded-full h-7 w-12 flex items-center justify-center border border-bgblue"
                                 onClick={async () => {
                                     await axios.put(`${apiBaseUrl}/message/feedback/${selectedChat?.chat_id}/${thread?.thread_id}?feedback_status=0`).then((res) => {
-                                        console.log(res)
+                                        // console.log(res)
                                         if(res?.status === 200) {
                                             refreshAllChats()
                                             refreshChat()
@@ -235,7 +229,7 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
                                 className="rounded-full h-7 w-12 flex items-center justify-center bg-bgblue"
                                 onClick={async () => {
                                     await axios.put(`${apiBaseUrl}/message/feedback/${selectedChat?.chat_id}/${thread?.thread_id}?feedback_status=3`).then((res) => {
-                                        console.log(res)
+                                        // console.log(res)
                                         if(res?.status === 200) {
                                             refreshAllChats()
                                             refreshChat()
@@ -252,7 +246,7 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
                                 className="rounded-full h-7 w-12 flex items-center justify-center border border-bgblue"
                                 onClick={async () => {
                                     await axios.put(`${apiBaseUrl}/message/feedback/${selectedChat?.chat_id}/${thread?.thread_id}?feedback_status=1`).then((res) => {
-                                        console.log(res)
+                                        // console.log(res)
                                         if(res?.status === 200) {
                                             refreshAllChats()
                                             refreshChat()
@@ -274,12 +268,12 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
                                 }
 
                                 await axios.delete(`${apiBaseUrl}/message/${selectedChat?.chat_id}/${thread?.thread_id}`).then((res) => {
-                                    console.log(res)
+                                    // console.log(res)
                                     if(res?.status === 200) {
                                         refreshAllChats()
-                                        console.log('refresh')
+                                        // console.log('refresh')
                                         if(selectedChat?.chat?.length > 1){
-                                            console.log('hit')
+                                            // console.log('hit')
                                             refreshChat()
                                         }
                                     }

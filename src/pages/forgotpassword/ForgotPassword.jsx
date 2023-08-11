@@ -16,7 +16,7 @@ function ForgotPassword() {
         e.preventDefault()
         try {
             await Auth.forgotPassword(email)
-            console.log('OTP sent!')
+            // console.log('OTP sent!')
             dispatch({
                 type: "SET_USERNAME",
                 payload: email

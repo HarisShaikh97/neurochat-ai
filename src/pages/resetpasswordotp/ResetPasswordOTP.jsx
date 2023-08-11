@@ -25,8 +25,8 @@ function ResetPasswordOTP() {
                     return 0
                 }
                 return prevTimer - 1
-            });
-        };
+            })
+        }
 
         intervalRef.current = setInterval(decrementTimer, 1000)
 
@@ -70,7 +70,7 @@ function ResetPasswordOTP() {
         }
     }
 
-      //console.log(state?.username);
+      //console.log(state?.username)
 
     return (
         <>
