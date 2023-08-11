@@ -1,41 +1,9 @@
 import { useState } from "react"
-import PropTypes from 'prop-types'
 import { CheckCircleIcon } from "@heroicons/react/24/solid"
 import Layout from "../../components/layout/Layout"
 import SettingsMenu from "../../components/settingsmenu/SettingsMenu"
-
-function SubscribedPopup() {
-
-    return (
-        <div className="absolute top-1/2 left-1/2 h-full w-full transform -translate-x-1/2 -translate-y-1/2 backdrop-brightness-50 backdrop-blur flex justify-center pt-[35vh]">
-            <div className="w-64 h-44 bg-bglightblue rounded-xl shadow-xl flex flex-col gap-3 items-center justify-center">
-                <img alt="congratulations" src="/src/assets/icons/congratulations.png" style={{height: '35px'}} />
-                <div className="text-bgblue text-sm font-medium">Congratulations!</div>
-                <div className="text-xs text-center px-10">You have been successfully subscribed the Premium Plan</div>
-            </div>
-        </div>
-    )
-}
-
-function CancelPopup({handleCancel, handleConfirm}) {
-
-    return (
-        <div className="absolute top-1/2 left-1/2 h-full w-full transform -translate-x-1/2 -translate-y-1/2 backdrop-brightness-50 backdrop-blur flex justify-center pt-[35vh]">
-            <div className="w-72 h-44 bg-bglightblue rounded-xl shadow-xl flex flex-col gap-10 items-center justify-center">
-                <div className="text-bgblue text-sm font-medium text-center px-12">Are you sure you want to cancel the subscription?</div>
-                <div className="flex flex-row gap-5 justify-between">
-                    <button onClick={handleCancel} className="rounded-full bg-white border border-gray-300 text-sm h-8 w-20" >Cancel</button>
-                    <button onClick={handleConfirm} className="rounded-full bg-bgblue text-white text-sm h-8 w-20" >Confirm</button>
-                </div>
-            </div>
-        </div>
-    )
-}
-
-CancelPopup.propTypes = {
-    handleConfirm: PropTypes.func.isRequired,
-    handleCancel: PropTypes.func.isRequired,
-};
+import SubscribedPopup from "../../components/subscribedpopup/SubscribedPopup"
+import CancelSubscriptionPopup from "../../components/cancelsubscriptionpopup/CancelSubscriptionPopup"
 
 function PricingPlan() {
 
@@ -73,7 +41,7 @@ function PricingPlan() {
                 <div className="bg-gray-100" style={{height: '100%', width: '1px'}} />
                 <div className="pt-10 flex-1 flex flex-col items-center relative">
                     {showSubscribed && <SubscribedPopup />}
-                    {showCancel && <CancelPopup handleCancel={handleCancel} handleConfirm={handleConfirm} />}
+                    {showCancel && <CancelSubscriptionPopup handleCancel={handleCancel} handleConfirm={handleConfirm} />}
                     <div className="rounded-full h-12 w-12 bg-bglightblue flex items-center justify-center">
                         <img alt="pricing-plan" src="/src/assets/icons/pricingplan.png" style={{height: '15px'}} />
                     </div>
@@ -164,7 +132,7 @@ function PricingPlan() {
                                     <div>Cancel Subscription</div>
                                 </button>
                             ) : (
-                                <button onClick={handleSubscribe} className="mt-20 h-12 w-full rounded-3xl bg-bgblue text-white flex flex-row gap-5 items-center justify-center">
+                                <button disabled onClick={handleSubscribe} className="mt-20 h-12 w-full rounded-3xl bg-bgblue bg-opacity-50 text-white flex flex-row gap-5 items-center justify-center">
                                     <img alt="premium-plan" src="/src/assets/icons/premiumplanwhite.png" style={{height: '20px'}} />
                                     <div>Upgrade to Premium Plan</div>
                                 </button>

@@ -22,7 +22,7 @@ function Login() {
             navigate('/')
         } 
         catch (error) {
-            setError(error.message)
+            setError(error?.message)
             setShowError(true)
             console.error('Error verifying OTP:', error)
         }

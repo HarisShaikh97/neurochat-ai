@@ -1,0 +1,17 @@
+{
+  "resourceName": "s358d67542",
+  "policyUUID": "58d67542",
+  "bucketName": "neurochataib75006b2481b40609844f429f337a57c",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "groupAccess": {}
+}

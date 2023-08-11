@@ -1,7 +1,44 @@
+import { useEffect, useState, useContext } from "react"
+import { useNavigate } from "react-router-dom"
+import { Auth } from "aws-amplify"
+import { MyContext } from "../../context/context"
 import Layout from "../../components/layout/Layout"
 import SettingsMenu from "../../components/settingsmenu/SettingsMenu"
 
 function Settings() {
+
+    const { dispatch } = useContext(MyContext)
+
+    const navigate = useNavigate()
+
+    const [isAuthenticated, setIsAuthenticated] = useState(true)
+
+    useEffect(() => {
+
+        const checkUserSession = async () => {
+            try {
+                const user = await Auth.currentAuthenticatedUser()
+                setIsAuthenticated(true)
+                // console.log(user)
+                dispatch({
+                    type: 'SET_USER_ID',
+                    payload: user?.attributes?.sub
+                })
+            } 
+            catch (error) {
+                setIsAuthenticated(false)
+            }
+        }
+
+        checkUserSession()
+
+    }, [dispatch])
+
+    useEffect(() => {
+        if(isAuthenticated === false) {
+            navigate('/login')
+        }
+    }, [isAuthenticated, navigate])
 
     return (
         <Layout>

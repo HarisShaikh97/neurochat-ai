@@ -1,12 +1,48 @@
-import { useRef } from "react"
+import React, { useState ,useRef, useEffect, useContext } from "react"
+import { API, graphqlOperation } from "aws-amplify"
 import PropTypes from "prop-types"
 import axios from "axios"
+import { getUserData } from "../../graphql/queries"
+import { MyContext } from "../../context/context"
 
-function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selectedChat, setSelectedChat }) {
+function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selectedChat, setSelectedChat, setShowTranslationPopup, setTranslatedText }) {
 
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 
+    const pattern = /(_\[\d+\])/
+
+    const inputString = "To assist with medical research, I can help with questions related to building and assessing the quality of healthcare-related research questions _[1], the definition and types of research in medicine _[2], and guidelines for formulating research questions in clinical practice _[3]. Specifically, I can provide information on the stages involved in building and assessing research questions, including selecting and exploring a field of science, writing structured research questions, and assessing the quality and feasibility of the research questions against a set of criteria _[1]. Additionally, I can provide information on the importance of formulating precise research questions in patient-oriented research and the components of a research question, including the main occurrence relation, determinant(s), outcome, and domain _[2]. Finally, I can provide guidelines for the proper formulation of clinical practice research questions for healthcare personnel in training, including general practitioners and specialists _[3]."
+
+    const substrings = inputString.split(pattern)
+
+    console.log(substrings);
+
+    const { state } = useContext(MyContext)
+
+    const [showLanguagePopup, setShowLanguagePopup] = useState(false)
+    const [currentUser, setCurrentUser] = useState(null)
+
     const divRef = useRef(null)
+    const buttonRef = useRef()
+
+    useEffect(() => {
+
+        const fetchUserData = async () => {
+            
+            try {
+                const user = await API.graphql(graphqlOperation(getUserData, { id: state?.user_id }))
+                setCurrentUser(user?.data?.getUserData)
+                console.log(state?.user_id, user)
+            } 
+            catch (error) {
+                console.error('Error fetching user data:', error)
+            }
+        }
+        if(state?.user_id?.length > 0){
+            fetchUserData()
+        }
+
+    }, [state])
 
     const handleCopyClick = async () => {
         try {
@@ -17,20 +53,24 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
         }
     }
 
-    console.log(thread, selectedChat)
+    console.log(currentUser)
 
     return (
         <div className="flex flex-col gap-10">
             <div className="flex flex-row gap-5 justify-end">
                 <div className="flex flex-col pt-2 gap-3">
                     <div className="flex flex-row gap-3 items-center font-semibold">
-                        <div>Haris Shaikh</div>
+                        <div>{currentUser?.firstName?.length > 0 && currentUser?.lastName?.length > 0 ? `${currentUser?.firstName} ${currentUser?.lastName}` : currentUser?.email}</div>
                         <div className="text-xs text-gray-500">{thread?.date_time?.slice(14, 19)}</div>
                     </div>
                     <div className="text-sm font-light">{thread?.user_query}</div>
                 </div>
                 <div>
-                    <img alt="profile-picture" src="/src/assets/images/profile_picture.jpg" className="rounded-full" style={{height: '40px', width: '40px'}} />
+                    {currentUser?.profilePicUrl?.length > 0 ? (
+                        <img alt="profile-picture" src={currentUser?.profilePicUrl} className="rounded-full" style={{height: '40px', width: '40px'}} />
+                    ) : (
+                        <div className="rounded-full bg-gradient-to-br from-[#B4AF9D] to-[#737063]" style={{height: '40px', width: '40px'}} />
+                    )}
                 </div>
             </div>
             <div className="flex flex-row gap-5">
@@ -39,15 +79,192 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
                 </div>
                 <div className="flex-1 flex flex-col pt-2 gap-3">
                     <div className="flex flex-row items-center gap-5 font-semibold">
-                        {modelType === 'synaptiquery' && (<div>SynaptiQuery</div>)}
+                        {modelType === 'synaptiquery' && <div>SynaptiQuery</div>}
                         {modelType === 'chatgpt' && <div>ChatGPT</div>}
                         {modelType === 'claudeai' && <div>Claude.AI</div>}
                         {modelType === 'palm2' && <div>PaLM2</div>}
                         {modelType === 'falcon' && <div>Falcon40B</div>}
                         <div className="text-xs text-gray-500">{thread?.date_time?.slice(14, 19)}</div>
                     </div>
-                    <div ref={divRef} className="text-sm font-light">{thread?.system?.text}</div>
+                    <div ref={divRef} className="text-sm font-light">
+                        {thread?.system?.text?.split(pattern)?.map((str, key) => {
+                            return (
+                                <React.Fragment key={key}><span className={key % 2 === 1 && 'text-bgblue text-xs align-top'}>{key % 2 === 1 ? str?.substring(1) : str}</span></React.Fragment>
+                            )
+                        })}
+                    </div>
                     <div className="flex flex-row gap-3 items-center justify-end pt-5">
+                        <div className="relative">
+                            <button ref={buttonRef} onClick={() => {setShowLanguagePopup(!showLanguagePopup)}} className="rounded-full h-7 w-12 flex items-center justify-center border border-bgblue">
+                                <img alt="translate" src="/src/assets/icons/languages.png" style={{height: '20px'}} />
+                            </button>
+                            {showLanguagePopup && (
+                                <div
+                                    className="origin-top-right absolute right-0 mt-2 w-64 p-5 flex flex-col gap-8 bg-white rounded-md shadow-2xl"
+                                    style={{
+                                        top: buttonRef.current.offsetTop + buttonRef.current.offsetHeight + 8,
+                                        left: buttonRef.current.offsetLeft,
+                                    }}
+                                >
+                                    <div className="text-sm font-semibold">Select Language for Translation</div>
+                                    <div className="flex flex-col gap-5">
+                                        <button 
+                                            onClick={async () => {
+                                                setTranslatedText(thread?.system?.text)
+                                                setShowTranslationPopup(true)
+                                                setShowLanguagePopup(false)
+                                            }} 
+                                            className="flex flex-row items-center gap-3 text-sm"
+                                        >
+                                            <div className="bg-bgblue text-white px-2 rounded-md">EN</div>
+                                            <div>English (Default)</div>
+                                        </button>
+                                        <button 
+                                            onClick={async () => {
+                                                const formData = {
+                                                    chat_id: selectedChat?.chat_id, 
+                                                    language: 1, 
+                                                    thread_id: thread?.thread_id
+                                                }
+                                        
+                                                await axios.post(`${apiBaseUrl}/chat/translate`, formData).then((res) => {
+                                                    console.log(res)
+                                                    if(res?.status === 200){
+                                                        setTranslatedText(res?.data?.translated_text)
+                                                        setShowTranslationPopup(true)
+                                                        setShowLanguagePopup(false)
+                                                    }
+                                                }).catch((error) => {
+                                                    console.error('Error:', error)
+                                                })
+                                            }} 
+                                            className="flex flex-row items-center gap-3 text-sm"
+                                        >
+                                            <div className="bg-bgblue text-white px-2 rounded-md">UR</div>
+                                            <div>Urdu</div>
+                                        </button>
+                                        <button 
+                                            onClick={async () => {
+                                                const formData = {
+                                                    chat_id: selectedChat?.chat_id, 
+                                                    language: 2, 
+                                                    thread_id: thread?.thread_id
+                                                }
+                                        
+                                                await axios.post(`${apiBaseUrl}/chat/translate`, formData).then((res) => {
+                                                    console.log(res)
+                                                    if(res?.status === 200){
+                                                        setTranslatedText(res?.data?.translated_text)
+                                                        setShowTranslationPopup(true)
+                                                        setShowLanguagePopup(false)
+                                                    }
+                                                }).catch((error) => {
+                                                    console.error('Error:', error)
+                                                })
+                                            }} 
+                                            className="flex flex-row items-center gap-3 text-sm"
+                                        >
+                                            <div className="bg-bgblue text-white px-2 rounded-md">ES</div>
+                                            <div>Spanish</div>
+                                        </button>
+                                        <button 
+                                            onClick={async () => {
+                                                const formData = {
+                                                    chat_id: selectedChat?.chat_id, 
+                                                    language: 3, 
+                                                    thread_id: thread?.thread_id
+                                                }
+                                        
+                                                await axios.post(`${apiBaseUrl}/chat/translate`, formData).then((res) => {
+                                                    console.log(res)
+                                                    if(res?.status === 200){
+                                                        setTranslatedText(res?.data?.translated_text)
+                                                        setShowTranslationPopup(true)
+                                                        setShowLanguagePopup(false)
+                                                    }
+                                                }).catch((error) => {
+                                                    console.error('Error:', error)
+                                                })
+                                            }}
+                                            className="flex flex-row items-center gap-3 text-sm"
+                                        >
+                                            <div className="bg-bgblue text-white px-2 rounded-md">AR</div>
+                                            <div>Arabic</div>
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                        {thread?.feedback_status === 0 ? (
+                            <button 
+                                className="rounded-full h-7 w-12 flex items-center justify-center bg-bgblue"
+                                onClick={async () => {
+                                    await axios.put(`${apiBaseUrl}/message/feedback/${selectedChat?.chat_id}/${thread?.thread_id}?feedback_status=3`).then((res) => {
+                                        console.log(res)
+                                        if(res?.status === 200) {
+                                            refreshAllChats()
+                                            refreshChat()
+                                        }
+                                    }).catch((error) => {
+                                        console.error('Error:', error)
+                                    })
+                                }}
+                            >
+                                <img alt="disliked" src="/src/assets/icons/dislike-white.png" style={{height: '20px'}} />
+                            </button>
+                        ) : (
+                            <button 
+                                className="rounded-full h-7 w-12 flex items-center justify-center border border-bgblue"
+                                onClick={async () => {
+                                    await axios.put(`${apiBaseUrl}/message/feedback/${selectedChat?.chat_id}/${thread?.thread_id}?feedback_status=0`).then((res) => {
+                                        console.log(res)
+                                        if(res?.status === 200) {
+                                            refreshAllChats()
+                                            refreshChat()
+                                        }
+                                    }).catch((error) => {
+                                        console.error('Error:', error)
+                                    })
+                                }}
+                            >
+                                <img alt="dislike" src="/src/assets/icons/dislike.png" style={{height: '20px'}} />
+                            </button>
+                        )}
+                        {thread?.feedback_status === 1 ? (
+                            <button 
+                                className="rounded-full h-7 w-12 flex items-center justify-center bg-bgblue"
+                                onClick={async () => {
+                                    await axios.put(`${apiBaseUrl}/message/feedback/${selectedChat?.chat_id}/${thread?.thread_id}?feedback_status=3`).then((res) => {
+                                        console.log(res)
+                                        if(res?.status === 200) {
+                                            refreshAllChats()
+                                            refreshChat()
+                                        }
+                                    }).catch((error) => {
+                                        console.error('Error:', error)
+                                    })
+                                }}
+                            >
+                                <img alt="liked" src="/src/assets/icons/like-white.png" style={{height: '20px'}} />
+                            </button>
+                        ) : (
+                            <button 
+                                className="rounded-full h-7 w-12 flex items-center justify-center border border-bgblue"
+                                onClick={async () => {
+                                    await axios.put(`${apiBaseUrl}/message/feedback/${selectedChat?.chat_id}/${thread?.thread_id}?feedback_status=1`).then((res) => {
+                                        console.log(res)
+                                        if(res?.status === 200) {
+                                            refreshAllChats()
+                                            refreshChat()
+                                        }
+                                    }).catch((error) => {
+                                        console.error('Error:', error)
+                                    })
+                                }}
+                            >
+                                <img alt="like" src="/src/assets/icons/like.png" style={{height: '20px'}} />
+                            </button>
+                        )}
                         <button 
                             className="rounded-full h-7 w-12 flex items-center justify-center border border-bgblue"
                             onClick={async () => {
@@ -73,82 +290,6 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
                         >
                             <img alt="delete" src="/src/assets/icons/delete.png" style={{height: '20px'}} />
                         </button>
-                        <div className="rounded-full h-7 w-12 flex items-center justify-center border border-bgblue">
-                            <img alt="translate" src="/src/assets/icons/languages.png" style={{height: '20px'}} />
-                        </div>
-                        {thread?.feedback_status === 0 ? (
-                            <button 
-                                className="rounded-full h-7 w-12 flex items-center justify-center bg-bgblue"
-                                onClick={async () => {
-                                    await axios.delete(`${apiBaseUrl}/message/feedback/${selectedChat?.chat_id}/${thread?.thread_id}?feedback_status=3`).then((res) => {
-                                        console.log(res)
-                                        if(res?.status === 200) {
-                                            refreshAllChats()
-                                            refreshChat()
-                                        }
-                                    }).catch((error) => {
-                                        console.error('Error:', error)
-                                    })
-                                }}
-                            >
-                                <img alt="disliked" src="/src/assets/icons/dislike-white.png" style={{height: '20px'}} />
-                            </button>
-                        ) : (
-                            <button 
-                                className="rounded-full h-7 w-12 flex items-center justify-center border border-bgblue"
-                                onClick={async () => {
-                                    await axios.delete(`${apiBaseUrl}/message/feedback/${selectedChat?.chat_id}/${thread?.thread_id}?feedback_status=0`).then((res) => {
-                                        console.log(res)
-                                        if(res?.status === 200) {
-                                            refreshAllChats()
-                                            refreshChat()
-                                        }
-                                    }).catch((error) => {
-                                        console.error('Error:', error)
-                                    })
-                                }}
-                            >
-                                <img alt="dislike" src="/src/assets/icons/dislike.png" style={{height: '20px'}} />
-                            </button>
-                        )}
-                        {thread?.feedback_status === 1 ? (
-                            <button 
-                                className="rounded-full h-7 w-12 flex items-center justify-center bg-bgblue"
-                                onClick={async () => {
-                                    await axios.delete(`${apiBaseUrl}/message/feedback/${selectedChat?.chat_id}/${thread?.thread_id}?feedback_status=3`).then((res) => {
-                                        console.log(res)
-                                        if(res?.status === 200) {
-                                            refreshAllChats()
-                                            refreshChat()
-                                        }
-                                    }).catch((error) => {
-                                        console.error('Error:', error)
-                                    })
-                                }}
-                            >
-                                <img alt="liked" src="/src/assets/icons/like-white.png" style={{height: '20px'}} />
-                            </button>
-                        ) : (
-                            <button 
-                                className="rounded-full h-7 w-12 flex items-center justify-center border border-bgblue"
-                                onClick={async () => {
-                                    await axios.delete(`${apiBaseUrl}/message/feedback/${selectedChat?.chat_id}/${thread?.thread_id}?feedback_status=1`).then((res) => {
-                                        console.log(res)
-                                        if(res?.status === 200) {
-                                            refreshAllChats()
-                                            refreshChat()
-                                        }
-                                    }).catch((error) => {
-                                        console.error('Error:', error)
-                                    })
-                                }}
-                            >
-                                <img alt="like" src="/src/assets/icons/like.png" style={{height: '20px'}} />
-                            </button>
-                        )}
-                        <div className="rounded-full h-7 w-12 flex items-center justify-center border border-bgblue">
-                            <img alt="share" src="/src/assets/icons/share.png" style={{height: '20px'}} />
-                        </div>
                         <button onClick={handleCopyClick} className="rounded-full h-7 w-12 flex items-center justify-center border border-bgblue">
                             <img alt="copy" src="/src/assets/icons/copy.png" style={{height: '20px'}} />
                         </button>
@@ -179,5 +320,7 @@ ChatMessage.propTypes = {
     refreshAllChats: PropTypes.func.isRequired,
     refreshChat: PropTypes.func.isRequired,
     selectedChat: PropTypes.object,
-    setSelectedChat: PropTypes.func.isRequired
+    setSelectedChat: PropTypes.func.isRequired,
+    setShowTranslationPopup: PropTypes.func.isRequired,
+    setTranslatedText: PropTypes.func.isRequired
 }

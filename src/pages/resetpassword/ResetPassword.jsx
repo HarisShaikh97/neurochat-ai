@@ -28,6 +28,8 @@ function ResetPassword() {
                 navigate('/resetpasswordsuccessful')
             } 
             catch (error) {
+                setError(error?.message)
+                setShowError(true)
                 console.error('Error:', error)
             }
         }
@@ -84,8 +86,8 @@ function ResetPassword() {
                                 </button>
                             )}
                         </div>
-                        <button onClick={handleSubmit} className="text-white rounded-full bg-bgblue h-12 w-80 mt-10">Continue</button>
                         {showError && (<div className="text-red-500 pt-5">{error}</div>)}
+                        <button onClick={handleSubmit} className="text-white rounded-full bg-bgblue h-12 w-80 mt-10">Continue</button>
                     </div>
                 </div>
             </div>

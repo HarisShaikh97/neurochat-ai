@@ -1,11 +1,224 @@
-import { Auth } from "aws-amplify"
+import { useEffect, useState } from "react"
+import { Auth, API, graphqlOperation } from "aws-amplify"
 import { NavLink, useLocation, useNavigate } from "react-router-dom"
+import { getUserData, getUserSubscription } from "../../../graphql/queries"
+import { createUserData, createUserSubscription, updateUserSubscription } from "../../../graphql/mutations"
 import ModeSwitch from "../../modeswitch/ModeSwitch"
 
 function SideNav() {
 
+    const [currentUser, setCurrentUser] = useState()
+    const [currentSubscription, setCurrentSubscription] = useState()
+    const [currentAuthenticatedUser, setCurrentAuthenticatedUser] = useState()
+
     const location = useLocation()
     const navigate = useNavigate()
+    
+
+    useEffect(() => {
+        
+        const addUser = async () => {
+
+            // console.log(currentUser, currentAuthenticatedUser)
+
+            const userData = {
+                id: currentAuthenticatedUser?.attributes?.sub,
+                email: currentAuthenticatedUser?.attributes?.email,
+                secondaryEmail: currentAuthenticatedUser?.attributes?.email,
+                firstName: currentAuthenticatedUser?.attributes?.given_name ? currentAuthenticatedUser?.attributes?.given_name : '',
+                lastName: currentAuthenticatedUser?.attributes?.family_name ? currentAuthenticatedUser?.attributes?.family_name : '',
+                phoneNumber: '',
+                profilePicUrl: currentAuthenticatedUser?.attributes?.picture ? currentAuthenticatedUser?.attributes?.picture : '',
+                profession: '',
+                organization: '',
+                userId: currentAuthenticatedUser?.attributes?.sub
+            }
+
+            try {
+                const newUser = await API.graphql(graphqlOperation(createUserData, {input: userData}))
+                console.log(newUser)
+                setCurrentUser(newUser?.data?.createUserData)
+            }
+            catch (error) {
+                console.error('Error adding user:', error)
+            }
+        }
+
+        if(currentAuthenticatedUser && currentUser === null)
+        {
+            addUser()
+        }
+
+    }, [currentUser, currentAuthenticatedUser])
+
+    useEffect(() => {
+
+        const fetchUserData = async () => {
+            
+            try {
+                const user = await API.graphql(graphqlOperation(getUserData, { id: currentAuthenticatedUser?.attributes?.sub }))
+                setCurrentUser(user?.data?.getUserData)
+                console.log(currentAuthenticatedUser?.attributes?.sub, user)
+            } 
+            catch (error) {
+                console.error('Error fetching user data:', error)
+            }
+        }
+        if(currentAuthenticatedUser?.attributes?.sub){
+            fetchUserData()
+        }
+
+    }, [currentAuthenticatedUser])
+
+    useEffect(() => {
+
+        const fetchUserSubscription = async () => {
+            
+            try {
+                const subscription = await API.graphql(graphqlOperation(getUserSubscription, { id: currentAuthenticatedUser?.attributes?.sub }))
+                setCurrentSubscription(subscription?.data?.getUserSubscription)
+                console.log(currentAuthenticatedUser?.attributes?.sub, subscription)
+            } 
+            catch (error) {
+                console.error('Error fetching user data:', error)
+            }
+        }
+        if(currentAuthenticatedUser?.attributes?.sub){
+            fetchUserSubscription()
+        }
+
+    }, [currentAuthenticatedUser])
+
+    useEffect(() => {
+
+        const renewBasicSubscription = async () => {
+
+            const currentDate = new Date()
+    
+            const subscriptionData = {
+                id: currentAuthenticatedUser?.attributes?.sub,
+                email: currentAuthenticatedUser?.attributes?.email,
+                package: 'BASIC',
+                synaptiQueryRemaining: 5,
+                synaptiNoteRemaining: 5,
+                chatGptRemaining: 5,
+                claudeRemaining: 5,
+                palmRemaining: 5,
+                falconRemaining: 5,
+                lastRenewalDate: currentDate
+            }
+    
+            try {
+                const updatedUserSubscription = await API.graphql(graphqlOperation(updateUserSubscription, { input: subscriptionData}))
+                console.log('updatedUserSubscription')
+                setCurrentSubscription(updatedUserSubscription?.data?.updateUserSubscription)
+            } catch (error) {
+                console.error("Error:", error)
+            }
+        }
+
+        const renewPremiumSubscription = async () => {
+
+            const currentDate = new Date()
+    
+            const subscriptionData = {
+                id: currentAuthenticatedUser?.attributes?.sub,
+                email: currentAuthenticatedUser?.attributes?.email,
+                package: 'PREMIUM',
+                synaptiQueryRemaining: 100,
+                synaptiNoteRemaining: 100,
+                chatGptRemaining: 150,
+                claudeRemaining: 100,
+                palmRemaining: 50,
+                falconRemaining: 50,
+                lastRenewalDate: currentDate
+            }
+    
+            try {
+                const updatedUserSubscription = await API.graphql(graphqlOperation(updateUserSubscription, { input: subscriptionData}))
+                console.log('updatedUserSubscription')
+                setCurrentSubscription(updatedUserSubscription?.data?.updateUserSubscription)
+            } catch (error) {
+                console.error("Error:", error)
+            }
+        }
+
+        const checkPossibleRenewal = async () => {
+            const currentDate = new Date()
+            const targetDate = new Date(currentSubscription?.lastRenewalDate)
+            const timeDifferenceMs = currentDate - targetDate
+            const daysDifference = timeDifferenceMs / (1000 * 60 * 60 * 24)
+            console.log('Difference in days:', daysDifference)
+            if(currentSubscription?.package === 'BASIC' && daysDifference > 7) {
+                renewBasicSubscription()
+            }
+            else if(currentSubscription?.package === 'PREMIUM' && daysDifference > 1) {
+                renewPremiumSubscription()
+            }
+        }
+        if(currentSubscription) {
+            checkPossibleRenewal()
+        }
+    }, [currentSubscription, currentAuthenticatedUser])
+
+    
+
+    useEffect(() => {
+        
+        const addSubscription = async () => {
+
+            // console.log(currentUser, currentAuthenticatedUser)
+            const currentDate = new Date()
+            console.log(currentDate)
+
+            const subscriptionData = {
+                id: currentAuthenticatedUser?.attributes?.sub,
+                email: currentAuthenticatedUser?.attributes?.email,
+                package: 'BASIC',
+                synaptiQueryRemaining: 5,
+                synaptiNoteRemaining: 5,
+                chatGptRemaining: 5,
+                claudeRemaining: 5,
+                palmRemaining: 5,
+                falconRemaining: 5,
+                lastRenewalDate: currentDate
+            }
+
+            try {
+                const newSubscription = await API.graphql(graphqlOperation(createUserSubscription, {input: subscriptionData}))
+                console.log(newSubscription)
+                setCurrentSubscription(newSubscription?.data?.createUserSubscription)
+            }
+            catch (error) {
+                console.error('Error adding subscription:', error)
+            }
+        }
+
+        if(currentAuthenticatedUser && currentSubscription === null)
+        {
+            addSubscription()
+        }
+
+        // console.log(currentAuthenticatedUser, currentSubscription)
+
+    }, [currentSubscription, currentAuthenticatedUser])
+
+    useEffect(() => {
+
+        const checkUserSession = async () => {
+            try {
+                const user = await Auth.currentAuthenticatedUser()
+                setCurrentAuthenticatedUser(user)
+                console.log(user)
+            } 
+            catch (error) {
+                console.error('Error:', error)
+            }
+        }
+
+        checkUserSession()
+
+    }, [])
 
     const handleSignOut = async (e) => {
         e.preventDefault()
@@ -18,12 +231,18 @@ function SideNav() {
         }
     }
 
+    console.log(currentSubscription)
+
     return (
         <aside className="min-h-screen w-36 py-8 flex flex-col items-center shadow-xl">
             <div className="flex flex-col items-center">
-                <div className="rounded-full bg-gradient-to-br from-[#B4AF9D] to-[#737063]" style={{height: '50px', width: '50px'}} />
-                <div className="mt-3 text-sm font-semibold">Join</div>
-                <div className="font-semibold text-sm">NeuroChat.AI</div>
+                {currentUser?.profilePicUrl ? (
+                    <img alt="profile-picture" src={currentUser?.profilePicUrl} className="rounded-full" style={{height: '50px', width: '50px'}} />
+                ) : (
+                    <div className="rounded-full bg-gradient-to-br from-[#B4AF9D] to-[#737063]" style={{height: '50px', width: '50px'}} />
+                )}
+                <div className="mt-3 text-sm font-semibold">{currentUser?.firstName}</div>
+                <div className="font-semibold text-sm">{currentUser?.lastName}</div>
             </div>
             {location.pathname.includes('/synaptiquery') ? (
                 <div className="flex flex-row items-center w-full mt-10 bg-gray-100">
@@ -81,34 +300,6 @@ function SideNav() {
                     <div className="mt-3 text-sm text-gray-500">PaLM2</div>
                 </NavLink>
             )}
-            {/* {location.pathname.includes('/synaptinote') ? (
-                <div className="flex flex-row items-center w-full bg-gray-100">
-                    <div className="h-full w-1 rounded-r-full bg-bgblue" />
-                    <div className="flex flex-col items-center py-3 w-full">
-                        <img alt="synaptinote" src="/src/assets/icons/synaptinote.svg" style={{height: '40px', width: '40px'}} />
-                        <div className="mt-3 text-sm text-bgblue">SynaptiNote</div>
-                    </div>
-                </div>
-            ) : (
-                <NavLink to="/synaptinote" className="flex flex-col items-center py-3 w-full">
-                    <img alt="synaptinote" src="/src/assets/icons/synaptinote.svg" style={{height: '40px', width: '40px'}} />
-                    <div className="mt-3 text-sm text-gray-500">SynaptiNote</div>
-                </NavLink>
-            )} */}
-            {/* {location.pathname.includes('/synaptipdf') ? (
-                <div className="flex flex-row items-center w-full bg-gray-100">
-                    <div className="h-full w-1 rounded-r-full bg-bgblue" />
-                    <div className="flex flex-col items-center py-3 w-full">
-                        <img alt="synaptipdf" src="/src/assets/icons/synaptipdf.svg" style={{height: '40px', width: '40px'}} />
-                        <div className="mt-3 text-sm text-bgblue">SynaptiPDF</div>
-                    </div>
-                </div>
-            ) : (
-                <NavLink to="/synaptipdf" className="flex flex-col items-center py-3 w-full">
-                    <img alt="synaptipdf" src="/src/assets/icons/synaptipdf.svg" style={{height: '40px', width: '40px'}} />
-                    <div className="mt-3 text-sm text-gray-500">SynaptiPDF</div>
-                </NavLink>
-            )} */}
             {location.pathname.includes('/falcon') ? (
                 <div className="flex flex-row items-center w-full bg-gray-100">
                     <div className="h-full w-1 rounded-r-full bg-bgblue" />

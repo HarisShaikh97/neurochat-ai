@@ -10,9 +10,7 @@ import VerifyOTP from './pages/verifyotp/VerifyOTP'
 import ResetPasswordOTP from './pages/resetpasswordotp/ResetPasswordOTP'
 import Home from './pages/home/Home'
 import Falcon from './pages/falcon/Falcon'
-import SynaptiPDF from './pages/synaptipdf/SynaptiPDF'
 import SynaptiQuery from './pages/synaptiquery/SynaptiQuery'
-import Synaptinote from './pages/synaptinote/SynaptiNote'
 import ChatGPT from './pages/chatgpt/ChatGPT'
 import ClaudeAI from './pages/claudeai/ClaudeAI'
 import PaLM2 from './pages/palm2/PaLM2'
@@ -59,9 +57,7 @@ function App() {
                     <Route path='/verifyotp' element={<VerifyOTP />} />
                     <Route path='/resetpasswordotp' element={<ResetPasswordOTP />} />
                     <Route path='/falcon' element={<Falcon />} />
-                    <Route path='/synaptipdf' element={<SynaptiPDF />} />
                     <Route path='/synaptiquery' element={<SynaptiQuery />} />
-                    <Route path='/synaptinote' element={<Synaptinote />} />
                     <Route path='/chatgpt' element={<ChatGPT />} />
                     <Route path='/claudeai' element={<ClaudeAI />} />
                     <Route path='/palm2' element={<PaLM2 />} />
@@ -75,7 +71,6 @@ function App() {
                     <Route path='/settings/disclaimer' element={<Disclaimer />} />
                     <Route path='/settings/virtualcard' element={<VirtualCard />} />
                     <Route path='/settings/pricingplan' element={<PricingPlan />} />
-                    <Route path='/welcome' element={<WelcomeScreen />} />
                 </Routes>
             )}
         </BrowserRouter>

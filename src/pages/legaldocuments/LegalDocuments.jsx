@@ -21,7 +21,7 @@ function LegalDocuments() {
                         <ChevronRightIcon className="h-5 w-5 text-black" />
                     </Link>
                     <Link to="/settings/termsandconditions" className="p-5 w-96 bg-bgblue bg-opacity-5 rounded-xl flex flex-row justify-between">
-                        <div className="text-gray-500">Terms & Conditions</div>
+                        <div className="text-gray-500">Terms of Use</div>
                         <ChevronRightIcon className="h-5 w-5 text-black" />
                     </Link>
                     <Link to="/settings/disclaimer" className="p-5 w-96 bg-bgblue bg-opacity-5 rounded-xl flex flex-row justify-between">

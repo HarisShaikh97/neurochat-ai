@@ -1,0 +1,36 @@
+type UserData @model @auth(rules: [{allow: public}, {allow: owner}, {allow: private}]) {
+  id: ID!
+  email: AWSEmail!
+  secondaryEmail: AWSEmail
+  firstName: String
+  lastName: String
+  phoneNumber: String
+  profilePicUrl: String
+  profession: String
+  organization: String
+  userId: String
+}
+
+enum Package {
+  BASIC
+  PREMIUM
+}
+
+type UserSubscription @model @auth(rules: [{allow: public}, {allow: private}, {allow: owner}]) {
+  id: ID!
+  email: AWSEmail!
+  package: Package!
+  synaptiQueryRemaining: Int!
+  synaptiNoteRemaining: Int!
+  chatGptRemaining: Int!
+  claudeRemaining: Int!
+  palmRemaining: Int!
+  falconRemaining: Int
+  lastRenewalDate: AWSDateTime!
+}
+
+type AppData @model @auth(rules: [{allow: public}, {allow: private}, {allow: owner}]) {
+  id: ID!
+  debugVersion: Int!
+  prodVersion: Int!
+}

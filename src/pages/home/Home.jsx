@@ -19,10 +19,10 @@ function Home() {
             try {
                 const user = await Auth.currentAuthenticatedUser()
                 setIsAuthenticated(true)
-                // console.log(user.pool.clientId)
+                // console.log(user)
                 dispatch({
                     type: 'SET_USER_ID',
-                    payload: user?.pool?.clientId
+                    payload: user?.attributes?.sub
                 })
             } 
             catch (error) {
@@ -40,14 +40,8 @@ function Home() {
         }
     }, [isAuthenticated, navigate])
 
-    // console.log(isAuthenticated, state)
-
     return (
         <Layout>
-            <div className="flex flex-row items-center gap-5 pl-10">
-                <div className="rounded-lg bg-bgblue text-white py-1 px-3">EN</div>
-                <div className="rounded-full h-7 w-7 flex items-center justify-center border-2 border-black font-semibold">i</div>
-            </div>
             <div className="bg-gray-100 mt-5" style={{height: '1px', width: '100%'}} />
             <div className="h-full flex flex-row">
                 <div className="w-96 flex flex-col gap-10 p-5">

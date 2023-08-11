@@ -11,9 +11,12 @@ function VerifyOTP() {
 
     const { state } = useContext(MyContext)
 
-    const [otp, setOtp] = useState('')
     const initialTimerValue = 59
+
+    const [otp, setOtp] = useState('')
     const [timer, setTimer] = useState(initialTimerValue)
+    const [error, setError] = useState(null)
+    const [showError, setShowError] = useState(false)
 
     const intervalRef = useRef()
 
@@ -25,7 +28,7 @@ function VerifyOTP() {
                     return 0
                 }
                 return prevTimer - 1
-            });
+            })
         };
 
         intervalRef.current = setInterval(decrementTimer, 1000)
@@ -63,6 +66,8 @@ function VerifyOTP() {
             navigate('/login')
         } 
         catch (error) {
+            setError(error?.message)
+            setShowError(true)
             console.error('Error verifying OTP:', error)
         }
     }
@@ -99,6 +104,7 @@ function VerifyOTP() {
                     </div>
                     <div>00:{timer < 10 && '0'}{timer} Sec</div>
                     <div className="py-10">Didn{"'"}t receive code? <button onClick={ResendOTP} className="text-bgblue">Re-send</button></div>
+                    {showError && (<div className="text-red-500 pt-5">{error}</div>)}
                     <button onClick={handleVerifyOTP} className="text-white rounded-full bg-bgblue h-12 w-80 mt-10">Continue</button>
                 </div>
             </div>

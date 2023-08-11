@@ -1,0 +1,11 @@
+{
+  "AppSyncApiName": "neurochatai",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authneurochataif9b5adbd",
+      "Outputs.UserPoolId"
+    ]
+  }
+}

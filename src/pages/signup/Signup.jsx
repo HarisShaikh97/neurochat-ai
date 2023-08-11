@@ -42,7 +42,7 @@ function Signup() {
                 navigate('/verifyotp')
             } 
             catch (error) {
-                setError(error.message)
+                setError(error?.message)
                 setShowError(true)
             }
         }

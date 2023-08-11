@@ -1,0 +1,37 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-neurochatai-staging-42010-authRole",
+      "UnauthRoleArn": "arn:aws:iam::620916994926:role/amplify-neurochatai-staging-42010-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::620916994926:role/amplify-neurochatai-staging-42010-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-neurochatai-staging-42010-deployment",
+      "UnauthRoleName": "amplify-neurochatai-staging-42010-unauthRole",
+      "StackName": "amplify-neurochatai-staging-42010",
+      "StackId": "arn:aws:cloudformation:us-east-1:620916994926:stack/amplify-neurochatai-staging-42010/442468e0-fea1-11ed-a7a8-0a7fcb5b3fa5",
+      "AmplifyAppId": "dawwwx8m5acjn"
+    },
+    "categories": {
+      "auth": {
+        "neurochataif9b5adbd": {
+          "allowUnauthenticatedIdentities": true,
+          "authRoleArn": "arn:aws:iam::620916994926:role/service-role/AuthUser",
+          "authRoleName": "service-role/AuthUser",
+          "identityPoolId": "us-east-1:e32a0dac-6b22-4cbf-a4c3-d4264f45b268",
+          "identityPoolName": "NeuroChat.AI_id_pool",
+          "nativeClientId": "7cfdmgkiqhihb48vaen2gl4chv",
+          "unauthRoleArn": "arn:aws:iam::620916994926:role/Cognito_NeuroChatAIIdentityPoolUnauth_Role",
+          "unauthRoleName": "Cognito_NeuroChatAIIdentityPoolUnauth_Role",
+          "userPoolId": "us-east-1_XTuzOgzoY",
+          "userPoolName": "neurochat.ai",
+          "webClientId": "7cfdmgkiqhihb48vaen2gl4chv",
+          "googleClientId": "344684818017-h81cb1sf29175fb2cru9doq8j5jjcduh.apps.googleusercontent.com",
+          "appleAppId": "com.aineurocare.neurochat.sid"
+        }
+      },
+      "storage": {
+        "s358d67542": {}
+      }
+    }
+  }
+}

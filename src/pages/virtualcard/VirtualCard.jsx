@@ -1,24 +1,60 @@
-import { useState } from "react"
-import QRCodeReact from "qrcode.react"
-import { Checkbox } from "@mui/material"
-import { CameraIcon } from "@heroicons/react/24/solid"
-import { countries } from "countries-list"
+import { useState, useEffect, useContext } from "react"
+import { useNavigate } from "react-router-dom"
+import { Auth } from "aws-amplify"
+// import QRCodeReact from "qrcode.react"
+// import { Checkbox } from "@mui/material"
+// import { CameraIcon } from "@heroicons/react/24/solid"
+// import { countries } from "countries-list"
+import { MyContext } from "../../context/context"
 import Layout from "../../components/layout/Layout"
 import SettingsMenu from "../../components/settingsmenu/SettingsMenu"
 
 function VirtualCard() {
 
-    const [organizationName, setOrganizationName] = useState(false)
-    const [profession, setProfession] = useState(false)
-    const [email, setEmail] = useState(false)
-    const [phoneNumber, setPhoneNumber] = useState(false)
-    const [selectedCode, setSelectedCode] = useState('')
+    const { dispatch } = useContext(MyContext)
 
-    const handleChange = (event) => {
-        setSelectedCode(event.target.value)
-    }
+    const navigate = useNavigate()
 
-    const contactDetails = "BEGIN:VCARD\nFN:Haris Shaikh\nEMAIL:harisahmedsheikh1997@gmail.com\nTEL:+11234567890\nEND:VCARD";
+    const [isAuthenticated, setIsAuthenticated] = useState(true)
+
+    useEffect(() => {
+
+        const checkUserSession = async () => {
+            try {
+                const user = await Auth.currentAuthenticatedUser()
+                setIsAuthenticated(true)
+                // console.log(user)
+                dispatch({
+                    type: 'SET_USER_ID',
+                    payload: user?.attributes?.sub
+                })
+            } 
+            catch (error) {
+                setIsAuthenticated(false)
+            }
+        }
+
+        checkUserSession()
+
+    }, [dispatch])
+
+    useEffect(() => {
+        if(isAuthenticated === false) {
+            navigate('/login')
+        }
+    }, [isAuthenticated, navigate])
+
+    // const [organizationName, setOrganizationName] = useState(false)
+    // const [profession, setProfession] = useState(false)
+    // const [email, setEmail] = useState(false)
+    // const [phoneNumber, setPhoneNumber] = useState(false)
+    // const [selectedCode, setSelectedCode] = useState('')
+
+    // const handleChange = (event) => {
+    //     setSelectedCode(event.target.value)
+    // }
+
+    // const contactDetails = "BEGIN:VCARD\nFN:Haris Shaikh\nEMAIL:harisahmedsheikh1997@gmail.com\nTEL:+11234567890\nEND:VCARD"
 
     return (
         <Layout>
@@ -30,7 +66,7 @@ function VirtualCard() {
             <div className="h-full flex flex-row">
                 <SettingsMenu />
                 <div className="bg-gray-100" style={{height: '100%', width: '1px'}} />
-                <div className="my-10 px-10 flex-1 flex flex-row justify-between">
+                {/* <div className="my-10 px-10 flex-1 flex flex-row justify-between">
                     <div className="h-[650px] w-72 rounded-lg border border-bgblue flex flex-col relative">
                         <img alt="profile-picture" src="/src/assets/images/profile_picture.jpg" className="rounded-full absolute top-12 left-1/2 transform -translate-x-1/2" style={{height: '150px', width: '150px'}} />
                         <div className="bg-bgblue h-32 rounded-t-lg"></div>
@@ -147,7 +183,7 @@ function VirtualCard() {
                             <button className="rounded-2xl bg-bgblue text-white font-semibold py-3 w-80">Share Card</button>
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
         </Layout>
     )

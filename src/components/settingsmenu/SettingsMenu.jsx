@@ -1,14 +1,47 @@
+import { useEffect, useState, useContext } from "react"
 import { Link } from "react-router-dom"
+import { API, graphqlOperation } from "aws-amplify"
 import { UserIcon } from "@heroicons/react/24/solid"
+import { getUserData } from "../../graphql/queries"
+import { MyContext } from "../../context/context"
 
 function SettingsMenu() {
+
+    const { state } = useContext(MyContext)
+
+    const [currentUser, setCurrentUser] = useState(null)
+
+    useEffect(() => {
+
+        const fetchUserData = async () => {
+            
+            try {
+                const user = await API.graphql(graphqlOperation(getUserData, { id: state?.user_id }))
+                setCurrentUser(user?.data?.getUserData)
+                console.log(state?.user_id, user)
+            } 
+            catch (error) {
+                console.error('Error fetching user data:', error)
+            }
+        }
+        if(state?.user_id?.length > 0){
+            fetchUserData()
+        }
+
+    }, [state])
+
+    console.log(currentUser)
 
     return (
         <div className="w-96 flex flex-col gap-5 p-5">
             <div className="rounded-3xl bg-bgblue bg-opacity-5 w-full flex flex-col items-center py-16">
-                <img className="rounded-full" alt="profile-picture" src="/src/assets/images/profile_picture.jpg" style={{height: '100px', width: '100px'}} />
-                <div className="text-2xl font-semibold mt-5">Haris Shaikh</div>
-                <div className="text-gray-500 text-sm mt-3">harisahmedsheikh1997@gmail.com</div>
+                {currentUser?.profilePicUrl?.length > 0 ? (
+                    <img alt="profile-picture" src={currentUser?.profilePicUrl} className="rounded-full" style={{height: '100px', width: '100px'}} />
+                ) : (
+                    <div className="rounded-full bg-gradient-to-br from-[#B4AF9D] to-[#737063]" style={{height: '100px', width: '100px'}} />
+                )}
+                <div className="text-2xl font-semibold mt-5">{currentUser?.firstName?.length > 0 && currentUser?.lastName?.length > 0 && `${currentUser?.firstName} ${currentUser?.lastName}`}</div>
+                <div className="text-gray-500 text-sm mt-3">{currentUser?.email}</div>
             </div>
             <div className="flex flex-row justify-between">
                 <div className="flex flex-col gap-5">
