@@ -20,8 +20,8 @@ const awsmobile = {
             "phone",
             "profile"
         ],
-        "redirectSignIn": "http://localhost:5173/",
-        "redirectSignOut": "http://localhost:5173/",
+        "redirectSignIn": "https://app.neurochat.ai/",
+        "redirectSignOut": "https://app.neurochat.ai/",
         "responseType": "code"
     },
     "federationTarget": "COGNITO_USER_AND_IDENTITY_POOLS",
