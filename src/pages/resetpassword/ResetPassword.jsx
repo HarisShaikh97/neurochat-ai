@@ -5,6 +5,7 @@ import { EyeIcon } from "@heroicons/react/24/solid"
 import { EyeSlashIcon } from "@heroicons/react/24/solid"
 import { MyContext } from "../../context/context"
 import ModeSwitch from "../../components/modeswitch/ModeSwitch"
+import logo from "../../assets/logo/NeuroChat_Logo_Shadow.png"
 
 function ResetPassword() {
 
@@ -56,7 +57,7 @@ function ResetPassword() {
                     <ModeSwitch />
                 </div>
                 <div className="h-full flex flex-col items-center">
-                    <img alt="logo" src="/src/assets/logo/NeuroChat_Logo_Shadow.png" style={{height: '100px', width: '100px'}} />
+                    <img alt="logo" src={logo} style={{height: '100px', width: '100px'}} />
                     <div className="text-bgblue text-lg font-semibold">NeuroChat.Ai</div>
                     <div className="text-2xl font-semibold pt-5">Reset Password</div>
                     <div className="pt-5 font-light text-gray-500">Please enter new password and continue login</div>

@@ -5,6 +5,16 @@ import { getUserData, getUserSubscription } from "../../../graphql/queries"
 import { createUserData, createUserSubscription, updateUserSubscription } from "../../../graphql/mutations"
 import { MyContext } from "../../../context/context"
 import ModeSwitch from "../../modeswitch/ModeSwitch"
+import synaptiquery from "../../../assets/icons/synaptiquery.svg"
+import chatgpt from "../../../assets/icons/chatgpt.svg"
+import claudeai from "../../../assets/icons/claudeai.svg"
+import palm2 from "../../../assets/icons/palm2.svg"
+import falcon from "../../../assets/icons/falcon.svg"
+import virtualcard from "../../../assets/icons/virtualcard.svg"
+import web from "../../../assets/icons/web.svg"
+import twitter from "../../../assets/icons/twitter.svg"
+import settings from "../../../assets/icons/settings.svg"
+import logout from "../../../assets/icons/logout.svg"
 
 function SideNav() {
 
@@ -257,13 +267,13 @@ function SideNav() {
                 <div className="flex flex-row items-center w-full mt-10 bg-gray-100">
                     <div className="h-full w-1 rounded-r-full bg-bgblue" />
                     <div className="flex flex-col items-center py-3 w-full">
-                        <img alt="synaptiquery" src="/src/assets/icons/synaptiquery.svg" style={{height: '40px', width: '40px'}} />
+                        <img alt="synaptiquery" src={synaptiquery} style={{height: '40px', width: '40px'}} />
                         <div className="mt-3 text-sm text-bgblue">SynaptiQuery</div>
                     </div>
                 </div>
             ) : (
                 <NavLink to="/synaptiquery" className="flex flex-col items-center mt-10 py-3 w-full">
-                    <img alt="synaptiquery" src="/src/assets/icons/synaptiquery.svg" style={{height: '40px', width: '40px'}} />
+                    <img alt="synaptiquery" src={synaptiquery} style={{height: '40px', width: '40px'}} />
                     <div className="mt-3 text-sm text-gray-500">SynaptiQuery</div>
                 </NavLink>
             )}
@@ -271,13 +281,13 @@ function SideNav() {
                 <div className="flex flex-row items-center w-full bg-gray-100">
                     <div className="h-full w-1 rounded-r-full bg-bgblue" />
                     <div className="flex flex-col items-center py-3 w-full">
-                        <img alt="chatgpt" src="/src/assets/icons/chatgpt.svg" style={{height: '40px', width: '40px'}} />
+                        <img alt="chatgpt" src={chatgpt} style={{height: '40px', width: '40px'}} />
                         <div className="mt-3 text-sm text-bgblue">ChatGPT</div>
                     </div>
                 </div>
             ) : (
                 <NavLink to="/chatgpt" className="flex flex-col items-center py-3 w-full">
-                    <img alt="chatgpt" src="/src/assets/icons/chatgpt.svg" style={{height: '40px', width: '40px'}} />
+                    <img alt="chatgpt" src={chatgpt} style={{height: '40px', width: '40px'}} />
                     <div className="mt-3 text-sm text-gray-500">ChatGPT</div>
                 </NavLink>
             )}
@@ -285,13 +295,13 @@ function SideNav() {
                 <div className="flex flex-row items-center w-full bg-gray-100">
                     <div className="h-full w-1 rounded-r-full bg-bgblue" />
                     <div className="flex flex-col items-center py-3 w-full">
-                        <img alt="claudeai" src="/src/assets/icons/claudeai.svg" style={{height: '40px', width: '40px'}} />
+                        <img alt="claudeai" src={claudeai} style={{height: '40px', width: '40px'}} />
                         <div className="mt-3 text-sm text-bgblue">Claude.AI</div>
                     </div>
                 </div>
             ) : (
                 <NavLink to="/claudeai" className="flex flex-col items-center py-3 w-full">
-                    <img alt="claudeai" src="/src/assets/icons/claudeai.svg" style={{height: '40px', width: '40px'}} />
+                    <img alt="claudeai" src={claudeai} style={{height: '40px', width: '40px'}} />
                     <div className="mt-3 text-sm text-gray-500">Claude.AI</div>
                 </NavLink>
             )}
@@ -299,13 +309,13 @@ function SideNav() {
                 <div className="flex flex-row items-center w-full bg-gray-100">
                     <div className="h-full w-1 rounded-r-full bg-bgblue" />
                     <div className="flex flex-col items-center py-3 w-full">
-                        <img alt="palm2" src="/src/assets/icons/palm2.svg" style={{height: '40px', width: '40px'}} />
+                        <img alt="palm2" src={palm2} style={{height: '40px', width: '40px'}} />
                         <div className="mt-3 text-sm text-bgblue">PaLM2</div>
                     </div>
                 </div>
             ) : (
                 <NavLink to="/palm2" className="flex flex-col items-center py-3 w-full">
-                    <img alt="palm2" src="/src/assets/icons/palm2.svg" style={{height: '40px', width: '40px'}} />
+                    <img alt="palm2" src={palm2} style={{height: '40px', width: '40px'}} />
                     <div className="mt-3 text-sm text-gray-500">PaLM2</div>
                 </NavLink>
             )}
@@ -313,7 +323,7 @@ function SideNav() {
                 <div className="flex flex-row items-center w-full bg-gray-100">
                     <div className="h-full w-1 rounded-r-full bg-bgblue" />
                     <div className="flex flex-col items-center py-3 w-full">
-                        <img alt="falcon" src="/src/assets/icons/falcon.svg" style={{height: '40px', width: '40px'}} />
+                        <img alt="falcon" src={falcon} style={{height: '40px', width: '40px'}} />
                         <div className="mt-3 text-sm text-bgblue">Falcon40B</div>
                     </div>
                 </div>
@@ -327,23 +337,23 @@ function SideNav() {
                 <div className="flex flex-row items-center w-full bg-gray-100">
                     <div className="h-full w-1 rounded-r-full bg-bgblue" />
                     <div className="flex flex-col items-center py-3 w-full">
-                        <img alt="virtualcard" src="/src/assets/icons/virtualcard.svg" style={{height: '40px', width: '40px'}} />
+                        <img alt="virtualcard" src={virtualcard} style={{height: '40px', width: '40px'}} />
                         <div className="mt-3 text-sm text-bgblue">Virtual Card</div>
                     </div>
                 </div>
             ) : (
                 <NavLink to="/settings/virtualcard" className="flex flex-col items-center py-3 w-full">
-                    <img alt="virtualcard" src="/src/assets/icons/virtualcard.svg" style={{height: '40px', width: '40px'}} />
+                    <img alt="virtualcard" src={virtualcard} style={{height: '40px', width: '40px'}} />
                     <div className="mt-3 text-sm text-gray-500">Virtual Card</div>
                 </NavLink>
             )}
             <a target="_blank" rel="noopener noreferrer" href="https://www.neurochat.ai/" className="flex flex-col items-center py-3 w-full">
-                <img alt="web" src="/src/assets/icons/web.svg" style={{height: '40px', width: '40px'}} />
+                <img alt="web" src={web} style={{height: '40px', width: '40px'}} />
                 <div className="mt-3 text-xs font-semibold text-gray-500">NeuroChat</div>
                 <div className="text-gray-500 text-xs text-center">Visit NeuroChat to download Mobile App</div>
             </a>
             <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/neurocareai" className="flex flex-col items-center py-3 w-full">
-                <img alt="twitter" src="/src/assets/icons/twitter.svg" style={{height: '40px', width: '40px'}} />
+                <img alt="twitter" src={twitter} style={{height: '40px', width: '40px'}} />
                 <div className="mt-3 text-xs text-gray-500">Follow us on Twitter</div>
                 <div className="text-gray-500 text-sm font-semibold">@neurocareai</div>
             </a>
@@ -351,18 +361,18 @@ function SideNav() {
                 <div className="flex flex-row items-center w-full bg-gray-100">
                     <div className="h-full w-1 rounded-r-full bg-bgblue" />
                     <div className="flex flex-col items-center py-3 w-full">
-                        <img alt="settings" src="/src/assets/icons/settings.svg" style={{height: '40px', width: '40px'}} />
+                        <img alt="settings" src={settings} style={{height: '40px', width: '40px'}} />
                         <div className="mt-3 text-sm text-bgblue">Settings</div>
                     </div>
                 </div>
             ) : (
                 <NavLink to="/settings" className="flex flex-col items-center py-3 w-full">
-                    <img alt="settings" src="/src/assets/icons/settings.svg" style={{height: '40px', width: '40px'}} />
+                    <img alt="settings" src={settings} style={{height: '40px', width: '40px'}} />
                     <div className="mt-3 text-sm text-gray-500">Settings</div>
                 </NavLink>
             )}
             <button onClick={handleSignOut} className="flex flex-col items-center py-3 w-full">
-                <img alt="logout" src="/src/assets/icons/logout.svg" style={{height: '30px', width: '30px'}} />
+                <img alt="logout" src={logout} style={{height: '30px', width: '30px'}} />
                 <div className="mt-3 text-sm text-gray-500">Logout</div>
             </button>
             <ModeSwitch />

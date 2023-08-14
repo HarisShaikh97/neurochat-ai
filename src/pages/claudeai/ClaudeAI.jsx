@@ -17,6 +17,11 @@ import ChatMessage from "../../components/chatmessage/ChatMessage"
 import WaitingMessage from "../../components/waitingmessage/WaitingMessage"
 import ErrorMessage from "../../components/errormessage/ErrorMessage"
 import TranslationPopup from "../../components/translationpopup/TranslationPopup"
+import starred from "../../assets/icons/star-fill.png"
+import unstarred from "../../assets/icons/star.png"
+import check from "../../assets/icons/check.png"
+import edit from "../../assets/icons/edit-black.png"
+import sendMessage from "../../assets/icons/send.png"
 
 function ClaudeAI() {
 
@@ -301,7 +306,7 @@ function ClaudeAI() {
                                                         console.error('Error:', error)
                                                     })
                                                 }}>
-                                                    <img alt="starred" src="/src/assets/icons/star-fill.png" style={{height: '20px'}} />
+                                                    <img alt="starred" src={starred} style={{height: '20px'}} />
                                                 </button>
                                             ) : (
                                                 <button onClick={async () => {
@@ -315,13 +320,13 @@ function ClaudeAI() {
                                                         console.error('Error:', error)
                                                     })
                                                 }}>
-                                                    <img alt="unstarred" src="/src/assets/icons/star.png" style={{height: '20px'}} />
+                                                    <img alt="unstarred" src={unstarred} style={{height: '20px'}} />
                                                 </button>
                                             )}
                                             <input type="text" value={selectedChatUpdatedTitle} onChange={(e) => {setSelectedChatUpdatedTitle(e.target.value)}} placeholder="Write Title..." className="w-52" style={{outline: 'none', background: 'transparent'}} />
                                         </div>
                                         <button onClick={updateSelectedChatTitle}>
-                                            <img alt="check" src="/src/assets/icons/check.png" className="px-3" style={{height: '20px'}} />
+                                            <img alt="check" src={check} className="px-3" style={{height: '20px'}} />
                                         </button>
                                         <button onClick={() => {setEditSelectedChatTitle(false)}}>
                                             <XMarkIcon className="h-5 w-5 text-bgblue" />
@@ -342,7 +347,7 @@ function ClaudeAI() {
                                                         console.error('Error:', error)
                                                     })
                                                 }}>
-                                                    <img alt="starred" src="/src/assets/icons/star-fill.png" style={{height: '20px'}} />
+                                                    <img alt="starred" src={starred} style={{height: '20px'}} />
                                                 </button>
                                             ) : (
                                                 <button onClick={async () => {
@@ -356,13 +361,13 @@ function ClaudeAI() {
                                                         console.error('Error:', error)
                                                     })
                                                 }}>
-                                                    <img alt="unstarred" src="/src/assets/icons/star.png" style={{height: '20px'}} />
+                                                    <img alt="unstarred" src={unstarred} style={{height: '20px'}} />
                                                 </button>
                                             )}
                                             <div className="w-52 truncate">{selectedChat?.chat_title}</div>
                                         </div>
                                         <button onClick={() => {setEditSelectedChatTitle(true)}}>
-                                            <img alt="edit" src="/src/assets/icons/edit-black.png" className="px-3" style={{height: '20px'}} />
+                                            <img alt="edit" src={edit} className="px-3" style={{height: '20px'}} />
                                         </button>
                                     </div>
                                 )}
@@ -478,7 +483,7 @@ function ClaudeAI() {
                                         <div className="flex flex-col items-center gap-2 pb-1">
                                             <div className="text-bgblue text-xs border border-bgblue rounded-full h-5 px-2 flex items-center justify-center">{currentSubscription?.claudeRemaining}/5</div>
                                             <button type="submit" className="bg-bgblue rounded-full h-12 w-12 flex items-center justify-center pr-1 pt-1">
-                                                <img alt="send" src="/src/assets/icons/send.png" style={{height: '25px'}} />
+                                                <img alt="send" src={sendMessage} style={{height: '25px'}} />
                                             </button>
                                         </div>
                                     </form>

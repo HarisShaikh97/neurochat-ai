@@ -2,6 +2,18 @@ import React, { useState ,useRef, useContext } from "react"
 import PropTypes from "prop-types"
 import axios from "axios"
 import { MyContext } from "../../context/context"
+import synaptiquery from "../../assets/icons/synaptiquery.svg"
+import chatgpt from "../../assets/icons/chatgpt.svg"
+import claudeai from "../../assets/icons/claudeai.svg"
+import palm2 from "../../assets/icons/palm2.svg"
+import falcon from "../../assets/icons/falcon.svg"
+import languages from "../../assets/icons/languages.png"
+import disliked from "../../assets/icons/dislike-white.png"
+import dislike from "../../assets/icons/dislike.png"
+import liked from "../../assets/icons/like-white.png"
+import like from "../../assets/icons/like.png"
+import deleteMessage from "../../assets/icons/delete.png"
+import copy from "../../assets/icons/copy.png"
 
 function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selectedChat, setSelectedChat, setShowTranslationPopup, setTranslatedText }) {
 
@@ -25,7 +37,7 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
         }
     }
 
-    //console.log(currentUser)
+    console.log(modelType)
 
     return (
         <div className="flex flex-col gap-10">
@@ -47,7 +59,11 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
             </div>
             <div className="flex flex-row gap-5">
                 <div>
-                    <img alt={modelType} src={`/src/assets/icons/${modelType}.svg`} style={{height: '40px'}} />
+                    {modelType === 'synaptiquery' && <img alt={modelType} src={synaptiquery} style={{height: '40px'}} />}
+                    {modelType === 'chatgpt' && <img alt={modelType} src={chatgpt} style={{height: '40px'}} />}
+                    {modelType === 'claudeai' && <img alt={modelType} src={claudeai} style={{height: '40px'}} />}
+                    {modelType === 'palm2' && <img alt={modelType} src={palm2} style={{height: '40px'}} />}
+                    {modelType === 'falcon' && <img alt={modelType} src={falcon} style={{height: '40px'}} />}
                 </div>
                 <div className="flex-1 flex flex-col pt-2 gap-3">
                     <div className="flex flex-row items-center gap-5 font-semibold">
@@ -68,7 +84,7 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
                     <div className="flex flex-row gap-3 items-center justify-end pt-5">
                         <div className="relative">
                             <button ref={buttonRef} onClick={() => {setShowLanguagePopup(!showLanguagePopup)}} className="rounded-full h-7 w-12 flex items-center justify-center border border-bgblue">
-                                <img alt="translate" src="/src/assets/icons/languages.png" style={{height: '20px'}} />
+                                <img alt="translate" src={languages} style={{height: '20px'}} />
                             </button>
                             {showLanguagePopup && (
                                 <div
@@ -182,7 +198,7 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
                                     })
                                 }}
                             >
-                                <img alt="disliked" src="/src/assets/icons/dislike-white.png" style={{height: '20px'}} />
+                                <img alt="disliked" src={disliked} style={{height: '20px'}} />
                             </button>
                         ) : (
                             <button 
@@ -199,7 +215,7 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
                                     })
                                 }}
                             >
-                                <img alt="dislike" src="/src/assets/icons/dislike.png" style={{height: '20px'}} />
+                                <img alt="dislike" src={dislike} style={{height: '20px'}} />
                             </button>
                         )}
                         {thread?.feedback_status === 1 ? (
@@ -217,7 +233,7 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
                                     })
                                 }}
                             >
-                                <img alt="liked" src="/src/assets/icons/like-white.png" style={{height: '20px'}} />
+                                <img alt="liked" src={liked} style={{height: '20px'}} />
                             </button>
                         ) : (
                             <button 
@@ -234,7 +250,7 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
                                     })
                                 }}
                             >
-                                <img alt="like" src="/src/assets/icons/like.png" style={{height: '20px'}} />
+                                <img alt="like" src={like} style={{height: '20px'}} />
                             </button>
                         )}
                         <button 
@@ -260,10 +276,10 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
                                 })
                             }}
                         >
-                            <img alt="delete" src="/src/assets/icons/delete.png" style={{height: '20px'}} />
+                            <img alt="delete" src={deleteMessage} style={{height: '20px'}} />
                         </button>
                         <button onClick={handleCopyClick} className="rounded-full h-7 w-12 flex items-center justify-center border border-bgblue">
-                            <img alt="copy" src="/src/assets/icons/copy.png" style={{height: '20px'}} />
+                            <img alt="copy" src={copy} style={{height: '20px'}} />
                         </button>
                     </div>
                     {thread?.system?.sources?.length > 0 && (<div className="text-sm font-light">Learn more:</div>)}

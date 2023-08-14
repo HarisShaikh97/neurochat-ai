@@ -2,6 +2,11 @@ import { useContext } from "react"
 import { Link } from "react-router-dom"
 import { UserIcon } from "@heroicons/react/24/solid"
 import { MyContext } from "../../context/context"
+import support from "../../assets/icons/support.png"
+import virtualcard from "../../assets/icons/virtualcard.svg"
+import password from "../../assets/icons/password.png"
+import privacyPolicy from "../../assets/icons/privacy-policy.png"
+import pricing from "../../assets/icons/pricing.png"
 
 function SettingsMenu() {
 
@@ -27,25 +32,25 @@ function SettingsMenu() {
                         <div>Basic Information</div>
                     </Link>
                     <Link to="/settings/support" className="rounded-3xl bg-bgblue bg-opacity-5 h-28 w-40 flex flex-col gap-2 items-center">
-                        <img alt="support" src="/src/assets/icons/support.png" className="mt-5" style={{height: '35px'}} />
+                        <img alt="support" src={support} className="mt-5" style={{height: '35px'}} />
                         <div>Support</div>
                     </Link>
                     <Link to="/settings/virtualcard" className="rounded-3xl bg-bgblue bg-opacity-5 h-28 w-40 flex flex-col gap-3 items-center">
-                        <img alt="virtual-card" src="/src/assets/icons/virtualcard.svg" className="mt-5" style={{height: '30px'}} />
+                        <img alt="virtual-card" src={virtualcard} className="mt-5" style={{height: '30px'}} />
                         <div className="px-5 text-center">Virtual Contact Card</div>
                     </Link>
                 </div>
                 <div className="flex flex-col gap-5">
                     <Link to="/settings/changepassword" className="rounded-3xl bg-bgblue bg-opacity-5 h-28 w-40 flex flex-col items-center">
-                        <img alt="password" src="/src/assets/icons/password.png" className="mt-3" style={{height: '50px'}} />
+                        <img alt="password" src={password} className="mt-3" style={{height: '50px'}} />
                         <div>Password</div>
                     </Link>
                     <Link to="/settings/legaldocuments" className="rounded-3xl bg-bgblue bg-opacity-5 h-28 w-40 flex flex-col gap-2 items-center">
-                        <img alt="privacy-policy" src="/src/assets/icons/privacy-policy.png" className="mt-5" style={{height: '30px'}} />
+                        <img alt="privacy-policy" src={privacyPolicy} className="mt-5" style={{height: '30px'}} />
                         <div className="text-center">Privacy, Terms & Disclosure</div>
                     </Link>
                     <Link to="/settings/pricingplan" className="rounded-3xl bg-bgblue bg-opacity-5 h-28 w-40 flex flex-col gap-3 items-center">
-                        <img alt="pricing" src="/src/assets/icons/pricing.png" className="mt-5" style={{height: '30px'}} />
+                        <img alt="pricing" src={pricing} className="mt-5" style={{height: '30px'}} />
                         <div>Pricing Plan</div>
                     </Link>
                 </div>

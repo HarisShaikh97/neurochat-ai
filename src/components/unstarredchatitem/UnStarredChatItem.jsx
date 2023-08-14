@@ -2,7 +2,10 @@ import { useState } from "react"
 import PropTypes from "prop-types"
 import axios from "axios"
 import { XMarkIcon } from "@heroicons/react/24/solid"
-
+import unstarred from "../../assets/icons/star.png"
+import check from "../../assets/icons/check.png"
+import edit from "../../assets/icons/edit.png"
+import deleteChat from "../../assets/icons/delete.png"
 
 function UnStarredChatItem({chat, refreshAllChats, refreshChat, setSelectedChat, selectedChat}) {
 
@@ -62,7 +65,7 @@ function UnStarredChatItem({chat, refreshAllChats, refreshChat, setSelectedChat,
                         console.error('Error:', error)
                     })
                 }}>
-                    <img alt="unstarred" src="/src/assets/icons/star.png" style={{height: '20px'}} />
+                    <img alt="unstarred" src={unstarred} style={{height: '20px'}} />
                 </button>
                 {editChatTitle ? (
                     <input type="text" value={updatedChatTitle} onChange={(e) => {setUpdatedChatTitle(e.target.value)}} placeholder="Write Title..." className="w-52" style={{outline: 'none', background: 'transparent'}} />
@@ -85,7 +88,7 @@ function UnStarredChatItem({chat, refreshAllChats, refreshChat, setSelectedChat,
             {editChatTitle ? (
                 <div className="flex flex-row items-center">
                     <button onClick={updateChatTitle}>
-                        <img alt="check" src="/src/assets/icons/check.png" className="px-3" style={{height: '25px'}} />
+                        <img alt="check" src={check} className="px-3" style={{height: '25px'}} />
                     </button>
                     <button className="px-2" onClick={() => {setEditChatTitle(false)}}>
                         <XMarkIcon className="h-6 w-6 text-bgblue" />
@@ -94,10 +97,10 @@ function UnStarredChatItem({chat, refreshAllChats, refreshChat, setSelectedChat,
             ) : (
                 <div className="flex flex-row items-center">
                     <button onClick={() => {setEditChatTitle(true)}}>
-                        <img alt="edit" src="/src/assets/icons/edit.png" className="px-3" style={{height: '20px'}} />
+                        <img alt="edit" src={edit} className="px-3" style={{height: '20px'}} />
                     </button>
                     <button onClick={handleDelete}>
-                        <img alt="delete" src="/src/assets/icons/delete.png" className="px-3" style={{height: '20px'}} />
+                        <img alt="delete" src={deleteChat} className="px-3" style={{height: '20px'}} />
                     </button>
                 </div>
             )}

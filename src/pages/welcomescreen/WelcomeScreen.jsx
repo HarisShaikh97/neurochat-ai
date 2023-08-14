@@ -1,9 +1,12 @@
+import logo from "../../assets/logo/NeuroChat_Logo.png"
+import brain from "../../assets/icons/brain-icon.svg"
+
 function WelcomeScreen() {
 
     return (
         <div className="w-screen h-screen bg-bgblue text-white flex flex-col items-center justify-center">
             <div className="w-full h-full flex flex-col items-center justify-center">
-                <img alt="neurochat" src="/src/assets/logo/NeuroChat_Logo.png" style={{ height: '175px', width: '175px'}} />
+                <img alt="neurochat" src={logo} style={{ height: '175px', width: '175px'}} />
                 <div className="flex flex-col">
                     <div className="text-4xl font-semibold">NeuroChat.Ai</div>
                     <div className="text-end text-2xl font-semibold">(beta)</div>
@@ -15,7 +18,7 @@ function WelcomeScreen() {
                 <div className="text-sm pt-3">and is not suitable for clinical use.</div>
                 <div className="text-xl pt-8">Powered by:</div>
                 <div className="flex flex-row items-center gap-3 mt-5 px-3 py-1 border border-white rounded-lg">
-                    <img alt="brain" src="/src/assets/icons/brain-icon.svg" style={{height: '35px', width: '35px'}} />
+                    <img alt="brain" src={brain} style={{height: '35px', width: '35px'}} />
                     <div className="font-semibold">NeuroCare.Ai</div>
                 </div>
             </div>

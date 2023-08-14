@@ -3,6 +3,7 @@ import PropTypes from "prop-types"
 import { API, graphqlOperation, Storage } from "aws-amplify"
 import { updateUserData } from "../../graphql/mutations"
 import { MyContext } from "../../context/context"
+import upload from "../../assets/icons/upload-image.png"
 
 function UpdateProfilePicture({setShowUpdateProfilePicture}) {
 
@@ -86,7 +87,7 @@ function UpdateProfilePicture({setShowUpdateProfilePicture}) {
                         <img alt="image" src={URL.createObjectURL(selectedFile)} style={{maxHeight: '100px', maxWidth: '150px'}} />
                     ) : (
                         <div className="flex flex-col gap-5 items-center justify-center">
-                            <img alt="image" src="/src/assets/icons/upload-image.png" style={{height: '50px', width: '50px'}} />
+                            <img alt="image" src={upload} style={{height: '50px', width: '50px'}} />
                             <div className="font-semibold text-gray-500">Drag and drop here...</div>
                         </div>
                     )}

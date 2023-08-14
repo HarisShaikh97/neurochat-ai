@@ -1,6 +1,11 @@
 import { useRef } from "react"
 import PropTypes from "prop-types"
 import { XMarkIcon } from "@heroicons/react/24/solid"
+import synaptiquery from "../../assets/icons/synaptiquery.svg"
+import chatgpt from "../../assets/icons/chatgpt.svg"
+import claudeai from "../../assets/icons/claudeai.svg"
+import palm2 from "../../assets/icons/palm2.svg"
+import falcon from "../../assets/icons/falcon.svg"
 
 function TranslationPopup({setShowTranslationPopup, translatedText, setTranslatedText, modelType}) {
 
@@ -30,7 +35,11 @@ function TranslationPopup({setShowTranslationPopup, translatedText, setTranslate
                 </div>
                 <div className="flex flex-row items-center font-medium gap-5 w-full">
                     <div>
-                        <img alt={modelType} src={`/src/assets/icons/${modelType}.svg`} style={{height: '40px'}} />
+                        {modelType === 'synaptiquery' && <img alt={modelType} src={synaptiquery} style={{height: '40px'}} />}
+                        {modelType === 'chatgpt' && <img alt={modelType} src={chatgpt} style={{height: '40px'}} />}
+                        {modelType === 'claudeai' && <img alt={modelType} src={claudeai} style={{height: '40px'}} />}
+                        {modelType === 'palm2' && <img alt={modelType} src={palm2} style={{height: '40px'}} />}
+                        {modelType === 'falcon' && <img alt={modelType} src={falcon} style={{height: '40px'}} />}
                     </div>
                     {modelType === 'synaptiquery' && (<div>SynaptiQuery</div>)}
                     {modelType === 'chatgpt' && <div>ChatGPT</div>}

@@ -4,6 +4,8 @@ import { Auth } from "aws-amplify"
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import { MyContext } from "../../context/context"
 import Layout from "../../components/layout/Layout"
+import chat from "../../assets/images/chat.png"
+import person from "../../assets/images/person.png"
 
 function Home() {
 
@@ -51,8 +53,8 @@ function Home() {
                     </div>
                     <div className="rounded-3xl bg-bgblue bg-opacity-5 w-full flex flex-col gap-10 items-center py-10">
                         <div className="text-2xl font-medium">Start your chat</div>
-                        <img alt="chat" src="/src/assets/images/chat.png" style={{width: '250px'}} />
-                        <img alt="chat" src="/src/assets/images/person.png" style={{width: '250px'}} />
+                        <img alt="chat" src={chat} style={{width: '250px'}} />
+                        <img alt="person" src={person} style={{width: '250px'}} />
                     </div>
                 </div>
                 <div className="bg-gray-100" style={{height: '100%', width: '1px'}} />

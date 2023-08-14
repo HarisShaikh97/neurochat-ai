@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import ModeSwitch from "../../components/modeswitch/ModeSwitch"
+import logo from "../../assets/logo/NeuroChat_Logo_Shadow.png"
 
 function ResetPasswordSuccessful() {
 
@@ -20,7 +21,7 @@ function ResetPasswordSuccessful() {
                     <ModeSwitch />
                 </div>
                 <div className="h-full flex flex-col items-center justify-center">
-                    <img alt="logo" src="/src/assets/logo/NeuroChat_Logo_Shadow.png" style={{height: '100px', width: '100px'}} />
+                    <img alt="logo" src={logo} style={{height: '100px', width: '100px'}} />
                     <div className="text-bgblue text-lg font-semibold">NeuroChat.Ai</div>
                     <div className="text-2xl font-semibold pt-5">Reset Password</div>
                     <div className="pt-5 font-light text-gray-500">You have successfully confirmed new password.</div>

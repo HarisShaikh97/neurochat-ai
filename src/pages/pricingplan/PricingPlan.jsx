@@ -7,6 +7,10 @@ import Layout from "../../components/layout/Layout"
 import SettingsMenu from "../../components/settingsmenu/SettingsMenu"
 import SubscribedPopup from "../../components/subscribedpopup/SubscribedPopup"
 import CancelSubscriptionPopup from "../../components/cancelsubscriptionpopup/CancelSubscriptionPopup"
+import pricingPlan from "../../assets/icons/pricingplan.png"
+import basicPlan from "../../assets/icons/basicplan.png"
+import premiumPlan from "../../assets/icons/premiumplan.png"
+import premiumPlanWhite from "../../assets/icons/premiumplanwhite.png"
 
 function PricingPlan() {
 
@@ -70,7 +74,7 @@ function PricingPlan() {
                     {showSubscribed && <SubscribedPopup />}
                     {showCancel && <CancelSubscriptionPopup handleCancel={handleCancel} handleConfirm={handleConfirm} />}
                     <div className="rounded-full h-12 w-12 bg-bglightblue flex items-center justify-center">
-                        <img alt="pricing-plan" src="/src/assets/icons/pricingplan.png" style={{height: '15px'}} />
+                        <img alt="pricing-plan" src={pricingPlan} style={{height: '15px'}} />
                     </div>
                     <div className="text-2xl font-medium pt-5">Subscribe to NeuroChat</div>
                     <div className="pt-3 font-light">To gain access to all bots, please subscribe. Prices will increase as we add more bots.</div>
@@ -79,7 +83,7 @@ function PricingPlan() {
                             <div className="rounded-3xl flex flex-col border-2 border-gray-300 h-[28rem] w-96">
                                 <div className="w-full flex flex-row pt-5 gap-5 items-center justify-center">
                                     <div className="rounded-full h-10 w-10 bg-bglightblue flex items-center justify-center">
-                                        <img alt="basic-plan" src="/src/assets/icons/basicplan.png" style={{height: '12px'}} />
+                                        <img alt="basic-plan" src={basicPlan} style={{height: '12px'}} />
                                     </div>
                                     <div className="text-lg font-medium text-bgblue">Basic Plan</div>
                                 </div>
@@ -119,7 +123,7 @@ function PricingPlan() {
                             <div className="rounded-3xl flex flex-col border-2 border-bgblue bg-opacity-30 bg-bglightblue h-[28rem] w-96">
                                 <div className="w-full flex flex-row pt-5 gap-5 items-center justify-center">
                                     <div className="rounded-full h-10 w-10 bg-bglightblue flex items-center justify-center">
-                                        <img alt="premium-plan" src="/src/assets/icons/premiumplan.png" style={{height: '15px'}} />
+                                        <img alt="premium-plan" src={premiumPlan} style={{height: '15px'}} />
                                     </div>
                                     <div className="text-lg font-medium text-bgblue">Premium Plan</div>
                                 </div>
@@ -160,7 +164,7 @@ function PricingPlan() {
                                 </button>
                             ) : (
                                 <button disabled onClick={handleSubscribe} className="mt-20 h-12 w-full rounded-3xl bg-bgblue bg-opacity-50 text-white flex flex-row gap-5 items-center justify-center">
-                                    <img alt="premium-plan" src="/src/assets/icons/premiumplanwhite.png" style={{height: '20px'}} />
+                                    <img alt="premium-plan" src={premiumPlanWhite} style={{height: '20px'}} />
                                     <div>Upgrade to Premium Plan</div>
                                 </button>
                             )}

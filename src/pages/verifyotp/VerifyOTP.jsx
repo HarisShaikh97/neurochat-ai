@@ -4,6 +4,7 @@ import { Auth } from "aws-amplify"
 import OTPInput from "react-otp-input"
 import { MyContext } from "../../context/context"
 import ModeSwitch from "../../components/modeswitch/ModeSwitch"
+import logo from "../../assets/logo/NeuroChat_Logo_Shadow.png"
 
 function VerifyOTP() {
 
@@ -89,7 +90,7 @@ function VerifyOTP() {
                     <ModeSwitch />
                 </div>
                 <div className="h-full flex flex-col items-center">
-                    <img alt="logo" src="/src/assets/logo/NeuroChat_Logo_Shadow.png" style={{height: '100px', width: '100px'}} />
+                    <img alt="logo" src={logo} style={{height: '100px', width: '100px'}} />
                     <div className="text-bgblue text-lg font-semibold">NeuroChat.Ai</div>
                     <div className="text-2xl font-semibold pt-5">OTP Verification</div>
                     <div className="pt-5 font-light text-gray-500">Enter the OTP sent to -</div>

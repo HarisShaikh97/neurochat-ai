@@ -4,6 +4,9 @@ import { Auth } from "aws-amplify"
 import { EyeIcon } from "@heroicons/react/24/solid"
 import { EyeSlashIcon } from "@heroicons/react/24/solid"
 import ModeSwitch from "../../components/modeswitch/ModeSwitch"
+import logo from "../../assets/logo/NeuroChat_Logo_Shadow.png"
+import google from "../../assets/icons/google.svg"
+import apple from "../../assets/icons/apple.svg"
 
 function Login() {
 
@@ -63,7 +66,7 @@ function Login() {
                     <ModeSwitch />
                 </div>
                 <div className="h-full flex flex-col items-center">
-                    <img alt="logo" src="/src/assets/logo/NeuroChat_Logo_Shadow.png" style={{height: '100px', width: '100px'}} />
+                    <img alt="logo" src={logo} style={{height: '100px', width: '100px'}} />
                     <div className="text-bgblue text-lg font-semibold">NeuroChat.Ai</div>
                     <div className="text-2xl font-semibold pt-5">Welcome Back</div>
                     <div className="pt-5 font-light text-gray-500">Please enter your correct details for</div>
@@ -92,11 +95,11 @@ function Login() {
                         <div className="bg-gray-300" style={{height: '1px', width: '100%'}} />
                     </div>
                     <button onClick={handleGoogleLogin} className="h-12 w-80 flex flex-row gap-5 pl-14 items-center border rounded-full">
-                        <img alt="google" src="/src/assets/icons/google.svg" style={{height: '25px', width: '25px'}} />
+                        <img alt="google" src={google} style={{height: '25px', width: '25px'}} />
                         <p>Continue with Google</p>
                     </button>
                     <button onClick={handleAppleLogin} className="h-12 w-80 flex flex-row gap-5 pl-14 mt-5 items-center border rounded-full">
-                        <img alt="apple" src="/src/assets/icons/apple.svg" style={{height: '25px', width: '25px'}} />
+                        <img alt="apple" src={apple} style={{height: '25px', width: '25px'}} />
                         <p>Continue with Apple</p>
                     </button>
                     <div className="pt-10 text-sm">Don{"'"}t have an account yet?{" "}<Link to="/signup" className="text-bgblue">Sign Up</Link></div>
