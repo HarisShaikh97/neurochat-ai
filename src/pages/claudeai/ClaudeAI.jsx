@@ -144,6 +144,7 @@ function ClaudeAI() {
                 // console.log(res)
                 setSelectedChat(res?.data)
                 setShowWaitingMessage(false)
+                setShowErrorMessage(false)
             }).catch((error) => {
                 console.error('Error:', error)
             })
@@ -182,7 +183,9 @@ function ClaudeAI() {
             user_query: query
         }
 
-        await axios.post(`${apiBaseUrl}/chat`, formData).then((res) => {
+        // console.log(`${apiBaseUrl}/chat/`)
+
+        await axios.post(`${apiBaseUrl}/chat/`, formData).then((res) => {
             // console.log(res)
             if(res?.status === 200){
                 if(selectedChat) {
@@ -202,10 +205,12 @@ function ClaudeAI() {
             }
             else {
                 setShowErrorMessage(true)
+                setShowWaitingMessage(false)
             }
         }).catch((error) => {
             console.error('Error:', error)
             setShowErrorMessage(true)
+            setShowWaitingMessage(false)
         })
     }
 
@@ -222,6 +227,8 @@ function ClaudeAI() {
             user_query: lastQuery
         }
 
+        // console.log(`${apiBaseUrl}/chat/`)
+
         await axios.post(`${apiBaseUrl}/chat`, formData).then((res) => {
             // console.log(res)
             if(res?.status === 200){
@@ -242,10 +249,12 @@ function ClaudeAI() {
             }
             else {
                 setShowErrorMessage(true)
+                setShowWaitingMessage(false)
             }
         }).catch((error) => {
             console.error('Error:', error)
             setShowErrorMessage(true)
+            setShowWaitingMessage(false)
         })
     }
 
@@ -386,7 +395,7 @@ function ClaudeAI() {
                         <input type="text" value={search} onChange={(e) => {setSearch(e.target.value)}} placeholder="Find previous chats." style={{outline: 'none', width: '100%'}} />
                     </div>
                     {agreed ? (
-                        <div className="flex flex-col h-[70vh] justify-between">
+                        <div className="flex flex-col h-[70vh] justify-between" style={{paddingBottom: '16px'}}>
                             <div className="flex flex-col gap-5">
                                 <div className="flex flex-row items-center gap-5">
                                     {showStarredChats ? (
@@ -404,7 +413,7 @@ function ClaudeAI() {
                                     <div className="flex flex-col gap-3 max-h-24 overflow-y-auto">
                                         {chats?.filter(checkStarred)?.filter(checkSearch)?.map((chat, key) => {
                                             return (
-                                                <StarredChatItem chat={chat} refreshAllChats={refreshAllChats} refreshChat={refreshChat} setSelectedChat={setSelectedChat} selectedChat={selectedChat} key={key} />
+                                                <StarredChatItem chat={chat} refreshAllChats={refreshAllChats} refreshChat={refreshChat} setSelectedChat={setSelectedChat} selectedChat={selectedChat} setShowTranslationPopup={setShowTranslationPopup} key={key} />
                                             )
                                         })}
                                     </div>
@@ -425,7 +434,7 @@ function ClaudeAI() {
                                     <div className="flex flex-col gap-3 max-h-44 overflow-y-auto">
                                         {chats?.filter(checkUnStarred)?.filter(checkSearch)?.map((chat, key) => {
                                             return (
-                                                <UnStarredChatItem chat={chat} refreshAllChats={refreshAllChats} refreshChat={refreshChat} setSelectedChat={setSelectedChat} selectedChat={selectedChat} key={key} />
+                                                <UnStarredChatItem chat={chat} refreshAllChats={refreshAllChats} refreshChat={refreshChat} setSelectedChat={setSelectedChat} selectedChat={selectedChat} setShowTranslationPopup={setShowTranslationPopup} key={key} />
                                             )
                                         })}
                                     </div>

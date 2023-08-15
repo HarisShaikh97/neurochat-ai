@@ -10,7 +10,7 @@ import chatgpt from "../../../assets/icons/chatgpt.svg"
 import claudeai from "../../../assets/icons/claudeai.svg"
 import palm2 from "../../../assets/icons/palm2.svg"
 import falcon from "../../../assets/icons/falcon.svg"
-import virtualcard from "../../../assets/icons/virtualcard.svg"
+// import virtualcard from "../../../assets/icons/virtualcard.svg"
 import web from "../../../assets/icons/web.svg"
 import twitter from "../../../assets/icons/twitter.svg"
 import settings from "../../../assets/icons/settings.svg"
@@ -329,11 +329,11 @@ function SideNav() {
                 </div>
             ) : (
                 <NavLink to="/falcon" className="flex flex-col items-center py-3 w-full">
-                    <img alt="falcon" src="/src/assets/icons/falcon.svg" style={{height: '40px', width: '40px'}} />
+                    <img alt="falcon" src={falcon} style={{height: '40px', width: '40px'}} />
                     <div className="mt-3 text-sm text-gray-500">Falcon40B</div>
                 </NavLink>
             )}
-            {location.pathname.includes('/virtualcard') ? (
+            {/* {location.pathname.includes('/virtualcard') ? (
                 <div className="flex flex-row items-center w-full bg-gray-100">
                     <div className="h-full w-1 rounded-r-full bg-bgblue" />
                     <div className="flex flex-col items-center py-3 w-full">
@@ -346,7 +346,7 @@ function SideNav() {
                     <img alt="virtualcard" src={virtualcard} style={{height: '40px', width: '40px'}} />
                     <div className="mt-3 text-sm text-gray-500">Virtual Card</div>
                 </NavLink>
-            )}
+            )} */}
             <a target="_blank" rel="noopener noreferrer" href="https://www.neurochat.ai/" className="flex flex-col items-center py-3 w-full">
                 <img alt="web" src={web} style={{height: '40px', width: '40px'}} />
                 <div className="mt-3 text-xs font-semibold text-gray-500">NeuroChat</div>

@@ -14,6 +14,7 @@ import liked from "../../assets/icons/like-white.png"
 import like from "../../assets/icons/like.png"
 import deleteMessage from "../../assets/icons/delete.png"
 import copy from "../../assets/icons/copy.png"
+import copyWhite from "../../assets/icons/copy-white.png"
 
 function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selectedChat, setSelectedChat, setShowTranslationPopup, setTranslatedText }) {
 
@@ -24,6 +25,7 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
     const { state } = useContext(MyContext)
 
     const [showLanguagePopup, setShowLanguagePopup] = useState(false)
+    const [copied, setCopied] = useState(false)
 
     const divRef = useRef(null)
     const buttonRef = useRef()
@@ -32,12 +34,16 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
         try {
             await navigator.clipboard.writeText(thread?.system?.text)
             // console.log('Text copied to clipboard:', thread?.system?.text)
+            setCopied(true)
+            setTimeout(() => {
+                setCopied(false)
+            }, [100])
         } catch (error) {
             console.error('Error copying text:', error)
         }
     }
 
-    console.log(modelType)
+    // console.log(modelType)
 
     return (
         <div className="flex flex-col gap-10">
@@ -278,9 +284,15 @@ function ChatMessage({ thread, modelType, refreshAllChats, refreshChat, selected
                         >
                             <img alt="delete" src={deleteMessage} style={{height: '20px'}} />
                         </button>
-                        <button onClick={handleCopyClick} className="rounded-full h-7 w-12 flex items-center justify-center border border-bgblue">
-                            <img alt="copy" src={copy} style={{height: '20px'}} />
-                        </button>
+                        {copied ? (
+                            <div className="rounded-full h-7 w-12 flex items-center justify-center bg-bgblue">
+                                <img alt="copy" src={copyWhite} style={{height: '20px'}} />
+                            </div>
+                        ) : (
+                            <button onClick={handleCopyClick} className="rounded-full h-7 w-12 flex items-center justify-center border border-bgblue">
+                                <img alt="copy" src={copy} style={{height: '20px'}} />
+                            </button>
+                        )}
                     </div>
                     {thread?.system?.sources?.length > 0 && (<div className="text-sm font-light">Learn more:</div>)}
                     <div className="flex flex-wrap gap-3">

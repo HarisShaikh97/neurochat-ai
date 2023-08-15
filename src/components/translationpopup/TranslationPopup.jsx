@@ -1,4 +1,4 @@
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import PropTypes from "prop-types"
 import { XMarkIcon } from "@heroicons/react/24/solid"
 import synaptiquery from "../../assets/icons/synaptiquery.svg"
@@ -6,15 +6,23 @@ import chatgpt from "../../assets/icons/chatgpt.svg"
 import claudeai from "../../assets/icons/claudeai.svg"
 import palm2 from "../../assets/icons/palm2.svg"
 import falcon from "../../assets/icons/falcon.svg"
+import copy from "../../assets/icons/copy.png"
+import copyWhite from "../../assets/icons/copy-white.png"
 
 function TranslationPopup({setShowTranslationPopup, translatedText, setTranslatedText, modelType}) {
 
     const divRef = useRef(null)
+
+    const [copied, setCopied] = useState(false)
     
     const handleCopyClick = async () => {
         try {
             await navigator.clipboard.writeText(translatedText)
             // console.log('Text copied to clipboard:', translatedText)
+            setCopied(true)
+            setTimeout(() => {
+                setCopied(false)
+            }, [100])
         } catch (error) {
             console.error('Error copying text:', error)
         }
@@ -48,18 +56,16 @@ function TranslationPopup({setShowTranslationPopup, translatedText, setTranslate
                     {modelType === 'falcon' && <div>Falcon40B</div>}
                 </div>
                 <div ref={divRef} className="text-sm font-light">{translatedText}</div>
-                <div className="flex flex-row gap-5 justify-end w-full">
-                    <button 
-                        onClick={() => {
-                            setShowTranslationPopup(false)
-                        }} 
-                        className="rounded-full h-7 w-12 flex items-center justify-center border border-bgblue"
-                    >
-                        <img alt="share" src="/src/assets/icons/share.png" style={{height: '20px'}} />
-                    </button>
-                    <button onClick={handleCopyClick} className="rounded-full h-7 w-12 flex items-center justify-center border border-bgblue">
-                        <img alt="copy" src="/src/assets/icons/copy.png" style={{height: '20px'}} />
-                    </button>
+                <div className="flex justify-end w-full">
+                    {copied ? (
+                        <div className="rounded-full h-7 w-12 flex items-center justify-center bg-bgblue">
+                            <img alt="copy" src={copyWhite} style={{height: '20px'}} />
+                        </div>
+                    ) : (
+                        <button onClick={handleCopyClick} className="rounded-full h-7 w-12 flex items-center justify-center border border-bgblue">
+                            <img alt="copy" src={copy} style={{height: '20px'}} />
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

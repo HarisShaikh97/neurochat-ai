@@ -7,7 +7,7 @@ import check from "../../assets/icons/check.png"
 import edit from "../../assets/icons/edit.png"
 import deleteChat from "../../assets/icons/delete.png"
 
-function StarredChatItem({chat, refreshAllChats, refreshChat, setSelectedChat, selectedChat}) {
+function StarredChatItem({chat, refreshAllChats, refreshChat, setSelectedChat, selectedChat, setShowTranslationPopup}) {
 
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 
@@ -37,14 +37,14 @@ function StarredChatItem({chat, refreshAllChats, refreshChat, setSelectedChat, s
 
     const handleDelete = async () => {
 
-        if(chat?.chat_id === selectedChat?.chat_id) {
-            setSelectedChat(null)
-        }
-
         await axios.delete(`${apiBaseUrl}/chat/${chat?.chat_id}`).then((res) => {
             // console.log(res)
             if(res?.status === 200) {
                 refreshAllChats()
+                if(chat?.chat_id === selectedChat?.chat_id) {
+                    setSelectedChat(null)
+                    setShowTranslationPopup(false)
+                }
             }
         }).catch((error) => {
             console.error('Error:', error)
@@ -115,5 +115,6 @@ StarredChatItem.propTypes = {
     refreshAllChats: PropTypes.func.isRequired,
     refreshChat: PropTypes.func.isRequired,
     setSelectedChat: PropTypes.func.isRequired,
-    selectedChat: PropTypes.object
+    selectedChat: PropTypes.object,
+    setShowTranslationPopup: PropTypes.func.isRequired
 }
