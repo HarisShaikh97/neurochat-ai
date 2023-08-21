@@ -9,7 +9,7 @@ function Layout({children}) {
             <SideNav />
             <div className="flex flex-col w-full min-h-full">
                 <Header />
-                <main className="flex flex-col w-full h-full">{children}</main>
+                <main className="flex flex-col w-full h-full relative">{children}</main>
             </div>
         </div>
     )

@@ -20,7 +20,6 @@ function SideNav() {
 
     const { state, dispatch } = useContext(MyContext)
 
-    const [currentSubscription, setCurrentSubscription] = useState()
     const [currentAuthenticatedUser, setCurrentAuthenticatedUser] = useState()
 
     const location = useLocation()
@@ -53,6 +52,26 @@ function SideNav() {
                     type: 'SET_USER_INFO',
                     payload: newUser?.data?.createUserData
                 })
+                dispatch({
+                    type: 'SET_SYNAPTIQUERY_AGREED',
+                    payload: false
+                })
+                dispatch({
+                    type: 'SET_CHATGPT_AGREED',
+                    payload: false
+                })
+                dispatch({
+                    type: 'SET_CLAUDE_AGREED',
+                    payload: false
+                })
+                dispatch({
+                    type: 'SET_PALM_AGREED',
+                    payload: false
+                })
+                dispatch({
+                    type: 'SET_FALCON_AGREED',
+                    payload: false
+                })
             }
             catch (error) {
                 console.error('Error adding user:', error)
@@ -62,9 +81,8 @@ function SideNav() {
         const fetchUserData = async () => {
             
             try {
-                const user = await API.graphql(graphqlOperation(getUserData, { id: currentAuthenticatedUser?.attributes?.sub }))
-                
-                // console.log(currentAuthenticatedUser?.attributes?.sub, user)
+                const user = await API.graphql(graphqlOperation(getUserData, { id: state?.user_id }))
+                // console.log(user)
                 if(user?.data?.getUserData) {
                     dispatch({
                         type: 'SET_USER_INFO',
@@ -79,30 +97,75 @@ function SideNav() {
                 console.error('Error fetching user data:', error)
             }
         }
-        if(currentAuthenticatedUser?.attributes?.sub && state?.user_info === null){
+        if(state?.user_id && state?.user_info === null){
             fetchUserData()
         }
 
-    }, [currentAuthenticatedUser, dispatch, state])
+    }, [dispatch, state, currentAuthenticatedUser])
 
     useEffect(() => {
+
+        const addSubscription = async () => {
+
+            // console.log(currentUser, currentAuthenticatedUser)
+            const currentDate = new Date()
+            // console.log(currentDate)
+
+            const subscriptionData = {
+                id: state?.user_id,
+                email: state?.user_info?.email,
+                package: state?.user_info?.email?.includes('@aineurocare.com') ? 'PREMIUM' : 'BASIC',
+                synaptiQueryRemaining: state?.user_info?.email?.includes('@aineurocare.com') ? 100 : 5,
+                synaptiNoteRemaining: state?.user_info?.email?.includes('@aineurocare.com') ? 100 : 5,
+                chatGptRemaining: state?.user_info?.email?.includes('@aineurocare.com') ? 150 : 5,
+                claudeRemaining: state?.user_info?.email?.includes('@aineurocare.com') ? 100 : 5,
+                palmRemaining: state?.user_info?.email?.includes('@aineurocare.com') ? 50 : 5,
+                falconRemaining: state?.user_info?.email?.includes('@aineurocare.com') ? 50 : 5,
+                lastRenewalDate: currentDate
+            }
+
+            try {
+                const newSubscription = await API.graphql(graphqlOperation(createUserSubscription, {input: subscriptionData}))
+                console.log(newSubscription)
+                if(newSubscription?.data?.createUserSubscription) {
+                    dispatch({
+                        type: 'SET_CURRENT_PACKAGE',
+                        payload: newSubscription?.data?.createUserSubscription
+                    })
+                }
+            }
+            catch (error) {
+                console.error('Error adding subscription:', error)
+            }
+        }
 
         const fetchUserSubscription = async () => {
             
             try {
-                const subscription = await API.graphql(graphqlOperation(getUserSubscription, { id: currentAuthenticatedUser?.attributes?.sub }))
-                setCurrentSubscription(subscription?.data?.getUserSubscription)
-                // console.log(currentAuthenticatedUser?.attributes?.sub, subscription)
+                const subscription = await API.graphql(graphqlOperation(getUserSubscription, { id: state?.user_id }))
+                console.log(subscription)
+                if(subscription?.data?.getUserSubscription) {
+                    dispatch({
+                        type: 'SET_CURRENT_PACKAGE',
+                        payload: subscription?.data?.getUserSubscription
+                    })
+                }
+                else {
+                    addSubscription()
+                }
             } 
             catch (error) {
                 console.error('Error fetching user data:', error)
             }
         }
-        if(currentAuthenticatedUser?.attributes?.sub){
+
+        if(state?.user_id && state?.user_info && state?.current_package === null){
             fetchUserSubscription()
         }
 
-    }, [currentAuthenticatedUser])
+    }, [state, dispatch])
+
+    console.log(state)
 
     useEffect(() => {
 
@@ -111,8 +174,8 @@ function SideNav() {
             const currentDate = new Date()
     
             const subscriptionData = {
-                id: currentAuthenticatedUser?.attributes?.sub,
-                email: currentAuthenticatedUser?.attributes?.email,
+                id: state?.user_id,
+                email: state?.user_info?.email,
                 package: 'BASIC',
                 synaptiQueryRemaining: 5,
                 synaptiNoteRemaining: 5,
@@ -126,7 +189,12 @@ function SideNav() {
             try {
                 const updatedUserSubscription = await API.graphql(graphqlOperation(updateUserSubscription, { input: subscriptionData}))
                 // console.log('updatedUserSubscription')
-                setCurrentSubscription(updatedUserSubscription?.data?.updateUserSubscription)
+                if(updatedUserSubscription?.data?.updateUserSubscription) {
+                    dispatch({
+                        type: 'SET_CURRENT_PACKAGE',
+                        payload: updatedUserSubscription?.data?.updateUserSubscription
+                    })
+                }
             } catch (error) {
                 console.error("Error:", error)
             }
@@ -137,8 +205,8 @@ function SideNav() {
             const currentDate = new Date()
     
             const subscriptionData = {
-                id: currentAuthenticatedUser?.attributes?.sub,
-                email: currentAuthenticatedUser?.attributes?.email,
+                id: state?.user_id,
+                email: state?.user_info?.email,
                 package: 'PREMIUM',
                 synaptiQueryRemaining: 100,
                 synaptiNoteRemaining: 100,
@@ -152,7 +220,12 @@ function SideNav() {
             try {
                 const updatedUserSubscription = await API.graphql(graphqlOperation(updateUserSubscription, { input: subscriptionData}))
                 // console.log('updatedUserSubscription')
-                setCurrentSubscription(updatedUserSubscription?.data?.updateUserSubscription)
+                if(updatedUserSubscription?.data?.updateUserSubscription) {
+                    dispatch({
+                        type: 'SET_CURRENT_PACKAGE',
+                        payload: updatedUserSubscription?.data?.updateUserSubscription
+                    })
+                }
             } catch (error) {
                 console.error("Error:", error)
             }
@@ -160,63 +233,21 @@ function SideNav() {
 
         const checkPossibleRenewal = async () => {
             const currentDate = new Date()
-            const targetDate = new Date(currentSubscription?.lastRenewalDate)
+            const targetDate = new Date(state?.current_package?.lastRenewalDate)
             const timeDifferenceMs = currentDate - targetDate
             const daysDifference = timeDifferenceMs / (1000 * 60 * 60 * 24)
             // console.log('Difference in days:', daysDifference)
-            if(currentSubscription?.package === 'BASIC' && daysDifference > 7) {
+            if(state?.current_package?.package === 'BASIC' && daysDifference > 7) {
                 renewBasicSubscription()
             }
-            else if(currentSubscription?.package === 'PREMIUM' && daysDifference > 1) {
+            else if(state?.current_package?.package === 'PREMIUM' && daysDifference > 1) {
                 renewPremiumSubscription()
             }
         }
-        if(currentSubscription) {
+        if(state?.current_package) {
             checkPossibleRenewal()
         }
-    }, [currentSubscription, currentAuthenticatedUser])
-
-    
-
-    useEffect(() => {
-        
-        const addSubscription = async () => {
-
-            // console.log(currentUser, currentAuthenticatedUser)
-            const currentDate = new Date()
-            // console.log(currentDate)
-
-            const subscriptionData = {
-                id: currentAuthenticatedUser?.attributes?.sub,
-                email: currentAuthenticatedUser?.attributes?.email,
-                package: 'BASIC',
-                synaptiQueryRemaining: 5,
-                synaptiNoteRemaining: 5,
-                chatGptRemaining: 5,
-                claudeRemaining: 5,
-                palmRemaining: 5,
-                falconRemaining: 5,
-                lastRenewalDate: currentDate
-            }
-
-            try {
-                const newSubscription = await API.graphql(graphqlOperation(createUserSubscription, {input: subscriptionData}))
-                // console.log(newSubscription)
-                setCurrentSubscription(newSubscription?.data?.createUserSubscription)
-            }
-            catch (error) {
-                console.error('Error adding subscription:', error)
-            }
-        }
-
-        if(currentAuthenticatedUser && currentSubscription === null)
-        {
-            addSubscription()
-        }
-
-        // console.log(currentAuthenticatedUser, currentSubscription)
-
-    }, [currentSubscription, currentAuthenticatedUser])
+    }, [state, dispatch])
 
     useEffect(() => {
 
@@ -232,12 +263,15 @@ function SideNav() {
             } 
             catch (error) {
                 console.error('Error:', error)
+                navigate('/login')
             }
         }
 
-        checkUserSession()
+        if(state?.user_id === null){
+            checkUserSession()
+        }
 
-    }, [dispatch])
+    }, [dispatch, state, navigate])
 
     const handleSignOut = async (e) => {
         e.preventDefault()
@@ -250,31 +284,29 @@ function SideNav() {
         }
     }
 
-    // console.log(state?.user_info)
-
     return (
         <aside className="min-h-screen w-36 py-8 flex flex-col items-center shadow-xl">
-            <div className="flex flex-col items-center">
+            <NavLink to="/settings/basicinformation" className="flex flex-col items-center pb-5">
                 {state?.user_info?.profilePicUrl ? (
-                    <img alt="profile-picture" src={state?.user_info?.profilePicUrl} className="rounded-full" style={{height: '50px', width: '50px'}} />
+                    <img alt="profile-picture" src={state?.user_info?.profilePicUrl} className="rounded-full" style={{height: '40px', width: '40px'}} />
                 ) : (
-                    <div className="rounded-full bg-gradient-to-br from-[#B4AF9D] to-[#737063]" style={{height: '50px', width: '50px'}} />
+                    <div className="rounded-full bg-gradient-to-br from-[#B4AF9D] to-[#737063]" style={{height: '40px', width: '40px'}} />
                 )}
-                <div className="mt-3 text-sm font-semibold">{state?.user_info?.firstName}</div>
-                <div className="font-semibold text-sm">{state?.user_info?.lastName}</div>
-            </div>
-            {location.pathname.includes('/synaptiquery') ? (
-                <div className="flex flex-row items-center w-full mt-10 bg-gray-100">
+                <div className="mt-3 font-bold" style={{fontSize: '12px'}}>{state?.user_info?.firstName?.length > 0 ? state?.user_info?.firstName : 'Join'}</div>
+                <div style={{fontSize: '12px', fontWeight: 'bold'}}>{state?.user_info?.lastName?.length > 0 ? state?.user_info?.lastName : 'NeuroChat.AI'}</div>
+            </NavLink>
+            {location.pathname.includes('/claudeai') ? (
+                <div className="flex flex-row items-center w-full bg-gray-100">
                     <div className="h-full w-1 rounded-r-full bg-bgblue" />
                     <div className="flex flex-col items-center py-3 w-full">
-                        <img alt="synaptiquery" src={synaptiquery} style={{height: '40px', width: '40px'}} />
-                        <div className="mt-3 text-sm text-bgblue">SynaptiQuery</div>
+                        <img alt="claudeai" src={claudeai} style={{height: '40px', width: '40px'}} />
+                        <div className="mt-3 text-bgblue" style={{fontSize: '14px'}}>Claude.AI</div>
                     </div>
                 </div>
             ) : (
-                <NavLink to="/synaptiquery" className="flex flex-col items-center mt-10 py-3 w-full">
-                    <img alt="synaptiquery" src={synaptiquery} style={{height: '40px', width: '40px'}} />
-                    <div className="mt-3 text-sm text-gray-500">SynaptiQuery</div>
+                <NavLink to="/claudeai" className="flex flex-col items-center py-3 w-full">
+                    <img alt="claudeai" src={claudeai} style={{height: '40px', width: '40px'}} />
+                    <div className="mt-3 text-gray-500" style={{fontSize: '14px'}}>Claude.AI</div>
                 </NavLink>
             )}
             {location.pathname.includes('/chatgpt') ? (
@@ -282,27 +314,13 @@ function SideNav() {
                     <div className="h-full w-1 rounded-r-full bg-bgblue" />
                     <div className="flex flex-col items-center py-3 w-full">
                         <img alt="chatgpt" src={chatgpt} style={{height: '40px', width: '40px'}} />
-                        <div className="mt-3 text-sm text-bgblue">ChatGPT</div>
+                        <div className="mt-3 text-bgblue" style={{fontSize: '14px'}}>ChatGPT</div>
                     </div>
                 </div>
             ) : (
                 <NavLink to="/chatgpt" className="flex flex-col items-center py-3 w-full">
                     <img alt="chatgpt" src={chatgpt} style={{height: '40px', width: '40px'}} />
-                    <div className="mt-3 text-sm text-gray-500">ChatGPT</div>
-                </NavLink>
-            )}
-            {location.pathname.includes('/claudeai') ? (
-                <div className="flex flex-row items-center w-full bg-gray-100">
-                    <div className="h-full w-1 rounded-r-full bg-bgblue" />
-                    <div className="flex flex-col items-center py-3 w-full">
-                        <img alt="claudeai" src={claudeai} style={{height: '40px', width: '40px'}} />
-                        <div className="mt-3 text-sm text-bgblue">Claude.AI</div>
-                    </div>
-                </div>
-            ) : (
-                <NavLink to="/claudeai" className="flex flex-col items-center py-3 w-full">
-                    <img alt="claudeai" src={claudeai} style={{height: '40px', width: '40px'}} />
-                    <div className="mt-3 text-sm text-gray-500">Claude.AI</div>
+                    <div className="mt-3 text-gray-500" style={{fontSize: '14px'}}>ChatGPT</div>
                 </NavLink>
             )}
             {location.pathname.includes('/palm2') ? (
@@ -310,13 +328,27 @@ function SideNav() {
                     <div className="h-full w-1 rounded-r-full bg-bgblue" />
                     <div className="flex flex-col items-center py-3 w-full">
                         <img alt="palm2" src={palm2} style={{height: '40px', width: '40px'}} />
-                        <div className="mt-3 text-sm text-bgblue">PaLM2</div>
+                        <div className="mt-3 text-bgblue" style={{fontSize: '14px'}}>PaLM2</div>
                     </div>
                 </div>
             ) : (
                 <NavLink to="/palm2" className="flex flex-col items-center py-3 w-full">
                     <img alt="palm2" src={palm2} style={{height: '40px', width: '40px'}} />
-                    <div className="mt-3 text-sm text-gray-500">PaLM2</div>
+                    <div className="mt-3 text-gray-500" style={{fontSize: '14px'}}>PaLM2</div>
+                </NavLink>
+            )}
+            {location.pathname.includes('/synaptiquery') ? (
+                <div className="flex flex-row items-center w-full bg-gray-100">
+                    <div className="h-full w-1 rounded-r-full bg-bgblue" />
+                    <div className="flex flex-col items-center py-3 w-full">
+                        <img alt="synaptiquery" src={synaptiquery} style={{height: '40px', width: '40px'}} />
+                        <div className="mt-3 text-bgblue" style={{fontSize: '14px'}}>SynaptiQuery</div>
+                    </div>
+                </div>
+            ) : (
+                <NavLink to="/synaptiquery" className="flex flex-col items-center py-3 w-full">
+                    <img alt="synaptiquery" src={synaptiquery} style={{height: '40px', width: '40px'}} />
+                    <div className="mt-3 text-gray-500" style={{fontSize: '14px'}}>SynaptiQuery</div>
                 </NavLink>
             )}
             {location.pathname.includes('/falcon') ? (
@@ -324,13 +356,13 @@ function SideNav() {
                     <div className="h-full w-1 rounded-r-full bg-bgblue" />
                     <div className="flex flex-col items-center py-3 w-full">
                         <img alt="falcon" src={falcon} style={{height: '40px', width: '40px'}} />
-                        <div className="mt-3 text-sm text-bgblue">Falcon40B</div>
+                        <div className="mt-3 text-bgblue" style={{fontSize: '14px'}}>Falcon40B</div>
                     </div>
                 </div>
             ) : (
                 <NavLink to="/falcon" className="flex flex-col items-center py-3 w-full">
                     <img alt="falcon" src={falcon} style={{height: '40px', width: '40px'}} />
-                    <div className="mt-3 text-sm text-gray-500">Falcon40B</div>
+                    <div className="mt-3 text-gray-500" style={{fontSize: '14px'}}>Falcon40B</div>
                 </NavLink>
             )}
             {/* {location.pathname.includes('/virtualcard') ? (
@@ -348,32 +380,32 @@ function SideNav() {
                 </NavLink>
             )} */}
             <a target="_blank" rel="noopener noreferrer" href="https://www.neurochat.ai/" className="flex flex-col items-center py-3 w-full">
-                <img alt="web" src={web} style={{height: '40px', width: '40px'}} />
-                <div className="mt-3 text-xs font-semibold text-gray-500">NeuroChat</div>
-                <div className="text-gray-500 text-xs text-center">Visit NeuroChat to download Mobile App</div>
+                <img alt="web" src={web} style={{height: '22px', width: '22px'}} />
+                <div className="mt-3 font-semibold text-gray-500" style={{fontSize: '8px'}}>NeuroChat</div>
+                <div className="text-gray-500 px-5 text-center" style={{fontSize: '8px'}}>Visit NeuroChat to download Mobile App</div>
             </a>
             <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/neurocareai" className="flex flex-col items-center py-3 w-full">
-                <img alt="twitter" src={twitter} style={{height: '40px', width: '40px'}} />
-                <div className="mt-3 text-xs text-gray-500">Follow us on Twitter</div>
-                <div className="text-gray-500 text-sm font-semibold">@neurocareai</div>
+                <img alt="twitter" src={twitter} style={{height: '18px', width: '22px'}} />
+                <div className="mt-3 text-gray-500" style={{fontSize: '8px'}}>Follow us on Twitter</div>
+                <div className="text-gray-500 font-semibold" style={{fontSize: '14px'}}>@neurocareai</div>
             </a>
             {location.pathname.includes('/settings') && location.pathname !== '/settings/virtualcard' ? (
                 <div className="flex flex-row items-center w-full bg-gray-100">
                     <div className="h-full w-1 rounded-r-full bg-bgblue" />
                     <div className="flex flex-col items-center py-3 w-full">
                         <img alt="settings" src={settings} style={{height: '40px', width: '40px'}} />
-                        <div className="mt-3 text-sm text-bgblue">Settings</div>
+                        <div className="mt-3 text-bgblue" style={{fontSize: '14px'}}>Settings</div>
                     </div>
                 </div>
             ) : (
                 <NavLink to="/settings" className="flex flex-col items-center py-3 w-full">
                     <img alt="settings" src={settings} style={{height: '40px', width: '40px'}} />
-                    <div className="mt-3 text-sm text-gray-500">Settings</div>
+                    <div className="mt-3 text-gray-500" style={{fontSize: '14px'}}>Settings</div>
                 </NavLink>
             )}
             <button onClick={handleSignOut} className="flex flex-col items-center py-3 w-full">
-                <img alt="logout" src={logout} style={{height: '30px', width: '30px'}} />
-                <div className="mt-3 text-sm text-gray-500">Logout</div>
+                <img alt="logout" src={logout} style={{height: '24px', width: '24px'}} />
+                <div className="mt-3 text-gray-500" style={{fontSize: '14px'}}>Logout</div>
             </button>
             <ModeSwitch />
         </aside>

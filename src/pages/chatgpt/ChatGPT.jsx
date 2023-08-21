@@ -1,13 +1,11 @@
 import { useState, useEffect, useContext } from "react"
-import { useNavigate, Link } from "react-router-dom"
+import { Link } from "react-router-dom"
 import axios from "axios"
-import { Auth, API, graphqlOperation } from "aws-amplify"
+import { API, graphqlOperation } from "aws-amplify"
 import { XMarkIcon } from "@heroicons/react/24/solid"
-import { PlusIcon } from "@heroicons/react/24/solid"
 import { ChevronUpIcon } from "@heroicons/react/24/solid"
 import { ChevronDownIcon } from "@heroicons/react/24/solid"
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
-import { getUserSubscription } from "../../graphql/queries"
 import { updateUserSubscription } from "../../graphql/mutations"
 import { MyContext } from "../../context/context"
 import Layout from "../../components/layout/Layout"
@@ -17,82 +15,76 @@ import ChatMessage from "../../components/chatmessage/ChatMessage"
 import WaitingMessage from "../../components/waitingmessage/WaitingMessage"
 import ErrorMessage from "../../components/errormessage/ErrorMessage"
 import TranslationPopup from "../../components/translationpopup/TranslationPopup"
+import DeleteMessagePopup from "../../components/deletemessagepopup/DeleteMessagePopup"
+import DeleteChatPopup from "../../components/deletechatpopup/DeleteChatPopup"
+import BlackCircularLoader from "../../components/blackcircularloader/BlackCircularLoader"
+import BlueCircularLoader from "../../components/bluecircularloader/BlueCircularLoader"
 import starred from "../../assets/icons/star-fill.png"
 import unstarred from "../../assets/icons/star.png"
 import check from "../../assets/icons/check.png"
 import edit from "../../assets/icons/edit-black.png"
 import sendMessage from "../../assets/icons/send.png"
+import plus from "../../assets/icons/plus.png"
 
 function ChatGPT() {
 
     const { state, dispatch } = useContext(MyContext)
 
-    const navigate = useNavigate()
-
-    const [agreed, setAgreed] = useState(false)
     const [showStarredChats, setShowStarredChats] = useState(true)
     const [showAllChats, setShowAllChats] = useState(true)
     const [selectedChat, setSelectedChat] = useState(null)
-    const [isAuthenticated, setIsAuthenticated] = useState(true)
     const [query, setQuery] = useState('')
     const [lastQuery, setLastQuery] = useState('')
     const [chats, setChats] = useState([])
     const [editSelectedChatTitle, setEditSelectedChatTitle] = useState(false)
     const [selectedChatUpdatedTitle, setSelectedChatUpdatedTitle] = useState('')
     const [showTranslationPopup, setShowTranslationPopup] = useState(false)
+    const [showDeleteMessagePopup, setShowDeleteMessagePopup] = useState(false)
+    const [showDeleteChatPopup, setShowDeleteChatPopup] = useState(false)
     const [showWaitingMessage, setShowWaitingMessage] = useState(false)
     const [showErrorMessage, setShowErrorMessage] = useState(false)
     const [translatedText, setTranslatedText] = useState('')
-    const [currentSubscription, setCurrentSubscription] = useState()
-    const [currentAuthenticatedUser, setCurrentAuthenticatedUser] = useState()
     const [search, setSearch] = useState('')
+    const [currentThread, setCurrentThread] = useState()
+    const [chatToDelete, setChatToDelete] = useState()
+    const [titleLoading, setTitleLoading] = useState(false)
+    const [feedbackLoading, setFeedbackLoading] = useState(false)
     
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
-
-    useEffect(() => {
-        const fetchUserSubscription = async () => {
-            try {
-                const subscription = await API.graphql(graphqlOperation(getUserSubscription, { id: state?.user_id }))
-                setCurrentSubscription(subscription?.data?.getUserSubscription)
-                // console.log(state?.user_id, subscription)
-            } 
-            catch (error) {
-                console.error('Error fetching user data:', error)
-            }
-        }
-        if(state?.user_id?.length > 0){
-            fetchUserSubscription()
-        }
-    }, [state])
 
     const updateSubscription = async () => {
 
         const currentDate = new Date()
 
         const subscriptionData = {
-            id: state?.user_id,
-            email: currentAuthenticatedUser?.attributes?.email,
-            package: 'BASIC',
-            synaptiQueryRemaining: currentSubscription?.synaptiQueryRemaining,
-            synaptiNoteRemaining: currentSubscription?.synaptiNoteRemaining,
-            chatGptRemaining: currentSubscription?.chatGptRemaining - 1,
-            claudeRemaining: currentSubscription?.claudeRemaining,
-            palmRemaining: currentSubscription?.palmRemaining,
-            falconRemaining: currentSubscription?.falconRemaining,
+            id: state?.current_package?.id,
+            email: state?.current_package?.email,
+            package: state?.current_package?.package,
+            synaptiQueryRemaining: state?.current_package?.synaptiQueryRemaining,
+            synaptiNoteRemaining: state?.current_package?.synaptiNoteRemaining,
+            chatGptRemaining: state?.current_package?.chatGptRemaining - 1,
+            claudeRemaining: state?.current_package?.claudeRemaining,
+            palmRemaining: state?.current_package?.palmRemaining,
+            falconRemaining: state?.current_package?.falconRemaining,
             lastRenewalDate: currentDate
         }
 
         try {
             const updatedUserSubscription = await API.graphql(graphqlOperation(updateUserSubscription, { input: subscriptionData}))
             // console.log(updatedUserSubscription)
-            setCurrentSubscription(updatedUserSubscription?.data?.updateUserSubscription)
+            if(updatedUserSubscription?.data?.updateUserSubscription) {
+                dispatch({
+                    type: 'SET_CURRENT_PACKAGE',
+                    payload: updatedUserSubscription?.data?.updateUserSubscription
+                })
+            }
         } catch (error) {
             console.error("Error:", error)
         }
     }
 
     useEffect(() => {
-        if(state?.user_id?.length > 0) {
+        if(state?.user_id) {
             axios.get(`${apiBaseUrl}/chat/history/${state?.user_id}?model_type=0`).then((res) => {
                 // console.log(res)
                 if(res?.data?.message || res?.data?.status_code === 404) {
@@ -110,33 +102,6 @@ function ChatGPT() {
 
     // console.log(selectedChat, chats, editSelectedChatTitle)
 
-    useEffect(() => {
-
-        const checkUserSession = async () => {
-            try {
-                const user = await Auth.currentAuthenticatedUser()
-                setIsAuthenticated(true)
-                setCurrentAuthenticatedUser(user)
-                // console.log(user.pool.clientId)
-                dispatch({
-                    type: 'SET_USER_ID',
-                    payload: user?.attributes?.sub
-                })
-            } 
-            catch (error) {
-                setIsAuthenticated(false)
-            }
-        }
-
-        checkUserSession()
-
-    }, [dispatch])
-
-    useEffect(() => {
-        if(isAuthenticated === false) {
-            navigate('/login')
-        }
-    }, [isAuthenticated, navigate])
 
     const refreshChat = async () => {
         if(selectedChat){
@@ -145,6 +110,7 @@ function ChatGPT() {
                 setSelectedChat(res?.data)
                 setShowWaitingMessage(false)
                 setShowErrorMessage(false)
+                setFeedbackLoading(false)
             }).catch((error) => {
                 console.error('Error:', error)
             })
@@ -152,9 +118,9 @@ function ChatGPT() {
     }
 
     const refreshAllChats = async () => {
-        if(state?.user_id?.length > 0) {
+        if(state?.user_id) {
             await axios.get(`${apiBaseUrl}/chat/history/${state?.user_id}?model_type=0`).then((res) => {
-                // console.log(res)
+                console.log(res)
                 if(res?.data?.message || res?.data?.status_code === 404) {
                     // console.log(res?.data)
                     setChats([])
@@ -164,6 +130,7 @@ function ChatGPT() {
                 }
             }).catch((error) => {
                 console.error('Error:', error)
+                setChats([])
             })
         }
     }
@@ -261,6 +228,8 @@ function ChatGPT() {
     const updateSelectedChatTitle = async (e) => {
         e.preventDefault()
 
+        setTitleLoading(true)
+
         setEditSelectedChatTitle(false)
 
         const formData = {
@@ -274,8 +243,10 @@ function ChatGPT() {
                 refreshAllChats()
                 setSelectedChatUpdatedTitle('')
             }
+            setTitleLoading(false)
         }).catch((error) => {
             console.error('Error:', error)
+            setTitleLoading(false)
         })
     }
 
@@ -288,50 +259,56 @@ function ChatGPT() {
     }
 
     function checkSearch(chat) {
-        return chat?.chat_title?.includes(search)
+        return chat?.chat_title?.toUpperCase()?.includes(search?.toUpperCase())
     }
 
     // console.log(chats)
 
     return (
         <Layout>
+            {showDeleteMessagePopup && <DeleteMessagePopup setShowDeleteMessagePopup={setShowDeleteMessagePopup} selectedChat={selectedChat} setSelectedChat={setSelectedChat} refreshAllChats={refreshAllChats} refreshChat={refreshChat} currentThread={currentThread} />}
+            {showDeleteChatPopup && <DeleteChatPopup setShowDeleteChatPopup={setShowDeleteChatPopup} chatToDelete={chatToDelete} refreshAllChats={refreshAllChats} selectedChat={selectedChat} setSelectedChat={setSelectedChat} setShowTranslationPopup={setShowTranslationPopup} />}
             <div className="h-10 pl-10">
-                {agreed && (
+                {state?.chatgpt_agreed && (
                     <div className="flex flex-row justify-between items-center h-full pl-96 pr-10">
                         {selectedChat ? (
                             <>
                                 {editSelectedChatTitle ? (
                                     <div className="flex flex-row items-center justify-between w-80">
                                         <div className="flex flex-row items-center gap-5">
-                                            {selectedChat?.is_starred ? (
-                                                <button onClick={async () => {
-                                                    await axios.put(`${apiBaseUrl}/chat/starred/${selectedChat?.chat_id}`).then((res) => {
-                                                        // console.log(res)
-                                                        if(res?.status === 200) {
-                                                            refreshChat()
-                                                            refreshAllChats()
-                                                        }
-                                                    }).catch((error) => {
-                                                        console.error('Error:', error)
-                                                    })
-                                                }}>
-                                                    <img alt="starred" src={starred} style={{height: '20px'}} />
-                                                </button>
-                                            ) : (
-                                                <button onClick={async () => {
-                                                    await axios.put(`${apiBaseUrl}/chat/starred/${selectedChat?.chat_id}`).then((res) => {
-                                                        // console.log(res)
-                                                        if(res?.status === 200) {
-                                                            refreshChat()
-                                                            refreshAllChats()
-                                                        }
-                                                    }).catch((error) => {
-                                                        console.error('Error:', error)
-                                                    })
-                                                }}>
-                                                    <img alt="unstarred" src={unstarred} style={{height: '20px'}} />
-                                                </button>
-                                            )}
+                                            {feedbackLoading ? (
+                                                <BlackCircularLoader height="20px" width="20px" />
+                                            ) : (selectedChat?.is_starred ? (
+                                                    <button onClick={async () => {
+                                                        setFeedbackLoading(true)
+                                                        await axios.put(`${apiBaseUrl}/chat/starred/${selectedChat?.chat_id}`).then((res) => {
+                                                            // console.log(res)
+                                                            if(res?.status === 200) {
+                                                                refreshChat()
+                                                                refreshAllChats()
+                                                            }
+                                                        }).catch((error) => {
+                                                            console.error('Error:', error)
+                                                        })
+                                                    }}>
+                                                        <img alt="starred" src={starred} style={{height: '20px'}} />
+                                                    </button>
+                                                ) : (
+                                                    <button onClick={async () => {
+                                                        setFeedbackLoading(true)
+                                                        await axios.put(`${apiBaseUrl}/chat/starred/${selectedChat?.chat_id}`).then((res) => {
+                                                            // console.log(res)
+                                                            if(res?.status === 200) {
+                                                                refreshChat()
+                                                                refreshAllChats()
+                                                            }
+                                                        }).catch((error) => {
+                                                            console.error('Error:', error)
+                                                        })
+                                                    }}>
+                                                        <img alt="unstarred" src={unstarred} style={{height: '20px'}} />
+                                                    </button>
+                                            ))}
                                             <input type="text" value={selectedChatUpdatedTitle} onChange={(e) => {setSelectedChatUpdatedTitle(e.target.value)}} placeholder="Write Title..." className="w-52" style={{outline: 'none', background: 'transparent'}} />
                                         </div>
                                         <button onClick={updateSelectedChatTitle}>
@@ -344,40 +321,48 @@ function ChatGPT() {
                                 ) : (
                                     <div className="flex flex-row items-center justify-between w-80">
                                         <div className="flex flex-row items-center gap-5">
-                                            {selectedChat?.is_starred ? (
-                                                <button onClick={async () => {
-                                                    await axios.put(`${apiBaseUrl}/chat/starred/${selectedChat?.chat_id}`).then((res) => {
-                                                        // console.log(res)
-                                                        if(res?.status === 200) {
-                                                            refreshChat()
-                                                            refreshAllChats()
-                                                        }
-                                                    }).catch((error) => {
-                                                        console.error('Error:', error)
-                                                    })
-                                                }}>
-                                                    <img alt="starred" src={starred} style={{height: '20px'}} />
-                                                </button>
-                                            ) : (
-                                                <button onClick={async () => {
-                                                    await axios.put(`${apiBaseUrl}/chat/starred/${selectedChat?.chat_id}`).then((res) => {
-                                                        // console.log(res)
-                                                        if(res?.status === 200) {
-                                                            refreshChat()
-                                                            refreshAllChats()
-                                                        }
-                                                    }).catch((error) => {
-                                                        console.error('Error:', error)
-                                                    })
-                                                }}>
-                                                    <img alt="unstarred" src={unstarred} style={{height: '20px'}} />
-                                                </button>
-                                            )}
-                                            <div className="w-52 truncate">{selectedChat?.chat_title}</div>
+                                        {feedbackLoading ? (
+                                                <BlackCircularLoader height="20px" width="20px" />
+                                            ) : (selectedChat?.is_starred ? (
+                                                    <button onClick={async () => {
+                                                        setFeedbackLoading(true)
+                                                        await axios.put(`${apiBaseUrl}/chat/starred/${selectedChat?.chat_id}`).then((res) => {
+                                                            // console.log(res)
+                                                            if(res?.status === 200) {
+                                                                refreshChat()
+                                                                refreshAllChats()
+                                                            }
+                                                        }).catch((error) => {
+                                                            console.error('Error:', error)
+                                                        })
+                                                    }}>
+                                                        <img alt="starred" src={starred} style={{height: '20px'}} />
+                                                    </button>
+                                                ) : (
+                                                    <button onClick={async () => {
+                                                        setFeedbackLoading(true)
+                                                        await axios.put(`${apiBaseUrl}/chat/starred/${selectedChat?.chat_id}`).then((res) => {
+                                                            // console.log(res)
+                                                            if(res?.status === 200) {
+                                                                refreshChat()
+                                                                refreshAllChats()
+                                                            }
+                                                        }).catch((error) => {
+                                                            console.error('Error:', error)
+                                                        })
+                                                    }}>
+                                                        <img alt="unstarred" src={unstarred} style={{height: '20px'}} />
+                                                    </button>
+                                            ))}
+                                            <div className="w-60 truncate font-semibold" style={{fontSize: '15px'}}>{selectedChat?.chat_title}</div>
                                         </div>
-                                        <button onClick={() => {setEditSelectedChatTitle(true)}}>
-                                            <img alt="edit" src={edit} className="px-3" style={{height: '20px'}} />
-                                        </button>
+                                        {titleLoading ? (
+                                            <BlueCircularLoader height="20px" width="20px" />
+                                        ) : (
+                                            <button onClick={() => {setEditSelectedChatTitle(true)}}>
+                                                <img alt="edit" src={edit} className="px-3" style={{height: '18px'}} />
+                                            </button>
+                                        )}
                                     </div>
                                 )}
                             </>
@@ -387,68 +372,78 @@ function ChatGPT() {
                     </div>
                 )}
             </div>
-            <div className="bg-gray-100 mt-5" style={{height: '1px', width: '100%'}} />
+            <div className="bg-gray-100 mt-5" style={{height: '2px', width: '100%'}} />
             <div className="h-full flex flex-row">
-                <div className="w-96 flex flex-col gap-10 p-5">
-                    <div className="w-full h-12 px-5 flex flex-row gap-5 items-center rounded-full border border-gray-300">
-                        <MagnifyingGlassIcon className="h-6 w-6 text-gray-500" />
-                        <input type="text" value={search} onChange={(e) => {setSearch(e.target.value)}} placeholder="Find previous chats." style={{outline: 'none', width: '100%'}} />
-                    </div>
-                    {agreed ? (
-                        <div className="flex flex-col h-[70vh] justify-between" style={{paddingBottom: '16px'}}>
+                {state?.chatgpt_agreed ? (
+                    <div className="w-96 flex flex-col gap-10 p-5">
+                        <div className="px-5 flex flex-row gap-5 items-center rounded-full border border-gray-300" style={{height: '42px', width: '343px'}}>
+                            <MagnifyingGlassIcon className="text-gray-500" style={{height: '12px', width: '12px'}} />
+                            <input type="text" value={search} onChange={(e) => {setSearch(e.target.value)}} placeholder="Find previous chats." style={{outline: 'none', width: '100%', fontSize: '12px'}} />
+                        </div>
+                        <div className="flex flex-col h-[70vh] justify-between" style={{paddingBottom: '7px'}}>
                             <div className="flex flex-col gap-5">
                                 <div className="flex flex-row items-center gap-5">
                                     {showStarredChats ? (
                                         <button onClick={() => {setShowStarredChats(false)}}>
-                                            <ChevronUpIcon className="h-6 w-6 text-black" />
+                                            <ChevronUpIcon className="text-black" style={{height: '24px', width: '24px'}} />
                                         </button>
                                     ) : (
                                         <button onClick={() => {setShowStarredChats(true)}}>
-                                            <ChevronDownIcon className="h-6 w-6 text-black" />
+                                            <ChevronDownIcon className="text-black" style={{height: '24px', width: '24px'}} />
                                         </button>
                                     )}
-                                    <div className="text-lg font-semibold">Starred Chats</div>
+                                    <div className="font-semibold" style={{fontSize: '15px'}}>Starred Chats</div>
                                 </div>
                                 {showStarredChats && (
-                                    <div className="flex flex-col gap-3 max-h-24 overflow-y-auto">
-                                        {chats?.filter(checkStarred)?.filter(checkSearch)?.map((chat, key) => {
-                                            return (
-                                                <StarredChatItem chat={chat} refreshAllChats={refreshAllChats} refreshChat={refreshChat} setSelectedChat={setSelectedChat} selectedChat={selectedChat} setShowTranslationPopup={setShowTranslationPopup} key={key} />
-                                            )
-                                        })}
-                                    </div>
+                                    (chats?.filter(checkStarred)?.filter(checkSearch)?.length > 0 ? (
+                                        <div className="flex flex-col gap-3 overflow-y-auto" style={{maxHeight: '20vh'}}>
+                                            {chats?.filter(checkStarred)?.filter(checkSearch)?.map((chat, key) => {
+                                                return (
+                                                    <StarredChatItem chat={chat} refreshAllChats={refreshAllChats} refreshChat={refreshChat} setSelectedChat={setSelectedChat} setShowDeleteChatPopup={setShowDeleteChatPopup} setChatToDelete={setChatToDelete} setShowTranslationPopup={setShowTranslationPopup} key={key} />
+                                                )
+                                            })}
+                                        </div>
+                                    ) : (
+                                        <div className="w-full font-bold text-center text-gray-500">No Chats to show!</div>
+                                    ))
                                 )}
                                 <div className="flex flex-row items-center gap-5">
                                     {showAllChats ? (
                                         <button onClick={() => {setShowAllChats(false)}}>
-                                            <ChevronUpIcon className="h-6 w-6 text-black" />
+                                            <ChevronUpIcon className="text-black" style={{height: '24px', width: '24px'}} />
                                         </button>
                                     ) : (
                                         <button onClick={() => {setShowAllChats(true)}}>
-                                            <ChevronDownIcon className="h-6 w-6 text-black" />
+                                            <ChevronDownIcon className="text-black" style={{height: '24px', width: '24px'}} />
                                         </button>
                                     )}
-                                    <div className="text-lg font-semibold">All Chats</div>
+                                    <div className="font-semibold" style={{fontSize: '15px'}}>All Chats</div>
                                 </div>
                                 {showAllChats && (
-                                    <div className="flex flex-col gap-3 max-h-44 overflow-y-auto">
-                                        {chats?.filter(checkUnStarred)?.filter(checkSearch)?.map((chat, key) => {
-                                            return (
-                                                <UnStarredChatItem chat={chat} refreshAllChats={refreshAllChats} refreshChat={refreshChat} setSelectedChat={setSelectedChat} selectedChat={selectedChat} setShowTranslationPopup={setShowTranslationPopup} key={key} />
-                                            )
-                                        })}
-                                    </div>
+                                    (chats?.filter(checkUnStarred)?.filter(checkSearch)?.length > 0 ? (
+                                        <div className="flex flex-col gap-3 overflow-y-auto" style={{maxHeight: '30vh'}}>
+                                            {chats?.filter(checkUnStarred)?.filter(checkSearch)?.map((chat, key) => {
+                                                return (
+                                                    <UnStarredChatItem chat={chat} refreshAllChats={refreshAllChats} refreshChat={refreshChat} setSelectedChat={setSelectedChat} setShowDeleteChatPopup={setShowDeleteChatPopup} setChatToDelete={setChatToDelete} setShowTranslationPopup={setShowTranslationPopup} key={key} />
+                                                )
+                                            })}
+                                        </div>
+                                    ) : (
+                                        <div className="w-full font-bold text-center text-gray-500">No Chats to show!</div>
+                                    ))
                                 )}
                             </div>
-                            <button onClick={() => {setSelectedChat(null)}} className="rounded-full bg-bgblue text-white text-xl font-semibold py-2 w-full flex flex-row gap-3 justify-center items-center">
-                                <PlusIcon className="h-8 w-8 text-white" />
+                            <button onClick={() => {setSelectedChat(null)}} className="rounded-full bg-bgblue text-white font-bold flex flex-row gap-5 justify-center items-center" style={{height: '56px', width: '340px', fontSize: '16px'}}>
+                                <img alt="add" src={plus} style={{height: '19px', width: '19px'}} />
                                 <div>New Chat</div>
                             </button>
                         </div>
-                    ) : (
+                    </div>
+                ) : (
+                    <div className="w-96 flex flex-col gap-10 p-5">
                         <div className="flex flex-col gap-5">
-                            <div className="text-lg font-semibold">Top Use cases for ChatGPT</div>
-                            <div className="rounded-3xl text-gray-500 text-sm bg-bgblue bg-opacity-5 px-5 w-full flex flex-col gap-5 py-10">
+                            <div className="font-bold" style={{fontSize: '22px'}}>Top Use cases for ChatGPT</div>
+                            <div className="rounded-3xl text-gray-500 bg-bgblue bg-opacity-5 px-5 flex flex-col gap-5 py-10" style={{width: '343px', fontSize: '15px'}}>
                                 <div className="flex flex-row gap-3">
                                     <div className="bg-bgblue h-2 w-2 rounded-full mt-2" />
                                     <div className="flex-1">Create professional articles, social media posts, and emails</div>
@@ -475,31 +470,31 @@ function ChatGPT() {
                                 </div>
                             </div>
                         </div>
-                    )}
-                </div>
-                <div className="bg-gray-100" style={{height: '100%', width: '1px'}} />
+                    </div>
+                )}
+                <div className="bg-gray-100" style={{height: '100%', width: '2px'}} />
                 <div className="flex-1 relative">
                     {showTranslationPopup && (<TranslationPopup setShowTranslationPopup={setShowTranslationPopup} translatedText={translatedText} setTranslatedText={setTranslatedText} modelType="chatgpt" />)}
                     <div className="h-[80vh] pt-10 w-full">
-                        {agreed ? (
+                        {state?.chatgpt_agreed ? (
                             <div className="flex flex-col gap-5 h-full">
                                 <div className="flex flex-col gap-10 h-full overflow-y-auto px-10 pb-10">
                                     {selectedChat?.chat?.map((thread, key) => {
                                         return (
-                                            <ChatMessage thread={thread} modelType='chatgpt' refreshAllChats={refreshAllChats} refreshChat={refreshChat} selectedChat={selectedChat} setSelectedChat={setSelectedChat} setShowTranslationPopup={setShowTranslationPopup} setTranslatedText={setTranslatedText} key={key} />
+                                            <ChatMessage thread={thread} modelType='chatgpt' refreshChat={refreshChat} selectedChat={selectedChat} setShowTranslationPopup={setShowTranslationPopup} setTranslatedText={setTranslatedText} setShowDeleteMessagePopup={setShowDeleteMessagePopup} setCurrentThread={setCurrentThread} key={key} />
                                         )
                                     })}
                                     {showWaitingMessage && <WaitingMessage query={lastQuery} modelType="chatgpt" />}
                                     {showErrorMessage && <ErrorMessage query={lastQuery} modelType="chatgpt" regenerateResponse={regenerateResponse} />}
                                 </div>
-                                {currentSubscription?.chatGptRemaining > 0 ? (
+                                {state?.current_package?.chatGptRemaining > 0 ? (
                                     <form onSubmit={handleSubmit} className="flex flex-row gap-5 items-end px-10">
-                                        <div className="flex-1 rounded-full h-14 bg-gray-100 flex items-center px-5">
-                                            <input type="text" value={query} onChange={(e) => {setQuery(e.target.value)}} placeholder="Send message" style={{outline: 'none', width: '100%', background: 'transparent'}} />
+                                        <div className="flex-1 rounded-full bg-gray-100 flex items-center px-5" style={{height: '59px'}}>
+                                            <input type="text" value={query} onChange={(e) => {setQuery(e.target.value)}} placeholder="Send message" style={{outline: 'none', width: '100%', background: 'transparent', fontSize: '14px'}} />
                                         </div>
                                         <div className="flex flex-col items-center gap-2 pb-1">
-                                            <div className="text-bgblue text-xs border border-bgblue rounded-full h-5 px-2 flex items-center justify-center">{currentSubscription?.chatGptRemaining}/5</div>
-                                            <button type="submit" className="bg-bgblue rounded-full h-12 w-12 flex items-center justify-center pr-1 pt-1">
+                                            {state?.current_package?.package === 'BASIC' && <div className="font-black border border-bgblue rounded-full flex items-center justify-center" style={{fontSize: '10px', height: '18px', width: '37px'}}>{state?.current_package?.chatGptRemaining}/5</div>}
+                                            <button type="submit" className="bg-bgblue rounded-full flex items-center justify-center pr-1 pt-1" style={{height: '51px', width: '51px'}}>
                                                 <img alt="send" src={sendMessage} style={{height: '25px'}} />
                                             </button>
                                         </div>
@@ -511,11 +506,11 @@ function ChatGPT() {
                         ) : (
                             <div className="h-full flex flex-col justify-between px-10">
                                 <div className="flex flex-col gap-10">
-                                    <div className="text-2xl font-semibold">About ChatGPT</div>
-                                    <div className="text-lg text-gray-500">ChatGPT is an interactive chat-based interface for querying neuroscientific literature from PubMed. Users can query using keywords, phrases or questions in natural language. ChatGPT provides relevant article abstracts and other information. It simplifies and expedites the literature search process, allowing researchers to focus on their work.</div>
+                                    <div className="font-bold" style={{fontSize: '22px'}}>About ChatGPT</div>
+                                    <div className="text-gray-500" style={{fontSize: '20px'}}>ChatGPT is an interactive chat-based interface for querying neuroscientific literature from PubMed. Users can query using keywords, phrases or questions in natural language. ChatGPT provides relevant article abstracts and other information. It simplifies and expedites the literature search process, allowing researchers to focus on their work.</div>
                                 </div>
                                 <div className="flex justify-end w-full">
-                                    <button onClick={() => {setAgreed(true)}} className="bg-bgblue text-white font-semibold px-36 py-3 rounded-2xl">I Understand</button>
+                                    <button onClick={() => {dispatch({ type: 'SET_CHATGPT_AGREED', payload: true })}} className="bg-bgblue text-white font-bold rounded-3xl" style={{height: '56px', width: '343px', fontSize: '16px'}}>I Understand</button>
                                 </div>
                             </div>
                         )}

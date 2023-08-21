@@ -6,20 +6,20 @@ function WelcomeScreen() {
     return (
         <div className="w-screen h-screen bg-bgblue text-white flex flex-col items-center justify-center">
             <div className="w-full h-full flex flex-col items-center justify-center">
-                <img alt="neurochat" src={logo} style={{ height: '175px', width: '175px'}} />
+                <img alt="neurochat" src={logo} style={{ height: '162px', width: '162px'}} />
                 <div className="flex flex-col">
-                    <div className="text-4xl font-semibold">NeuroChat.Ai</div>
-                    <div className="text-end text-2xl font-semibold">(beta)</div>
+                    <div className="font-bold" style={{fontSize: '36px'}}>NeuroChat.AI</div>
+                    <div className="text-end font-bold" style={{fontSize: '22px'}}>(beta)</div>
                 </div>
             </div>
             <div className="flex flex-col py-20 text-center items-center">
-                <div className="text-3xl font-semibold">Disclaimer</div>
-                <div className="text-sm pt-8">This product is solely intended for research purposes</div>
-                <div className="text-sm pt-3">and is not suitable for clinical use.</div>
-                <div className="text-xl pt-8">Powered by:</div>
-                <div className="flex flex-row items-center gap-3 mt-5 px-3 py-1 border border-white rounded-lg">
-                    <img alt="brain" src={brain} style={{height: '35px', width: '35px'}} />
-                    <div className="font-semibold">NeuroCare.Ai</div>
+                <div className="font-bold" style={{fontSize: '22px'}}>Disclaimer</div>
+                <div className="pt-8" style={{fontSize: '12px'}}>This product is solely intended for research purposes</div>
+                <div className="pt-3" style={{fontSize: '12px'}}>and is not suitable for clinical use.</div>
+                <div className="pt-8" style={{fontSize: '15px'}}>Powered by:</div>
+                <div className="flex flex-row items-center justify-center gap-1 mt-5 border border-white rounded-lg" style={{height: '37px', width: '175px'}}>
+                    <img alt="brain" src={brain} style={{height: '30px', width: '38px'}} />
+                    <div className="font-bold" style={{fontSize: '15px'}}>NeuroCare.AI</div>
                 </div>
             </div>
         </div>

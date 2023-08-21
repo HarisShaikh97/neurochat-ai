@@ -1,6 +1,7 @@
 import { useRef, useState } from "react"
 import PropTypes from "prop-types"
 import { XMarkIcon } from "@heroicons/react/24/solid"
+import BlueCircularLoader from "../bluecircularloader/BlueCircularLoader"
 import synaptiquery from "../../assets/icons/synaptiquery.svg"
 import chatgpt from "../../assets/icons/chatgpt.svg"
 import claudeai from "../../assets/icons/claudeai.svg"
@@ -12,6 +13,8 @@ import copyWhite from "../../assets/icons/copy-white.png"
 function TranslationPopup({setShowTranslationPopup, translatedText, setTranslatedText, modelType}) {
 
     const divRef = useRef(null)
+
+    const currentDate = new Date()
 
     const [copied, setCopied] = useState(false)
     
@@ -43,27 +46,36 @@ function TranslationPopup({setShowTranslationPopup, translatedText, setTranslate
                 </div>
                 <div className="flex flex-row items-center font-medium gap-5 w-full">
                     <div>
-                        {modelType === 'synaptiquery' && <img alt={modelType} src={synaptiquery} style={{height: '40px'}} />}
-                        {modelType === 'chatgpt' && <img alt={modelType} src={chatgpt} style={{height: '40px'}} />}
-                        {modelType === 'claudeai' && <img alt={modelType} src={claudeai} style={{height: '40px'}} />}
-                        {modelType === 'palm2' && <img alt={modelType} src={palm2} style={{height: '40px'}} />}
-                        {modelType === 'falcon' && <img alt={modelType} src={falcon} style={{height: '40px'}} />}
+                        {modelType === 'synaptiquery' && <img alt={modelType} src={synaptiquery} style={{height: '40px', width: '40px'}} />}
+                        {modelType === 'chatgpt' && <img alt={modelType} src={chatgpt} style={{height: '40px', width: '40px'}} />}
+                        {modelType === 'claudeai' && <img alt={modelType} src={claudeai} style={{height: '40px', width: '40px'}} />}
+                        {modelType === 'palm2' && <img alt={modelType} src={palm2} style={{height: '40px', width: '40px'}} />}
+                        {modelType === 'falcon' && <img alt={modelType} src={falcon} style={{height: '40px', width: '40px'}} />}
                     </div>
-                    {modelType === 'synaptiquery' && (<div>SynaptiQuery</div>)}
-                    {modelType === 'chatgpt' && <div>ChatGPT</div>}
-                    {modelType === 'claudeai' && <div>Claude.AI</div>}
-                    {modelType === 'palm2' && <div>PaLM2</div>}
-                    {modelType === 'falcon' && <div>Falcon40B</div>}
+                    <div className="flex flex-row items-center gap-5">
+                        {modelType === 'synaptiquery' && <div className="font-semibold" style={{fontSize: '14px'}}>SynaptiQuery</div>}
+                        {modelType === 'chatgpt' && <div className="font-semibold" style={{fontSize: '14px'}}>ChatGPT</div>}
+                        {modelType === 'claudeai' && <div className="font-semibold" style={{fontSize: '14px'}}>Claude.AI</div>}
+                        {modelType === 'palm2' && <div className="font-semibold" style={{fontSize: '14px'}}>PaLM2</div>}
+                        {modelType === 'falcon' && <div className="font-semibold" style={{fontSize: '14px'}}>Falcon40B</div>}
+                        <div className="text-gray-500" style={{fontSize: '10px'}}>{currentDate?.toTimeString()?.slice(0, 5)}</div>
+                    </div>
                 </div>
-                <div ref={divRef} className="text-sm font-light">{translatedText}</div>
+                {translatedText?.length > 0 ? (
+                    <div ref={divRef} style={{fontSize: '16px'}}>{translatedText}</div>
+                ) : (
+                    <div className="w-full flex justify-center">
+                        <BlueCircularLoader height="50px" width="50px" />
+                    </div>
+                )}
                 <div className="flex justify-end w-full">
                     {copied ? (
-                        <div className="rounded-full h-7 w-12 flex items-center justify-center bg-bgblue">
-                            <img alt="copy" src={copyWhite} style={{height: '20px'}} />
+                        <div className="rounded-full flex items-center justify-center bg-bgblue" style={{height: '24px', width: '39px'}}>
+                            <img alt="copy" src={copyWhite} style={{height: '18px', width: '18px'}} />
                         </div>
                     ) : (
-                        <button onClick={handleCopyClick} className="rounded-full h-7 w-12 flex items-center justify-center border border-bgblue">
-                            <img alt="copy" src={copy} style={{height: '20px'}} />
+                        <button onClick={handleCopyClick} className="rounded-full flex items-center justify-center border border-bgblue" style={{height: '24px', width: '39px'}}>
+                            <img alt="copy" src={copy} style={{height: '18px', width: '18px'}} />
                         </button>
                     )}
                 </div>

@@ -1,48 +1,12 @@
-import { useState, useEffect, useContext } from "react"
-import { useNavigate } from "react-router-dom"
-import { Auth } from "aws-amplify"
+// import { useState } from "react"
 // import QRCodeReact from "qrcode.react"
 // import { Checkbox } from "@mui/material"
 // import { CameraIcon } from "@heroicons/react/24/solid"
 // import { countries } from "countries-list"
-import { MyContext } from "../../context/context"
 import Layout from "../../components/layout/Layout"
 import SettingsMenu from "../../components/settingsmenu/SettingsMenu"
 
 function VirtualCard() {
-
-    const { dispatch } = useContext(MyContext)
-
-    const navigate = useNavigate()
-
-    const [isAuthenticated, setIsAuthenticated] = useState(true)
-
-    useEffect(() => {
-
-        const checkUserSession = async () => {
-            try {
-                const user = await Auth.currentAuthenticatedUser()
-                setIsAuthenticated(true)
-                // console.log(user)
-                dispatch({
-                    type: 'SET_USER_ID',
-                    payload: user?.attributes?.sub
-                })
-            } 
-            catch (error) {
-                setIsAuthenticated(false)
-            }
-        }
-
-        checkUserSession()
-
-    }, [dispatch])
-
-    useEffect(() => {
-        if(isAuthenticated === false) {
-            navigate('/login')
-        }
-    }, [isAuthenticated, navigate])
 
     // const [organizationName, setOrganizationName] = useState(false)
     // const [profession, setProfession] = useState(false)

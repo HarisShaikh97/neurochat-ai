@@ -8,9 +8,15 @@ export function MyContextProvider({ children }) {
         isLoading: true,
         mode: 'light',
         username: '',
-        user_id: '',
+        user_id: null,
         user_info: null,
-        otp: ''
+        current_package: null,
+        otp: '',
+        synaptiquery_agreed: true,
+        chatgpt_agreed: true,
+        claude_agreed: true,
+        palm_agreed: true,
+        falcon_agreed: true
     })
 
     return (

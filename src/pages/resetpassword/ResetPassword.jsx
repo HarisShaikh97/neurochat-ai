@@ -57,13 +57,13 @@ function ResetPassword() {
                     <ModeSwitch />
                 </div>
                 <div className="h-full flex flex-col items-center">
-                    <img alt="logo" src={logo} style={{height: '100px', width: '100px'}} />
-                    <div className="text-bgblue text-lg font-semibold">NeuroChat.Ai</div>
-                    <div className="text-2xl font-semibold pt-5">Reset Password</div>
-                    <div className="pt-5 font-light text-gray-500">Please enter new password and continue login</div>
-                    <div className="font-light text-gray-500">to {`"`}NeuroChat.Ai{`"`}.</div>
-                    <div className="h-full w-full flex flex-col items-center justify-center">
-                        <div className="border rounded-full px-5 py-3 mt-5 w-[500px] flex flex-row">
+                    <img alt="logo" src={logo} style={{height: '92px', width: '92px'}} />
+                    <div className="text-bgblue font-bold" style={{fontSize: '20px'}}>NeuroChat.AI</div>
+                    <div className="font-bold pt-5" style={{fontSize: '27px'}}>Reset Password</div>
+                    <div className="pt-5 text-gray-500" style={{fontSize: '18px'}}>Please enter new password and continue login</div>
+                    <div className="text-gray-500" style={{fontSize: '18px'}}>to {`"`}NeuroChat.AI{`"`}.</div>
+                    <div className="h-full w-full flex flex-col items-center mt-32">
+                        <div className="border rounded-full px-5 mt-5 flex flex-row items-center gap-5" style={{height: '48px', width: '580px'}}>
                             <input type={showPassword ? "text" : "password"} value={password} onChange={(e) => {setPassword(e.target.value)}} placeholder="Password" style={{outline: 'none', width: '100%'}} />
                             {showPassword ? (
                                 <button onClick={() => {setShowPassword(false)}}>
@@ -75,7 +75,7 @@ function ResetPassword() {
                                 </button>
                             )}
                         </div>
-                        <div className="border rounded-full px-5 py-3 mt-5 w-[500px] flex flex-row">
+                        <div className="border rounded-full px-5 mt-5 flex flex-row items-center gap-5" style={{height: '48px', width: '580px'}}>
                             <input type={showConfirmPassword ? "text" : "password"} value={confirmPassword} onChange={(e) => {setConfirmPassword(e.target.value)}} placeholder="Confirm Password" style={{outline: 'none', width: '100%'}} />
                             {showConfirmPassword ? (
                                 <button onClick={() => {setShowConfirmPassword(false)}}>
@@ -87,8 +87,8 @@ function ResetPassword() {
                                 </button>
                             )}
                         </div>
-                        {showError && (<div className="text-red-500 pt-5">{error}</div>)}
-                        <button onClick={handleSubmit} className="text-white rounded-full bg-bgblue h-12 w-80 mt-10">Continue</button>
+                        <div className="text-red-500 mt-5 h-10" style={{fontSize: '16px'}}>{showError && error}</div>
+                        <button onClick={handleSubmit} className="text-white font-semibold rounded-full bg-bgblue mt-10" style={{height: '48px', width: '311px', fontSize: '14px'}}>Continue</button>
                     </div>
                 </div>
             </div>

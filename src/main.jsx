@@ -11,7 +11,9 @@ Amplify.configure(awsmobile)
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <MyContextProvider>
-            <App />
+            <div className='font-inter'>
+                <App />
+            </div>
         </MyContextProvider>
     </React.StrictMode>,
 )

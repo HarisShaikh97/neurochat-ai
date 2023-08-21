@@ -88,22 +88,22 @@ function ResetPasswordOTP() {
                     <ModeSwitch />
                 </div>
                 <div className="h-full flex flex-col items-center">
-                    <img alt="logo" src={logo} style={{height: '100px', width: '100px'}} />
-                    <div className="text-bgblue text-lg font-semibold">NeuroChat.Ai</div>
-                    <div className="text-2xl font-semibold pt-5">Reset Password</div>
-                    <div className="pt-5 font-light text-gray-500">Enter the OTP sent to -</div>
-                    <div className="text-gray-500">{state?.username}</div>
+                    <img alt="logo" src={logo} style={{height: '92px', width: '92px'}} />
+                    <div className="text-bgblue font-bold" style={{fontSize: '20px'}}>NeuroChat.AI</div>
+                    <div className="font-bold pt-5" style={{fontSize: '27px'}}>Reset Password</div>
+                    <div className="pt-5 text-gray-500" style={{fontSize: '18px'}}>Enter the OTP sent to -</div>
+                    <div className="text-gray-500 font-bold" style={{fontSize: '18px'}}>{state?.username}</div>
                     <div className="py-10">
                     <OTPInput
                         value={otp}
                         onChange={setOtp}
                         numInputs={6}
-                        renderInput={(props) => <input {...props} className="rounded-lg border border-bgblue text-lg font-semibold text-center mx-3" style={{height: '50px', width: '50px'}} />}
+                        renderInput={(props) => <input {...props} className="rounded-lg border border-bgblue font-bold text-center mx-3" style={{height: '58px', width: '53px', fontSize: '27px'}} />}
                     />
                     </div>
-                    <div>00:{timer < 10 && '0'}{timer} Sec</div>
-                    <div className="py-10">Didn{"'"}t receive code? <button onClick={ResendOTP} className="text-bgblue">Re-send</button></div>
-                    <button onClick={handleVerifyOTP} className="text-white rounded-full bg-bgblue h-12 w-80 mt-10">Continue</button>
+                    <div style={{fontSize: '16px'}}>00:{timer < 10 && '0'}{timer} Sec</div>
+                    <div className="h-10 pt-5" style={{fontSize: '16px'}}>{timer === 0 && (<span>Didn{"'"}t receive code? <button onClick={ResendOTP} className="text-bgblue">Re-send</button></span>)}</div>
+                    <button onClick={handleVerifyOTP} className="text-white font-semibold rounded-full bg-bgblue mt-10"  style={{height: '48px', width: '311px', fontSize: '14px'}}>Continue</button>
                 </div>
             </div>
         </>

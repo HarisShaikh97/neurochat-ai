@@ -21,13 +21,13 @@ function ResetPasswordSuccessful() {
                     <ModeSwitch />
                 </div>
                 <div className="h-full flex flex-col items-center justify-center">
-                    <img alt="logo" src={logo} style={{height: '100px', width: '100px'}} />
-                    <div className="text-bgblue text-lg font-semibold">NeuroChat.Ai</div>
-                    <div className="text-2xl font-semibold pt-5">Reset Password</div>
-                    <div className="pt-5 font-light text-gray-500">You have successfully confirmed new password.</div>
-                    <div className="font-light text-gray-500">Please use your new password when logging</div>
-                    <div className="font-light text-gray-500">in to {`"`}NeuroChat.Ai{`"`}.</div>
-                    <button onClick={() => {navigate('/login')}} className="text-white rounded-full bg-bgblue h-12 w-80 mt-32">Login</button>
+                    <img alt="logo" src={logo} style={{height: '92px', width: '92px'}} />
+                    <div className="text-bgblue font-bold" style={{fontSize: '20px'}}>NeuroChat.AI</div>
+                    <div className="font-bold pt-5" style={{fontSize: '27px'}}>Reset Password</div>
+                    <div className="pt-5 text-gray-500" style={{fontSize: '18px'}}>You have successfully confirmed new password.</div>
+                    <div className="text-gray-500"  style={{fontSize: '18px'}}>Please use your new password when logging</div>
+                    <div className="text-gray-500" style={{fontSize: '18px'}}>in to {`"`}NeuroChat.AI{`"`}.</div>
+                    <button onClick={() => {navigate('/login')}} className="text-white font-semibold rounded-full bg-bgblue mt-32" style={{height: '48px', width: '311px', fontSize: '14px'}}>Login</button>
                 </div>
             </div>
         </>

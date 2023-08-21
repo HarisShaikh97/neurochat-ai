@@ -89,15 +89,15 @@ function Signup() {
                     <ModeSwitch />
                 </div>
                 <div className="h-full flex flex-col items-center">
-                    <img alt="logo" src={logo} style={{height: '100px', width: '100px'}} />
-                    <div className="text-bgblue text-lg font-semibold">NeuroChat.Ai</div>
-                    <div className="text-2xl font-semibold pt-5">SignUp</div>
-                    <div className="pt-5 font-light text-gray-500">Please enter your correct details for</div>
-                    <div className="font-light text-gray-500">signing-up on {`"`}NeuroChat.Ai{`"`}.</div>
-                    <div className="border rounded-full px-5 py-3 mt-10 w-1/3">
+                    <img alt="logo" src={logo} style={{height: '92px', width: '92px'}} />
+                    <div className="text-bgblue font-semibold" style={{fontSize: '20px'}}>NeuroChat.AI</div>
+                    <div className="font-bold pt-5" style={{fontSize: '27px'}}>SignUp</div>
+                    <div className="pt-5 font-light text-gray-500" style={{fontSize: '18px'}}>Please enter your correct details for</div>
+                    <div className="font-light text-gray-500" style={{fontSize: '18px'}}>signing-up on {`"`}NeuroChat.AI{`"`}.</div>
+                    <div className="border rounded-full px-5 mt-10 flex items-center" style={{height: '48px', width: '580px'}}>
                         <input type="text" value={email} onChange={(e) => {setEmail(e.target.value)}} placeholder="Email" style={{outline: 'none', width: '100%'}} />
                     </div>
-                    <div className="border rounded-full px-5 py-3 mt-5 w-1/3 flex flex-row">
+                    <div className="border rounded-full px-5 mt-5 flex flex-row gap-5 items-center" style={{height: '48px', width: '580px'}}>
                         <input type={showPassword ? "text" : "password"} value={password} onChange={(e) => {setPassword(e.target.value)}} placeholder="Password" style={{outline: 'none', width: '100%'}} />
                         {showPassword ? (
                             <button onClick={() => {setShowPassword(false)}}>
@@ -109,7 +109,7 @@ function Signup() {
                             </button>
                         )}
                     </div>
-                    <div className="border rounded-full px-5 py-3 mt-5 w-1/3 flex flex-row">
+                    <div className="border rounded-full px-5 mt-5 flex flex-row gap-5 items-center" style={{height: '48px', width: '580px'}}>
                         <input type={showConfirmPassword ? "text" : "password"} value={confirmPassword} onChange={(e) => {setConfirmPassword(e.target.value)}} placeholder="Confirm Password" style={{outline: 'none', width: '100%'}} />
                         {showConfirmPassword ? (
                             <button onClick={() => {setShowConfirmPassword(false)}}>
@@ -121,22 +121,22 @@ function Signup() {
                             </button>
                         )}
                     </div>
-                    <button onClick={handleSignUp} className="text-white rounded-full bg-bgblue h-12 w-80 mt-10">Sign Up</button>
-                    {showError && (<div className="text-red-500 pt-5">{error}</div>)}
+                    <div className="text-red-500 h-10 mt-5" style={{fontSize: '16px'}}>{showError && error}</div>
+                    <button onClick={handleSignUp} className="text-white font-semibold rounded-full bg-bgblue mt-5"  style={{height: '48px', width: '311px', fontSize: '14px'}}>Sign Up</button>
                     <div className="w-80 flex flex-row gap-3 items-center py-5">
                         <div className="bg-gray-300" style={{height: '1px', width: '100%'}} />
-                        <div className="text-gray-500">OR</div>
+                        <div className="text-gray-500" style={{fontSize: '16px'}}>OR</div>
                         <div className="bg-gray-300" style={{height: '1px', width: '100%'}} />
                     </div>
-                    <button onClick={handleGoogleLogin} className="h-12 w-80 flex flex-row gap-5 pl-14 items-center border rounded-full">
-                        <img alt="google" src={google} style={{height: '25px', width: '25px'}} />
-                        <p>Continue with Google</p>
+                    <button onClick={handleGoogleLogin} className="flex flex-row gap-5 pl-14 items-center border rounded-full" style={{height: '48px', width: '311px'}}>
+                        <img alt="google" src={google} style={{height: '22px', width: '22px'}} />
+                        <p className="font-semibold" style={{fontSize: '14px'}}>Continue with Google</p>
                     </button>
-                    <button onClick={handleAppleLogin} className="h-12 w-80 flex flex-row gap-5 pl-14 mt-5 items-center border rounded-full">
-                        <img alt="apple" src={apple} style={{height: '25px', width: '25px'}} />
-                        <p>Continue with Apple</p>
+                    <button onClick={handleAppleLogin} className="flex flex-row gap-5 pl-14 mt-5 items-center border rounded-full" style={{height: '48px', width: '311px'}}>
+                        <img alt="apple" src={apple} style={{height: '22px', width: '25px'}} />
+                        <p className="font-semibold" style={{fontSize: '14px'}}>Continue with Apple</p>
                     </button>
-                    <div className="pt-10 text-sm">Already have an account?{" "}<Link to="/login" className="text-bgblue">Sign In</Link></div>
+                    <div className="pt-10" style={{fontSize: '16px'}}>Already have an account?{" "}<Link to="/login" className="text-bgblue">Sign In</Link></div>
                 </div>
             </div>
         </>

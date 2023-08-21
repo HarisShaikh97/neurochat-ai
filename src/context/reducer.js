@@ -29,6 +29,27 @@ export const reducer = (state, action) => {
             }
             return state
         }
+        case 'SET_CURRENT_PACKAGE': {
+            if (action?.payload) {
+                return { ...state, current_package: action?.payload }
+            }
+            return state
+        }
+        case 'SET_SYNAPTIQUERY_AGREED': {
+            return { ...state, synaptiquery_agreed: action?.payload }
+        }
+        case 'SET_CHATGPT_AGREED': {
+            return { ...state, chatgpt_agreed: action?.payload }
+        }
+        case 'SET_CLAUDE_AGREED': {
+            return { ...state, claude_agreed: action?.payload }
+        }
+        case 'SET_PALM_AGREED': {
+            return { ...state, palm_agreed: action?.payload }
+        }
+        case 'SET_FALCON_AGREED': {
+            return { ...state, falcon_agreed: action?.payload }
+        }
         case 'SET_OTP': {
             if (action?.payload) {
                 return { ...state, otp: action?.payload }

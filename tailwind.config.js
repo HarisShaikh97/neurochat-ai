@@ -10,6 +10,9 @@ export default {
         bgblue: '#1A4ADA',
         bglightblue: '#E2E7F6'
       },
+      fontFamily: {
+        inter: ['Inter', 'sans-serif'],
+      },
     },
   },
   plugins: [],
