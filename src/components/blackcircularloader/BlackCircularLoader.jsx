@@ -1,9 +1,21 @@
 import PropTypes from "prop-types"
+import { Oval } from "react-loader-spinner"
 
 function BlackCircularLoader({height, width}) {
     return (
         <div className="flex justify-center items-center">
-            <div className="border-t-4 border-black border-solid rounded-full animate-spin" style={{height: height, width: width}}></div>
+            <Oval
+                height={height}
+                width={width}
+                color="#000000"
+                wrapperStyle={{}}
+                wrapperClass=""
+                visible={true}
+                ariaLabel='oval-loading'
+                secondaryColor="#808080"
+                strokeWidth={5}
+                strokeWidthSecondary={5}
+            />
         </div>
     )
 }

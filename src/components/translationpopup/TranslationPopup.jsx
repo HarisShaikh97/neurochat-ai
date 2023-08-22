@@ -65,7 +65,7 @@ function TranslationPopup({setShowTranslationPopup, translatedText, setTranslate
                     <div ref={divRef} style={{fontSize: '16px'}}>{translatedText}</div>
                 ) : (
                     <div className="w-full flex justify-center">
-                        <BlueCircularLoader height="50px" width="50px" />
+                        <BlueCircularLoader height="50" width="50" />
                     </div>
                 )}
                 <div className="flex justify-end w-full">

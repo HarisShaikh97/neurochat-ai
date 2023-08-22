@@ -7,6 +7,7 @@ import { updateUserData } from "../../graphql/mutations"
 import { MyContext } from "../../context/context"
 import Layout from "../../components/layout/Layout"
 import SettingsMenu from "../../components/settingsmenu/SettingsMenu"
+import LoadingPopup from "../../components/loadingpopup/LoadingPopup"
 import UpdateProfileSuccess from "../../components/updateprofilesuccess/UpdateProfileSuccess"
 import UpdateProfilePicture from "../../components/updateprofilepicture/UpdateProfilePicture"
 import { countries } from "countries-list"
@@ -32,6 +33,12 @@ function BasicInformation() {
     const [error, setError] = useState(null)
     const [showError, setShowError] = useState(false)
     const [showUpdateProfilePicture, setShowUpdateProfilePicture] = useState(false)
+    const [showLoadingPopup, setShowLoadingPopup] = useState(false)
+
+    function containsOnlyNumbers(inputString) {
+        const regex = /^[0-9]+$/
+        return regex.test(inputString)
+    }
 
     const handleChange = (event) => {
         setSelectedCode(event.target.value)
@@ -40,39 +47,64 @@ function BasicInformation() {
     const handleUpdateAttributes = async (e) => {
         e.preventDefault()
 
+        
         let info = {
             id: state?.user_info?.id,
-            firstName: firstName?.length === 0 && state?.user_info?.firstName ? state?.user_info?.firstName : firstName,
-            lastName: lastName?.length === 0 && state?.user_info?.lastName ? state?.user_info?.lastName : lastName,
-            organization: organizationName?.length === 0 && state?.user_info?.organization ? state?.user_info?.organization : organizationName,
-            profession: profession?.length === 0 && state?.user_info?.profession ? state?.user_info?.profession : profession,
+            firstName: firstName,
+            lastName: lastName,
+            organization: organizationName,
+            profession: profession,
             email: state?.user_info?.email,
-            secondaryEmail: email?.length === 0 ? state?.user_info?.secondaryEmail : email,
+            secondaryEmail: email,
             profilePicUrl: state?.user_info?.profilePicUrl,
-            phoneNumber: phoneNumber?.length === 0 ? (state?.user_info?.phoneNumber ? state?.user_info?.phoneNumber : '') : (`+${selectedCode}-${phoneNumber}`),
+            phoneNumber: `+${selectedCode}-${phoneNumber}`,
             userId: state?.user_info?.userId
         }
     
         // console.log(info)
-
-        try {
-            const updatedUserData = await API.graphql(graphqlOperation(updateUserData, { input: info}))
-            // console.log(updatedUserData)
-            if(updatedUserData?.data?.updateUserData) {
-                setShowSuccess(true)
-                setShowError(false)
-                dispatch({
-                    type: 'SET_USER_INFO',
-                    payload: updatedUserData?.data?.updateUserData
-                })
-                setTimeout(() => {
-                    setShowSuccess(false)
-                },3000)
-            }
-        } catch (error) {
-            setError('Invalid Email!')
+        if(firstName?.length === 0) {
+            setError('First Name cannot be empty!')
             setShowError(true)
-            console.error("Error:", error)
+        }
+        else if(lastName?.length === 0) {
+            setError('Last Name cannot be empty!')
+            setShowError(true)
+        }
+        else if(email?.length === 0) {
+            setError('Email cannot be empty!')
+            setShowError(true)
+        }
+        else if(phoneNumber?.length === 0) {
+            setError('Phone Number cannot be empty!')
+            setShowError(true)
+        }
+        else if(containsOnlyNumbers(phoneNumber) === false) {
+            setError('Phone Number cannot have characters!')
+            setShowError(true)
+        }
+        else {
+            setShowLoadingPopup(true)
+            try {
+                const updatedUserData = await API.graphql(graphqlOperation(updateUserData, { input: info}))
+                // console.log(updatedUserData)
+                if(updatedUserData?.data?.updateUserData) {
+                    setShowSuccess(true)
+                    setShowError(false)
+                    dispatch({
+                        type: 'SET_USER_INFO',
+                        payload: updatedUserData?.data?.updateUserData
+                    })
+                    setTimeout(() => {
+                        setShowSuccess(false)
+                    },3000)
+                }
+                setShowLoadingPopup(false)
+            } catch (error) {
+                setError('Invalid Email!')
+                setShowError(true)
+                console.error("Error:", error)
+                setShowLoadingPopup(false)
+            }
         }
     }
 
@@ -81,16 +113,17 @@ function BasicInformation() {
     return (
         <Layout>
             <div className="flex flex-row items-center gap-5 pl-10">
-                <div className="w-96 font-bold" style={{fontSize: '22px'}}>Settings</div>
-                <div className="font-bold" style={{fontSize: '22px'}}>Basic Information</div>
+                <div className="w-96" style={{fontSize: '22px', fontWeight: 'bold'}}>Settings</div>
+                <div style={{fontSize: '22px', fontWeight: 'bold'}}>Basic Information</div>
             </div>
-            <div className="bg-gray-100 mt-5" style={{height: '1px', width: '100%'}} />
+            <div className="bg-gray-100 mt-5" style={{height: '2px', width: '100%'}} />
             <div className="h-full flex flex-row">
                 <SettingsMenu />
-                <div className="bg-gray-100" style={{height: '100%', width: '1px'}} />
+                <div className="bg-gray-100" style={{height: '100%', width: '2px'}} />
                 <div className="py-10 px-10 flex-1 flex flex-col items-center relative">
                     {showSuccess && <UpdateProfileSuccess />}
                     {showUpdateProfilePicture && <UpdateProfilePicture setShowUpdateProfilePicture={setShowUpdateProfilePicture} />}
+                    {showLoadingPopup && <LoadingPopup />}
                     <div className="relative rounded-full" style={{height: '175px', width: '175px'}}>
                         {state?.user_info?.profilePicUrl?.length > 0 ? (
                             <img alt="profile-picture" src={state?.user_info?.profilePicUrl} className="rounded-full" style={{height: '175px', width: '175px'}} />

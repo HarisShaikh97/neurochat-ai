@@ -33,10 +33,10 @@ function DeleteChatPopup({setShowDeleteChatPopup, chatToDelete, refreshAllChats,
         <div className="absolute top-1/2 left-1/2 h-full w-full transform -translate-x-1/2 -translate-y-1/2 backdrop-brightness-50 backdrop-blur flex justify-center pt-[35vh] z-50">
             <div className="bg-bglightblue rounded-xl shadow-xl flex items-center justify-center" style={{height: '184px', width: '341px'}}>
                 {isLoading ? (
-                    <BlueCircularLoader height="50px" width="50px" />
+                    <BlueCircularLoader height="50" width="50" />
                 ) : (
                     <div className="flex flex-col gap-10 items-center">
-                        <div className="text-bgblue font-bold text-center px-12" style={{fontSize: '14px'}}>Are you sure you want to delete chat?</div>
+                        <div className="text-bgblue text-center px-12" style={{fontSize: '14px', fontWeight: 'bold'}}>Are you sure you want to delete chat?</div>
                         <div className="flex flex-row gap-5 justify-between">
                             <button onClick={() => {setShowDeleteChatPopup(false)}} className="rounded-full bg-white border border-gray-300 text-sm" style={{height: '40px', width: '87px'}}>Cancel</button>
                             <button onClick={handleDelete} className="rounded-full bg-bgblue text-white text-sm" style={{height: '40px', width: '87px'}}>Confirm</button>

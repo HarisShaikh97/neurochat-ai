@@ -8,8 +8,8 @@ function LegalDocuments() {
     return (
         <Layout>
             <div className="flex flex-row items-center gap-5 pl-10">
-                <div className="w-96 font-bold" style={{fontSize: '22px'}}>Settings</div>
-                <div className="font-bold" style={{fontSize: '22px'}}>Legal Documents</div>
+                <div className="w-96" style={{fontSize: '22px', fontWeight: 'bold'}}>Settings</div>
+                <div style={{fontSize: '22px', fontWeight: 'bold'}}>Legal Documents</div>
             </div>
             <div className="bg-gray-100 mt-5" style={{height: '1px', width: '100%'}} />
             <div className="h-full flex flex-row">

@@ -3,6 +3,7 @@ import PropTypes from "prop-types"
 import { API, graphqlOperation, Storage } from "aws-amplify"
 import { updateUserData } from "../../graphql/mutations"
 import { MyContext } from "../../context/context"
+import BlueCircularLoader from "../bluecircularloader/BlueCircularLoader"
 import upload from "../../assets/icons/upload-image.png"
 
 function UpdateProfilePicture({setShowUpdateProfilePicture}) {
@@ -13,6 +14,7 @@ function UpdateProfilePicture({setShowUpdateProfilePicture}) {
 
     const [selectedFile, setSelectedFile] = useState(null)
     const [dragOver, setDragOver] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
 
     const handleFileChange = (e) => {
         setSelectedFile(e.target.files[0])
@@ -39,6 +41,7 @@ function UpdateProfilePicture({setShowUpdateProfilePicture}) {
     const handleUpload = async (e) => {
         e.preventDefault()
         if(selectedFile) {
+            setIsLoading(true)
 
             try {
                 const response = await Storage.put(selectedFile.name, selectedFile)
@@ -71,6 +74,7 @@ function UpdateProfilePicture({setShowUpdateProfilePicture}) {
             } 
             catch (error) {
                 console.error('Error:', error)
+                setShowUpdateProfilePicture(false)
             }
         }
     }
@@ -79,23 +83,29 @@ function UpdateProfilePicture({setShowUpdateProfilePicture}) {
 
     return (
         <div className="absolute top-1/2 left-1/2 h-full w-full transform -translate-x-1/2 -translate-y-1/2 backdrop-brightness-50 backdrop-blur flex justify-center pt-[20vh] z-50">
-            <div className="w-fit h-fit p-10 bg-bglightblue rounded-xl shadow-xl flex flex-col gap-8 items-center justify-center">
-                <div className="text-bgblue font-medium">Upload Profile Picture</div>
-                <div onDragEnter={handleDragEnter} onDragOver={handleDragEnter} onDragLeave={handleDragLeave} onDrop={handleDrop} className="rounded-xl bg-white h-40 w-96 flex items-center justify-center">
-                    <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
-                    {selectedFile ? (
-                        <img alt="image" src={URL.createObjectURL(selectedFile)} style={{maxHeight: '100px', maxWidth: '150px'}} />
-                    ) : (
-                        <div className="flex flex-col gap-5 items-center justify-center">
-                            <img alt="image" src={upload} style={{height: '50px', width: '50px'}} />
-                            <div className="font-semibold text-gray-500">Drag and drop here...</div>
+            <div className="w-fit h-fit p-10 bg-bglightblue rounded-xl shadow-xl flex items-center justify-center">
+                {isLoading ? (
+                    <BlueCircularLoader height="50" width="50" />
+                ) : (
+                    <div className="flex flex-col gap-8 items-center justify-center">
+                        <div className="text-bgblue font-medium">Upload Profile Picture</div>
+                        <div onDragEnter={handleDragEnter} onDragOver={handleDragEnter} onDragLeave={handleDragLeave} onDrop={handleDrop} className="rounded-xl bg-white h-40 w-96 flex items-center justify-center">
+                            <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+                            {selectedFile ? (
+                                <img alt="image" src={URL.createObjectURL(selectedFile)} style={{maxHeight: '100px', maxWidth: '150px'}} />
+                            ) : (
+                                <div className="flex flex-col gap-5 items-center justify-center">
+                                    <img alt="image" src={upload} style={{height: '50px', width: '50px'}} />
+                                    <div className="font-semibold text-gray-500">Drag and drop here...</div>
+                                </div>
+                            )}
                         </div>
-                    )}
-                </div>
-                <div className="flex flex-row w-full px-20 justify-between">
-                    <button onClick={() => {setShowUpdateProfilePicture(false)}} className="rounded-full bg-white border border-gray-300 text-sm h-8 w-20" >Cancel</button>
-                    <button onClick={handleUpload} className="rounded-full bg-bgblue text-white text-sm h-8 w-20" >Confirm</button>
-                </div>
+                        <div className="flex flex-row w-full px-20 justify-between">
+                            <button onClick={() => {setShowUpdateProfilePicture(false)}} className="rounded-full bg-white border border-gray-300 text-sm h-8 w-20" >Cancel</button>
+                            <button onClick={handleUpload} className="rounded-full bg-bgblue text-white text-sm h-8 w-20" >Confirm</button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     )

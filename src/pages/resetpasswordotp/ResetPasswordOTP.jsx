@@ -89,16 +89,16 @@ function ResetPasswordOTP() {
                 </div>
                 <div className="h-full flex flex-col items-center">
                     <img alt="logo" src={logo} style={{height: '92px', width: '92px'}} />
-                    <div className="text-bgblue font-bold" style={{fontSize: '20px'}}>NeuroChat.AI</div>
-                    <div className="font-bold pt-5" style={{fontSize: '27px'}}>Reset Password</div>
+                    <div className="text-bgblue" style={{fontSize: '20px', fontWeight: 'bold'}}>NeuroChat.AI</div>
+                    <div className="pt-5" style={{fontSize: '27px', fontWeight: 'bold'}}>Reset Password</div>
                     <div className="pt-5 text-gray-500" style={{fontSize: '18px'}}>Enter the OTP sent to -</div>
-                    <div className="text-gray-500 font-bold" style={{fontSize: '18px'}}>{state?.username}</div>
+                    <div className="text-gray-500" style={{fontSize: '18px', fontWeight: 'bold'}}>{state?.username}</div>
                     <div className="py-10">
                     <OTPInput
                         value={otp}
                         onChange={setOtp}
                         numInputs={6}
-                        renderInput={(props) => <input {...props} className="rounded-lg border border-bgblue font-bold text-center mx-3" style={{height: '58px', width: '53px', fontSize: '27px'}} />}
+                        renderInput={(props) => <input {...props} className="rounded-lg border border-bgblue text-center mx-3" style={{height: '58px', width: '53px', fontSize: '27px', fontWeight: 'bold'}} />}
                     />
                     </div>
                     <div style={{fontSize: '16px'}}>00:{timer < 10 && '0'}{timer} Sec</div>

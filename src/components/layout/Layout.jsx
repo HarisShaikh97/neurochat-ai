@@ -7,7 +7,7 @@ function Layout({children}) {
     return (
         <div className="flex flex-row w-full h-fit">
             <SideNav />
-            <div className="flex flex-col w-full min-h-full">
+            <div className="flex flex-col w-full" style={{height: '100vh'}}>
                 <Header />
                 <main className="flex flex-col w-full h-full relative">{children}</main>
             </div>

@@ -1,19 +1,22 @@
+import { useNavigate } from "react-router-dom"
 import Layout from "../../components/layout/Layout"
 import SettingsMenu from "../../components/settingsmenu/SettingsMenu"
 
 function Disclaimer() {
 
+    const navigate = useNavigate()
+
     return (
         <Layout>
             <div className="flex flex-row items-center gap-5 pl-10">
-                <div className="w-96 text-2xl font-semibold">Settings</div>
-                <div className="text-2xl font-semibold">Disclaimer</div>
+                <div className="w-96" style={{fontSize: '22px', fontWeight: 'bold'}}>Settings</div>
+                <div style={{fontSize: '22px', fontWeight: 'bold'}}>Disclaimer</div>
             </div>
-            <div className="bg-gray-100 mt-5" style={{height: '1px', width: '100%'}} />
+            <div className="bg-gray-100 mt-5" style={{height: '2px', width: '100%'}} />
             <div className="h-full flex flex-row">
                 <SettingsMenu />
-                <div className="bg-gray-100" style={{height: '100%', width: '1px'}} />
-                <div className="my-10 px-10 flex-1 flex flex-col">
+                <div className="bg-gray-100" style={{height: '100%', width: '2px'}} />
+                <div className="my-10 px-10 flex-1 flex flex-col overflow-y-auto" style={{height: '75vh'}}>
                     <div className="text-gray-500 text-sm mb-5">Last updated April 20, 2022</div>
                     <div className="text-lg font-medium uppercase my-5">website disclaimer</div>
                     <div className="text-gray-500 text-sm">The information provided by <a target="_blank" rel="noopener noreferrer" href="https://neurocare.ai" className="text-bgblue underline">NeuroCare.Al</a> Inc. ({'"'}we,{'"'} {'"'}us{'"'}, or {'"'}our{'"'}) on <a target="_blank" rel="noopener noreferrer" href="https://neurocare.ai" className="text-bgblue underline">http://neurocare.ai</a> (the {'"'}Site{'"'}) and our mobile application is for general informational purposes only. We publish the website and its content in good faith, taking care to ensure accuracy and currency of information, however we make no representation or warranty of any kind, express or implied, regarding the accuracy, adequacy, validity, reliability, availability, interpretation or completeness of any information on the Site or our mobile application. UNDER NO CIRCUMSTANCE SHALL WE HAVE ANY LIABILITY TO YOU FOR ANY LOSS OR DAMAGE OF ANY KIND INCURRED AS A RESULT OF THE USE OF THE SITE OR OUR MOBILE APPLICATION OR RELIANCE ON ANY INFORMATION PROVIDED ON THE SITE AND OUR MOBILE APPLICATION. YOUR USE OF THE SITE AND OUR MOBILE APPLICATION AND YOUR RELIANCE ON ANY INFORMATION ON THE SITE AND OUR MOBILE APPLICATION IS SOLELY AT YOUR OWN RISK.</div>
@@ -55,6 +58,9 @@ function Disclaimer() {
                     <div className="text-gray-500 text-sm"><a target="_blank" rel="noopener noreferrer" href="http://neurocare.ai" className="text-bgblue">Neurocare.AI Inc.</a> may collect, use and disclose personal information about you through your use of the Site. Please review the Privacy Policy to find out how we collect, use and disclose your personal information that is collected.</div>
                     <div className="text-lg font-medium my-5">Modifications To This Disclaimer</div>
                     <div className="text-gray-500 text-sm"><a target="_blank" rel="noopener noreferrer" href="http://neurocare.ai" className="text-bgblue">Neurocare.AI Inc.</a> may, at any time and from time to time, amend this Disclaimer. Any changes will be effective immediately upon posting. You agree to review the Disclaimer periodically and your use of the Site following any such change constitutes your agreement to follow and be bound by this Disclaimer as amended.</div>
+                    <div className="flex justify-end w-full pt-20">
+                        <button onClick={() => {navigate('/settings/legaldocuments')}} className="bg-bgblue text-white rounded-3xl" style={{height: '56px', width: '343px', fontSize: '16px', fontWeight: 'bold'}}>I Understand</button>
+                    </div>
                 </div>
             </div>
         </Layout>

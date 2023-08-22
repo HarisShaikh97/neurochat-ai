@@ -285,14 +285,14 @@ function SideNav() {
     }
 
     return (
-        <aside className="min-h-screen w-36 py-8 flex flex-col items-center shadow-xl">
-            <NavLink to="/settings/basicinformation" className="flex flex-col items-center pb-5">
+        <aside className="w-36 py-8 flex flex-col items-center shadow-xl overflow-y-auto scrollbar-none" style={{height: '100vh'}}>
+            <NavLink to="/settings/basicinformation" className="flex flex-col items-center" style={{paddingBottom: '25px'}}>
                 {state?.user_info?.profilePicUrl ? (
                     <img alt="profile-picture" src={state?.user_info?.profilePicUrl} className="rounded-full" style={{height: '40px', width: '40px'}} />
                 ) : (
                     <div className="rounded-full bg-gradient-to-br from-[#B4AF9D] to-[#737063]" style={{height: '40px', width: '40px'}} />
                 )}
-                <div className="mt-3 font-bold" style={{fontSize: '12px'}}>{state?.user_info?.firstName?.length > 0 ? state?.user_info?.firstName : 'Join'}</div>
+                <div className="mt-3" style={{fontSize: '12px', fontWeight: 'bold'}}>{state?.user_info?.firstName?.length > 0 ? state?.user_info?.firstName : 'Join'}</div>
                 <div style={{fontSize: '12px', fontWeight: 'bold'}}>{state?.user_info?.lastName?.length > 0 ? state?.user_info?.lastName : 'NeuroChat.AI'}</div>
             </NavLink>
             {location.pathname.includes('/claudeai') ? (

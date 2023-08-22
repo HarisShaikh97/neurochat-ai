@@ -20,7 +20,7 @@ function WaitingMessage({ query, modelType }) {
             <div className="flex flex-row gap-5 justify-end">
                 <div className="flex flex-col pt-2 gap-3">
                     <div className="flex flex-row gap-3 items-center justify-end">
-                    <div className="font-bold" style={{fontSize: '14px'}}>{state?.user_info?.firstName?.length > 0 && state?.user_info?.lastName?.length > 0 ? `${state?.user_info?.firstName} ${state?.user_info?.lastName}` : state?.user_info?.email}</div>
+                    <div style={{fontSize: '14px', fontWeight: 'bold'}}>{state?.user_info?.firstName?.length > 0 && state?.user_info?.lastName?.length > 0 ? `${state?.user_info?.firstName} ${state?.user_info?.lastName}` : state?.user_info?.email}</div>
                         <div className="text-gray-500" style={{fontSize: '10px'}}>{currentDate?.toTimeString()?.slice(0, 5)}</div>
                     </div>
                     <div style={{fontSize: '16px'}}>{query}</div>

@@ -16,6 +16,7 @@ import like from "../../assets/icons/like.png"
 import deleteMessage from "../../assets/icons/delete.png"
 import copy from "../../assets/icons/copy.png"
 import copyWhite from "../../assets/icons/copy-white.png"
+import favicon from "../../assets/icons/favicon.png"
 
 function ChatMessage({ thread, modelType, refreshChat, selectedChat, setShowTranslationPopup, setTranslatedText, setShowDeleteMessagePopup, setCurrentThread }) {
 
@@ -83,7 +84,7 @@ function ChatMessage({ thread, modelType, refreshChat, selectedChat, setShowTran
                         {modelType === 'falcon' && <div className="font-semibold" style={{fontSize: '14px'}}>Falcon40B</div>}
                         <div className="text-gray-500" style={{fontSize: '10px'}}>{thread?.date_time?.slice(14, 19)}</div>
                     </div>
-                    <div ref={divRef} style={{fontSize: '16px'}}>
+                    <div ref={divRef} style={{fontSize: '16px', paddingRight: '60px'}}>
                         {thread?.system?.text?.split(pattern)?.map((str, key) => {
                             return (
                                 <React.Fragment key={key}><span className={key % 2 === 1 ? 'text-bgblue align-top' : ''} style={{fontSize: key % 2 === 1 ? '8px' : '16px'}}>{key % 2 === 1 ? str?.substring(1) : str}</span></React.Fragment>
@@ -103,7 +104,7 @@ function ChatMessage({ thread, modelType, refreshChat, selectedChat, setShowTran
                                         left: buttonRef.current.offsetLeft,
                                     }}
                                 >
-                                    <div className="font-bold" style={{fontSize: '16px'}}>Select Language for Translation</div>
+                                    <div style={{fontSize: '16px', fontWeight: 'bold'}}>Select Language for Translation</div>
                                     <div className="flex flex-col gap-5">
                                         <button 
                                             onClick={async () => {
@@ -188,7 +189,7 @@ function ChatMessage({ thread, modelType, refreshChat, selectedChat, setShowTran
                         </div>
                         {dislikeLoading ? (
                             <div className="rounded-full flex items-center justify-center border border-bgblue" style={{height: '24px', width: '39px'}}>
-                                <BlueCircularLoader height="15px" width="15px" />
+                                <BlueCircularLoader height="15" width="15" />
                             </div>
                         ) : (thread?.feedback_status === 0 ? (
                                 <button 
@@ -233,7 +234,7 @@ function ChatMessage({ thread, modelType, refreshChat, selectedChat, setShowTran
                         ))}
                         {likeLoading ? (
                             <div className="rounded-full flex items-center justify-center border border-bgblue" style={{height: '24px', width: '39px'}}>
-                                <BlueCircularLoader height="15px" width="15px" />
+                                <BlueCircularLoader height="15" width="15" />
                             </div>
                         ) : (thread?.feedback_status === 1 ? (
                                 <button 
@@ -301,7 +302,7 @@ function ChatMessage({ thread, modelType, refreshChat, selectedChat, setShowTran
                         {thread?.system?.sources?.map((source, key) => {
                             return (
                                 <a href={source} target="_blank" rel="noopener noreferrer" key={key} className="rounded-full border border-gray-300 text-gray-500 font-medium h-7 w-52 flex flex-row gap-2 items-center px-3">
-                                    <div className="bg-gray-500" style={{height: '16px', width: '17px'}} />
+                                    <img alt="favicon" src={favicon} style={{height: '16px', width: '17px'}} />
                                     <div>{key + 1}.</div>
                                     <div className="truncate w-40 font-semibold" style={{fontSize: '14px'}}>{thread?.system?.years[key]}, {thread?.system?.authors[key]}</div>
                                 </a>

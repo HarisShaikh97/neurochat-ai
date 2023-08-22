@@ -21,7 +21,7 @@ function UnStarredChatItem({chat, refreshAllChats, refreshChat, setSelectedChat,
         <div className="flex flex-row items-center justify-between">
             <div className="flex flex-row items-center gap-5">
                 {isLoading ? (
-                    <BlackCircularLoader height="15px" width="15px" />
+                    <BlackCircularLoader height="15" width="15" />
                 ) : (
                     <button onClick={async () => {
                         setIsLoading(true)

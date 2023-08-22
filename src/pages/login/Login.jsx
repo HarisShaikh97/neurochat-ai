@@ -25,9 +25,9 @@ function Login() {
             navigate('/')
         } 
         catch (error) {
-            setError(error?.message)
+            setError('Invalid Credentials!')
             setShowError(true)
-            console.error('Error verifying OTP:', error)
+            console.error('Error:', error)
         }
     }
 
@@ -68,7 +68,7 @@ function Login() {
                 <div className="h-full flex flex-col items-center">
                     <img alt="logo" src={logo} style={{height: '92px', width: '92px'}} />
                     <div className="text-bgblue font-semibold" style={{fontSize: '20px'}}>NeuroChat.AI</div>
-                    <div className="font-bold pt-5" style={{fontSize: '27px'}}>Welcome Back</div>
+                    <div className="pt-5" style={{fontSize: '27px', fontWeight: 'bold'}}>Welcome Back</div>
                     <div className="pt-5 font-light text-gray-500" style={{fontSize: '18px'}}>Please enter your correct details for</div>
                     <div className="font-light text-gray-500" style={{fontSize: '18px'}}>Sign In on {`"`}NeuroChat.AI{`"`}.</div>
                     <div className="border rounded-full px-5 mt-10 flex items-center" style={{height: '48px', width: '580px'}}>

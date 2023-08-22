@@ -26,11 +26,11 @@ function Home() {
                 <div className="bg-gray-100" style={{height: '100%', width: '2px'}} />
                 <div className="mx-auto pt-10 px-10 flex-1 flex flex-col justify-between" style={{height: '80vh'}}>
                     <div className="flex flex-col gap-10">
-                        <div className="font-bold" style={{fontSize: '22px'}}>Disclaimer</div>
-                        <div className="text-gray-500" style={{fontSize: '20px'}}>Please note that this software is currently in its alpha version and is <span className="font-bold">not</span> suitable for clinical care nor its intended use. It is intended solely for the purpose of improving research effectiveness and efficiency. So, we strongly suggest against using it as a primary tool for any medical or diagnostic purposes.</div>
+                        <div style={{fontSize: '22px', fontWeight: 'bold'}}>Disclaimer</div>
+                        <div className="text-gray-500" style={{fontSize: '20px'}}>Please note that this software is currently in its alpha version and is <span style={{fontWeight: 'bold'}}>not</span> suitable for clinical care nor its intended use. It is intended solely for the purpose of improving research effectiveness and efficiency. So, we strongly suggest against using it as a primary tool for any medical or diagnostic purposes.</div>
                     </div>
                     <div className="flex justify-end w-full">
-                        <button onClick={() => {navigate('/synaptiquery')}} className="bg-bgblue text-white text-[16px] font-bold h-[56px] w-[343px] rounded-3xl" style={{height: '56px', width: '343px', fontSize: '16px'}}>I agree</button>
+                        <button onClick={() => {navigate('/synaptiquery')}} className="bg-bgblue text-white rounded-3xl" style={{height: '56px', width: '343px', fontSize: '16px', fontWeight: 'bold'}}>I agree</button>
                     </div>
                 </div>
             </div>

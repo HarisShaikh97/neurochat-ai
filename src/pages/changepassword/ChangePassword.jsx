@@ -48,13 +48,13 @@ function ChangePassword() {
                     setShowSuccess(false)
                 },3000)
             } catch (error) {
-                setError(error?.message)
+                setError('Passwords do not match password policy!')
                 setShowError(true)
                 console.error('Error:', error)
             }
         }
         else {
-            setError('Passwords do not match.')
+            setError('Passwords do not match!')
             setShowError(true)
         }
     }
@@ -64,13 +64,13 @@ function ChangePassword() {
     return (
         <Layout>
             <div className="flex flex-row items-center gap-5 pl-10">
-                <div className="w-96 font-bold" style={{fontSize: '22px'}}>Settings</div>
-                <div className="font-bold" style={{fontSize: '22px'}}>Change Password</div>
+                <div className="w-96" style={{fontSize: '22px', fontWeight: 'bold'}}>Settings</div>
+                <div style={{fontSize: '22px', fontWeight: 'bold'}}>Change Password</div>
             </div>
-            <div className="bg-gray-100 mt-5" style={{height: '1px', width: '100%'}} />
+            <div className="bg-gray-100 mt-5" style={{height: '2px', width: '100%'}} />
             <div className="h-full flex flex-row">
                 <SettingsMenu />
-                <div className="bg-gray-100" style={{height: '100%', width: '1px'}} />
+                <div className="bg-gray-100" style={{height: '100%', width: '2px'}} />
                 <div className="my-10 px-10 flex-1 flex flex-col gap-5 relative">
                     {showSuccess && <ChangePasswordSuccess />}
                     <div className="flex flex-col gap-3">

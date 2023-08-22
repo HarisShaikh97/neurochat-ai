@@ -1,19 +1,22 @@
+import { useNavigate } from "react-router-dom"
 import Layout from "../../components/layout/Layout"
 import SettingsMenu from "../../components/settingsmenu/SettingsMenu"
 
 function PrivacyPolicy() {
 
+    const navigate = useNavigate()
+
     return (
         <Layout>
             <div className="flex flex-row items-center gap-5 pl-10">
-                <div className="w-96 text-2xl font-semibold">Settings</div>
-                <div className="text-2xl font-semibold">Privacy Policy</div>
+                <div className="w-96" style={{fontSize: '22px', fontWeight: 'bold'}}>Settings</div>
+                <div style={{fontSize: '22px', fontWeight: 'bold'}}>Privacy Policy</div>
             </div>
-            <div className="bg-gray-100 mt-5" style={{height: '1px', width: '100%'}} />
+            <div className="bg-gray-100 mt-5" style={{height: '2px', width: '100%'}} />
             <div className="h-full flex flex-row">
                 <SettingsMenu />
-                <div className="bg-gray-100" style={{height: '100%', width: '1px'}} />
-                <div className="my-10 px-10 flex-1 flex flex-col">
+                <div className="bg-gray-100" style={{height: '100%', width: '2px'}} />
+                <div className="my-10 px-10 flex-1 flex flex-col overflow-y-auto" style={{height: '75vh'}}>
                     <div className="text-lg font-medium my-5">NeuroGPT is owned and operated by {'"'}NeuroCare.AI{'"'}</div>
                     <div className="text-lg font-medium my-5">Privacy Policy</div>
                     <div className="text-gray-500 text-sm flex flex-col gap-3">Last updated July 21, 2023</div>
@@ -331,6 +334,9 @@ function PrivacyPolicy() {
                     </div>
                     <div className="text-lg font-medium uppercase my-5">15. how can you review, update, or delete the data we collected from you?</div>
                     <div className="text-gray-500 text-sm">Based on the applicable laws of your country, you may have the right to request access to the personal information we collect from you, change that information, or delete it in some circumstances. To request to review, update, or delete your personal information, please submit a email us at <span className="text-bgblue">support@neurocare.ai</span></div>
+                    <div className="flex justify-end w-full pt-20">
+                        <button onClick={() => {navigate('/settings/legaldocuments')}} className="bg-bgblue text-white rounded-3xl" style={{height: '56px', width: '343px', fontSize: '16px', fontWeight: 'bold'}}>I Understand</button>
+                    </div>
                 </div>
             </div>
         </Layout>

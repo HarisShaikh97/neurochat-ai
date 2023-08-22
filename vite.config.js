@@ -19,4 +19,7 @@ export default defineConfig({
       },
     },
   },
+  css: {
+    modules: true // If using CSS modules
+  }
 });

@@ -41,17 +41,17 @@ function PricingPlan() {
     return (
         <Layout>
             <div className="flex flex-row items-center gap-5 pl-10">
-                <div className="w-96 font-bold" style={{fontSize: '22px'}}>Settings</div>
-                <div className="font-bold" style={{fontSize: '22px'}}>Pricing Plan</div>
+                <div className="w-96" style={{fontSize: '22px', fontWeight: 'bold'}}>Settings</div>
+                <div style={{fontSize: '22px', fontWeight: 'bold'}}>Pricing Plan</div>
             </div>
-            <div className="bg-gray-100 mt-5" style={{height: '1px', width: '100%'}} />
+            <div className="bg-gray-100 mt-5" style={{height: '2px', width: '100%'}} />
             <div className="h-full flex flex-row">
                 <SettingsMenu />
-                <div className="bg-gray-100" style={{height: '100%', width: '1px'}} />
-                <div className="pt-10 flex-1 flex flex-col items-center relative">
+                <div className="bg-gray-100" style={{height: '100%', width: '2px'}} />
+                <div className="py-10 flex-1 flex flex-col items-center overflow-y-auto relative" style={{maxHeight: '83vh'}}>
                     {showSubscribed && <SubscribedPopup />}
                     {showCancel && <CancelSubscriptionPopup handleCancel={handleCancel} handleConfirm={handleConfirm} />}
-                    <div className="rounded-full h-12 w-12 bg-bglightblue flex items-center justify-center">
+                    <div className="rounded-full bg-bglightblue flex items-center justify-center" style={{minHeight: '40px', width: '40px'}}>
                         <img alt="pricing-plan" src={pricingPlan} style={{height: '15px'}} />
                     </div>
                     <div className="text-2xl font-medium pt-5">Subscribe to NeuroChat</div>

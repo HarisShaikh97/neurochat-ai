@@ -1,19 +1,22 @@
+import { useNavigate } from "react-router-dom"
 import Layout from "../../components/layout/Layout"
 import SettingsMenu from "../../components/settingsmenu/SettingsMenu"
 
 function TermsAndConditions() {
 
+    const navigate = useNavigate()
+
     return (
         <Layout>
             <div className="flex flex-row items-center gap-5 pl-10">
-                <div className="w-96 text-2xl font-semibold">Settings</div>
-                <div className="text-2xl font-semibold">Terms of Use</div>
+                <div className="w-96" style={{fontSize: '22px', fontWeight: 'bold'}}>Settings</div>
+                <div style={{fontSize: '22px', fontWeight: 'bold'}}>Terms of Use</div>
             </div>
-            <div className="bg-gray-100 mt-5" style={{height: '1px', width: '100%'}} />
+            <div className="bg-gray-100 mt-5" style={{height: '2px', width: '100%'}} />
             <div className="h-full flex flex-row">
                 <SettingsMenu />
-                <div className="bg-gray-100" style={{height: '100%', width: '1px'}} />
-                <div className="my-10 px-10 flex-1 flex flex-col">
+                <div className="bg-gray-100" style={{height: '100%', width: '2px'}} />
+                <div className="my-10 px-10 flex-1 flex flex-col overflow-y-auto" style={{height: '75vh'}}>
                     <div className="text-gray-500 text-sm mb-5">Last updated August 01, 2023</div>
                     <div className="text-lg font-medium uppercase my-5">1. agreement to terms</div>
                     <div className="text-gray-500 text-sm flex flex-col gap-3">
@@ -166,6 +169,9 @@ function TermsAndConditions() {
                         <div><a target="_blank" rel="noopener noreferrer" href="https://neurocare.ai" className="text-bgblue underline">NeuroCare.AI</a> Inc.</div>
                         <div>Phone: (+1)469-954-0346</div>
                         <div className="text-bgblue underline">support@neurocare.ai</div>
+                    </div>
+                    <div className="flex justify-end w-full pt-20">
+                        <button onClick={() => {navigate('/settings/legaldocuments')}} className="bg-bgblue text-white rounded-3xl" style={{height: '56px', width: '343px', fontSize: '16px', fontWeight: 'bold'}}>I Understand</button>
                     </div>
                 </div>
             </div>

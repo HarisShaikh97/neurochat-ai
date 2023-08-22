@@ -44,12 +44,12 @@ function Signup() {
                 navigate('/verifyotp')
             } 
             catch (error) {
-                setError(error?.message)
+                setError(error?.message || '')
                 setShowError(true)
             }
         }
         else {
-            setError('Passwords do not match.')
+            setError('Passwords do not match!')
             setShowError(true)
         }
     }
@@ -91,7 +91,7 @@ function Signup() {
                 <div className="h-full flex flex-col items-center">
                     <img alt="logo" src={logo} style={{height: '92px', width: '92px'}} />
                     <div className="text-bgblue font-semibold" style={{fontSize: '20px'}}>NeuroChat.AI</div>
-                    <div className="font-bold pt-5" style={{fontSize: '27px'}}>SignUp</div>
+                    <div className="pt-5" style={{fontSize: '27px', fontWeight: 'bold'}}>SignUp</div>
                     <div className="pt-5 font-light text-gray-500" style={{fontSize: '18px'}}>Please enter your correct details for</div>
                     <div className="font-light text-gray-500" style={{fontSize: '18px'}}>signing-up on {`"`}NeuroChat.AI{`"`}.</div>
                     <div className="border rounded-full px-5 mt-10 flex items-center" style={{height: '48px', width: '580px'}}>

@@ -22,7 +22,7 @@ function SettingsMenu() {
                 ) : (
                     <div className="rounded-full bg-gradient-to-br from-[#B4AF9D] to-[#737063]" style={{height: '100px', width: '100px'}} />
                 )}
-                <div className="font-bold mt-5" style={{fontSize: '22px'}}>{(state?.user_info?.firstName?.length > 0 || state?.user_info?.lastName?.length > 0) && `${state?.user_info?.firstName} ${state?.user_info?.lastName}`}</div>
+                <div className="mt-5" style={{fontSize: '22px', fontWeight: 'bold'}}>{(state?.user_info?.firstName?.length > 0 || state?.user_info?.lastName?.length > 0) && `${state?.user_info?.firstName} ${state?.user_info?.lastName}`}</div>
                 <div className="text-gray-500 mt-3" style={{fontSize: '14px'}}>{state?.user_info?.secondaryEmail}</div>
             </div>
             <div className="flex flex-row justify-between">

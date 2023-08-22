@@ -5,7 +5,7 @@ import warning from "../../assets/icons/warning.png"
 function FalconWarningPopup({setShowWarningMessage}) {
 
     return (
-        <div className="absolute top-1/2 left-1/2 h-full w-full transform -translate-x-1/2 -translate-y-1/2 backdrop-brightness-50 backdrop-blur flex justify-center pt-[25vh] z-50">
+        <div className="absolute top-1/2 left-1/2 h-full w-full transform -translate-x-1/2 -translate-y-1/2 backdrop-brightness-50 backdrop-blur flex justify-center z-50" style={{paddingTop: '25vh'}}>
             <div className="bg-bglightblue rounded-xl shadow-xl flex flex-col items-center p-5" style={{height: '428px', width: '341px'}}>
                 <div className="w-full flex justify-end">
                     <button onClick={() => {setShowWarningMessage(false)}}>

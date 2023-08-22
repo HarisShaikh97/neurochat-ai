@@ -277,7 +277,7 @@ function ClaudeAI() {
                                     <div className="flex flex-row items-center justify-between w-80">
                                         <div className="flex flex-row items-center gap-5">
                                             {feedbackLoading ? (
-                                                <BlackCircularLoader height="20px" width="20px" />
+                                                <BlackCircularLoader height="20" width="20" />
                                             ) : (selectedChat?.is_starred ? (
                                                     <button onClick={async () => {
                                                         setFeedbackLoading(true)
@@ -322,7 +322,7 @@ function ClaudeAI() {
                                     <div className="flex flex-row items-center justify-between w-80">
                                         <div className="flex flex-row items-center gap-5">
                                         {feedbackLoading ? (
-                                                <BlackCircularLoader height="20px" width="20px" />
+                                                <BlackCircularLoader height="20" width="20" />
                                             ) : (selectedChat?.is_starred ? (
                                                     <button onClick={async () => {
                                                         setFeedbackLoading(true)
@@ -357,7 +357,7 @@ function ClaudeAI() {
                                             <div className="w-60 truncate font-semibold" style={{fontSize: '15px'}}>{selectedChat?.chat_title}</div>
                                         </div>
                                         {titleLoading ? (
-                                            <BlueCircularLoader height="20px" width="20px" />
+                                            <BlueCircularLoader height="20" width="20" />
                                         ) : (
                                             <button onClick={() => {setEditSelectedChatTitle(true)}}>
                                                 <img alt="edit" src={edit} className="px-3" style={{height: '18px'}} />
@@ -396,7 +396,7 @@ function ClaudeAI() {
                                 </div>
                                 {showStarredChats && (
                                     (chats?.filter(checkStarred)?.filter(checkSearch)?.length > 0 ? (
-                                        <div className="flex flex-col gap-3 overflow-y-auto" style={{maxHeight: '20vh'}}>
+                                        <div className="flex flex-col gap-3 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded-xl scrollbar-track-rounded-xl scrollbar-thumb-gray-500 scrollbar-track-gray-200" style={{maxHeight: '12vh'}}>
                                             {chats?.filter(checkStarred)?.filter(checkSearch)?.map((chat, key) => {
                                                 return (
                                                     <StarredChatItem chat={chat} refreshAllChats={refreshAllChats} refreshChat={refreshChat} setSelectedChat={setSelectedChat} setShowDeleteChatPopup={setShowDeleteChatPopup} setChatToDelete={setChatToDelete} setShowTranslationPopup={setShowTranslationPopup} key={key} />
@@ -404,7 +404,7 @@ function ClaudeAI() {
                                             })}
                                         </div>
                                     ) : (
-                                        <div className="w-full font-bold text-center text-gray-500">No Chats to show!</div>
+                                        <div className="w-full text-center text-gray-500" style={{fontWeight: 'bold'}}>No Chats to show!</div>
                                     ))
                                 )}
                                 <div className="flex flex-row items-center gap-5">
@@ -421,7 +421,7 @@ function ClaudeAI() {
                                 </div>
                                 {showAllChats && (
                                     (chats?.filter(checkUnStarred)?.filter(checkSearch)?.length > 0 ? (
-                                        <div className="flex flex-col gap-3 overflow-y-auto" style={{maxHeight: '30vh'}}>
+                                        <div className="flex flex-col gap-3 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded-xl scrollbar-track-rounded-xl scrollbar-thumb-gray-500 scrollbar-track-gray-200" style={{maxHeight: '38vh'}}>
                                             {chats?.filter(checkUnStarred)?.filter(checkSearch)?.map((chat, key) => {
                                                 return (
                                                     <UnStarredChatItem chat={chat} refreshAllChats={refreshAllChats} refreshChat={refreshChat} setSelectedChat={setSelectedChat} setShowDeleteChatPopup={setShowDeleteChatPopup} setChatToDelete={setChatToDelete} setShowTranslationPopup={setShowTranslationPopup} key={key} />
@@ -429,11 +429,11 @@ function ClaudeAI() {
                                             })}
                                         </div>
                                     ) : (
-                                        <div className="w-full font-bold text-center text-gray-500">No Chats to show!</div>
+                                        <div className="w-full text-center text-gray-500" style={{fontWeight: 'bold'}}>No Chats to show!</div>
                                     ))
                                 )}
                             </div>
-                            <button onClick={() => {setSelectedChat(null)}} className="rounded-full bg-bgblue text-white font-bold flex flex-row gap-5 justify-center items-center" style={{height: '56px', width: '340px', fontSize: '16px'}}>
+                            <button onClick={() => {setSelectedChat(null)}} className="rounded-full bg-bgblue text-white flex flex-row gap-5 justify-center items-center" style={{height: '56px', width: '340px', fontSize: '16px', fontWeight: 'bold'}}>
                                 <img alt="add" src={plus} style={{height: '19px', width: '19px'}} />
                                 <div>New Chat</div>
                             </button>
@@ -442,7 +442,7 @@ function ClaudeAI() {
                 ) : (
                     <div className="w-96 flex flex-col gap-10 p-5">
                         <div className="flex flex-col gap-5">
-                            <div className="font-bold" style={{fontSize: '22px'}}>Top Use cases for Claude.AI</div>
+                            <div style={{fontSize: '22px', fontWeight: 'bold'}}>Top Use cases for Claude.AI</div>
                             <div className="rounded-3xl text-gray-500 bg-bgblue bg-opacity-5 px-5 flex flex-col gap-5 py-10" style={{width: '343px', fontSize: '15px'}}>
                                 <div className="flex flex-row gap-3">
                                     <div className="bg-bgblue h-2 w-2 rounded-full mt-2" />
@@ -474,7 +474,7 @@ function ClaudeAI() {
                     <div className="h-[80vh] pt-10 w-full">
                         {state?.claude_agreed ? (
                             <div className="flex flex-col gap-5 h-full">
-                                <div className="flex flex-col gap-10 h-full overflow-y-auto px-10 pb-10">
+                                <div className="flex flex-col gap-10 h-full overflow-y-auto px-10 pb-10 scrollbar-thin scrollbar-thumb-rounded-xl scrollbar-track-rounded-xl scrollbar-thumb-gray-500 scrollbar-track-gray-200">
                                     {selectedChat?.chat?.map((thread, key) => {
                                         return (
                                             <ChatMessage thread={thread} modelType='claudeai' refreshChat={refreshChat} selectedChat={selectedChat} setShowTranslationPopup={setShowTranslationPopup} setTranslatedText={setTranslatedText} setShowDeleteMessagePopup={setShowDeleteMessagePopup} setCurrentThread={setCurrentThread} key={key} />
@@ -502,11 +502,11 @@ function ClaudeAI() {
                         ) : (
                             <div className="h-full flex flex-col justify-between px-10">
                                 <div className="flex flex-col gap-10">
-                                    <div className="font-bold" style={{fontSize: '22px'}}>About Claude.AI</div>
+                                    <div style={{fontSize: '22px', fontWeight: 'bold'}}>About Claude.AI</div>
                                     <div className="text-gray-500" style={{fontSize: '20px'}}>Claude.AI is an interactive chat-based interface for querying neuroscientific literature from PubMed. Users can query using keywords, phrases or questions in natural language. Claude.AI provides relevant article abstracts and other information. It simplifies and expedites the literature search process, allowing researchers to focus on their work.</div>
                                 </div>
                                 <div className="flex justify-end w-full">
-                                    <button onClick={() => {dispatch({ type: 'SET_CLAUDE_AGREED', payload: true })}} className="bg-bgblue text-white font-bold rounded-3xl" style={{height: '56px', width: '343px', fontSize: '16px'}}>I Understand</button>
+                                    <button onClick={() => {dispatch({ type: 'SET_CLAUDE_AGREED', payload: true })}} className="bg-bgblue text-white rounded-3xl" style={{height: '56px', width: '343px', fontSize: '16px', fontWeight: 'bold'}}>I Understand</button>
                                 </div>
                             </div>
                         )}

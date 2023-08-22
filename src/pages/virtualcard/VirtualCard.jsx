@@ -26,10 +26,10 @@ function VirtualCard() {
                 <div className="w-96 text-2xl font-semibold">Settings</div>
                 <div className="text-2xl font-semibold">Virtual Card</div>
             </div>
-            <div className="bg-gray-100 mt-5" style={{height: '1px', width: '100%'}} />
+            <div className="bg-gray-100 mt-5" style={{height: '2px', width: '100%'}} />
             <div className="h-full flex flex-row">
                 <SettingsMenu />
-                <div className="bg-gray-100" style={{height: '100%', width: '1px'}} />
+                <div className="bg-gray-100" style={{height: '100%', width: '2px'}} />
                 <div className="flex-1 flex pt-60 justify-center">
                     <div className="text-bgblue text-7xl font-semibold">Coming Soon!</div>
                 </div>

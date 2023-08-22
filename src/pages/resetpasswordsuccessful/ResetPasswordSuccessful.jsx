@@ -22,8 +22,8 @@ function ResetPasswordSuccessful() {
                 </div>
                 <div className="h-full flex flex-col items-center justify-center">
                     <img alt="logo" src={logo} style={{height: '92px', width: '92px'}} />
-                    <div className="text-bgblue font-bold" style={{fontSize: '20px'}}>NeuroChat.AI</div>
-                    <div className="font-bold pt-5" style={{fontSize: '27px'}}>Reset Password</div>
+                    <div className="text-bgblue" style={{fontSize: '20px', fontWeight: 'bold'}}>NeuroChat.AI</div>
+                    <div className="pt-5" style={{fontSize: '27px', fontWeight: 'bold'}}>Reset Password</div>
                     <div className="pt-5 text-gray-500" style={{fontSize: '18px'}}>You have successfully confirmed new password.</div>
                     <div className="text-gray-500"  style={{fontSize: '18px'}}>Please use your new password when logging</div>
                     <div className="text-gray-500" style={{fontSize: '18px'}}>in to {`"`}NeuroChat.AI{`"`}.</div>
